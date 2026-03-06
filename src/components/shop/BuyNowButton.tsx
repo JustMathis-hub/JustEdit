@@ -41,9 +41,9 @@ export function BuyNowButton({ productId, productSlug, isFree, alreadyPurchased,
         return;
       }
 
-      // Free pack claim
+      // Free pack claim — use window.location for dynamic slug routes
       if (isFree) {
-        router.push(`/boutique/${productSlug}`);
+        window.location.href = `/fr/boutique/${productSlug}`;
         return;
       }
 

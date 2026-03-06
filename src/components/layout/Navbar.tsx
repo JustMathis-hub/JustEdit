@@ -108,9 +108,9 @@ export function Navbar() {
             {user ? (
               <div className="flex items-center gap-2">
                 {profile?.role === 'admin' && (
-                  <Link href="/admin" className="text-xs text-[#8b1a1a] hover:text-[#c0392b] font-medium transition-colors">
+                  <a href="/admin" className="text-xs text-[#8b1a1a] hover:text-[#c0392b] font-medium transition-colors">
                     {t('admin')}
-                  </Link>
+                  </a>
                 )}
                 <Link
                   href="/compte"

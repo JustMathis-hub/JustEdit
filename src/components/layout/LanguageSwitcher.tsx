@@ -10,7 +10,8 @@ export function LanguageSwitcher() {
 
   const toggleLocale = () => {
     const next = locale === 'fr' ? 'en' : 'fr';
-    router.replace(pathname, { locale: next });
+    // Cast needed because next-intl pathname type doesn't include dynamic segments
+    router.replace(pathname as '/', { locale: next });
   };
 
   return (
