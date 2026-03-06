@@ -1,0 +1,11 @@
+{
+  "regions": ["cdg1"],
+  "headers": [
+    {
+      "source": "/api/stripe/webhook",
+      "headers": [
+        { "key": "x-vercel-no-buffer", "value": "1" }
+      ]
+    }
+  ]
+}

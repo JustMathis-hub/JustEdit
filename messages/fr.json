@@ -1,0 +1,194 @@
+{
+  "nav": {
+    "shop": "Boutique",
+    "freePacks": "Packs Gratuits",
+    "login": "Connexion",
+    "account": "Mon Compte",
+    "logout": "Déconnexion",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero": {
+      "headline": "Éditez plus vite.",
+      "subheadline": "Des MOGRTS professionnels pour After Effects & Premiere Pro. Conçus pour les monteurs qui en ont marre de perdre du temps.",
+      "cta": "Découvrir la boutique",
+      "ctaFree": "Packs gratuits"
+    },
+    "featured": {
+      "title": "Nos packs",
+      "subtitle": "Sélection de templates prêts à l'emploi"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche ?",
+      "step1": { "title": "Achète ton pack", "desc": "Paiement sécurisé via Stripe" },
+      "step2": { "title": "Télécharge", "desc": "Accès immédiat depuis ton espace membre" },
+      "step3": { "title": "Importe & monte", "desc": "Compatible After Effects & Premiere Pro" }
+    },
+    "cta": {
+      "title": "Prêt à gagner du temps ?",
+      "subtitle": "Rejoins des centaines de monteurs qui utilisent JustEdit.",
+      "button": "Voir la boutique"
+    }
+  },
+  "shop": {
+    "title": "Boutique",
+    "subtitle": "Templates & presets professionnels",
+    "free": "Gratuit",
+    "buyNow": "Acheter — {price}",
+    "preview": "Aperçu",
+    "noProducts": "Aucun produit disponible pour le moment.",
+    "compatibility": "Compatible avec",
+    "category": {
+      "all": "Tous",
+      "morgts": "MOGRTS",
+      "presets": "Presets",
+      "templates": "Templates"
+    },
+    "filter": {
+      "all": "Tous les packs",
+      "free": "Gratuits",
+      "paid": "Payants"
+    }
+  },
+  "product": {
+    "includes": "Ce pack contient",
+    "compatibility": "Compatibilité",
+    "format": "Format",
+    "buyNow": "Acheter maintenant — {price}",
+    "download": "Télécharger",
+    "alreadyPurchased": "Déjà acheté — Télécharger",
+    "free": "Gratuit",
+    "claimFree": "Obtenir gratuitement",
+    "addedToCart": "Ajouté !",
+    "faq": {
+      "title": "Questions fréquentes",
+      "q1": "Comment installer un MOGRTS ?",
+      "a1": "Ouvre After Effects, va dans Fenêtre > Propriétés essentielles, clique sur l'icône + et importe le fichier .mogrt. Dans Premiere Pro, tu peux l'utiliser directement depuis le panneau Graphiques essentiels.",
+      "q2": "Quelles versions sont compatibles ?",
+      "a2": "After Effects 2022 (v22.0) et supérieur, Premiere Pro 2022 (v22.0) et supérieur.",
+      "q3": "Puis-je utiliser ces packs pour des projets commerciaux ?",
+      "a3": "Oui, la licence incluse couvre l'usage commercial pour un usage personnel ou client."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "subtitle": "Accède à tes téléchargements",
+      "email": "Email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "forgotPassword": "Mot de passe oublié ?",
+      "noAccount": "Pas encore de compte ?",
+      "register": "Créer un compte",
+      "error": "Email ou mot de passe incorrect."
+    },
+    "register": {
+      "title": "Créer un compte",
+      "subtitle": "Rejoins la communauté JustEdit",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Créer mon compte",
+      "hasAccount": "Déjà un compte ?",
+      "login": "Se connecter",
+      "terms": "J'accepte les {cgv} et la {privacy}. Je renonce expressément à mon droit de rétractation pour les contenus numériques téléchargés immédiatement (art. L221-28 Code de la consommation).",
+      "cgv": "CGV",
+      "privacy": "politique de confidentialité",
+      "error": "Une erreur est survenue. Réessaie.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "successTitle": "Compte créé !",
+      "successDesc": "Vérifie ton email pour confirmer ton compte."
+    }
+  },
+  "account": {
+    "title": "Mon compte",
+    "welcome": "Bonjour, {name}",
+    "purchases": "Mes achats",
+    "noOrders": "Tu n'as pas encore d'achats.",
+    "shopCta": "Voir la boutique",
+    "table": {
+      "product": "Produit",
+      "date": "Date",
+      "amount": "Montant",
+      "status": "Statut",
+      "action": "Télécharger"
+    },
+    "status": {
+      "completed": "Payé",
+      "pending": "En attente",
+      "refunded": "Remboursé"
+    },
+    "download": "Télécharger",
+    "downloading": "Préparation..."
+  },
+  "checkout": {
+    "success": {
+      "title": "Paiement réussi !",
+      "subtitle": "Merci pour ton achat.",
+      "downloadNow": "Télécharger maintenant",
+      "goToAccount": "Voir mes achats"
+    },
+    "cancel": {
+      "title": "Paiement annulé",
+      "subtitle": "Ton paiement n'a pas été effectué.",
+      "retry": "Réessayer",
+      "goBack": "Retour à la boutique"
+    }
+  },
+  "freePacks": {
+    "title": "Packs Gratuits",
+    "subtitle": "Des ressources offertes par JustEdit",
+    "download": "Télécharger gratuitement",
+    "loginRequired": "Connecte-toi pour télécharger"
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "subtitle": "Tout ce que tu dois savoir sur JustEdit"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Une question ? On est là.",
+    "name": "Nom",
+    "email": "Email",
+    "subject": "Sujet",
+    "message": "Message",
+    "submit": "Envoyer",
+    "success": "Message envoyé ! On te répond dans les 24h.",
+    "error": "Erreur lors de l'envoi. Réessaie."
+  },
+  "legal": {
+    "mentions": "Mentions légales",
+    "cgv": "Conditions Générales de Vente",
+    "privacy": "Politique de confidentialité"
+  },
+  "footer": {
+    "legal": "Mentions légales",
+    "cgv": "CGV",
+    "privacy": "Confidentialité",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "rights": "© {year} JustEdit. Tous droits réservés.",
+    "tagline": "Montez plus vite, rendez plus."
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue.",
+    "back": "Retour",
+    "close": "Fermer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "cookies": {
+    "message": "On utilise des cookies pour améliorer ton expérience et analyser le trafic.",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "learnMore": "En savoir plus"
+  }
+}

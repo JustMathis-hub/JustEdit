@@ -1,0 +1,194 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "freePacks": "Free Packs",
+    "login": "Login",
+    "account": "My Account",
+    "logout": "Logout",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero": {
+      "headline": "Edit faster.",
+      "subheadline": "Professional MOGRTs for After Effects & Premiere Pro. Built for editors who are tired of wasting time.",
+      "cta": "Browse the shop",
+      "ctaFree": "Free packs"
+    },
+    "featured": {
+      "title": "Our packs",
+      "subtitle": "Ready-to-use template selection"
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "step1": { "title": "Buy your pack", "desc": "Secure payment via Stripe" },
+      "step2": { "title": "Download", "desc": "Instant access from your account" },
+      "step3": { "title": "Import & edit", "desc": "Works with After Effects & Premiere Pro" }
+    },
+    "cta": {
+      "title": "Ready to save time?",
+      "subtitle": "Join hundreds of editors using JustEdit.",
+      "button": "Browse the shop"
+    }
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Professional templates & presets",
+    "free": "Free",
+    "buyNow": "Buy — {price}",
+    "preview": "Preview",
+    "noProducts": "No products available yet.",
+    "compatibility": "Compatible with",
+    "category": {
+      "all": "All",
+      "morgts": "MOGRTs",
+      "presets": "Presets",
+      "templates": "Templates"
+    },
+    "filter": {
+      "all": "All packs",
+      "free": "Free",
+      "paid": "Paid"
+    }
+  },
+  "product": {
+    "includes": "This pack includes",
+    "compatibility": "Compatibility",
+    "format": "Format",
+    "buyNow": "Buy now — {price}",
+    "download": "Download",
+    "alreadyPurchased": "Already purchased — Download",
+    "free": "Free",
+    "claimFree": "Get for free",
+    "addedToCart": "Added!",
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": "How do I install a MOGRT?",
+      "a1": "Open After Effects, go to Window > Essential Properties, click the + icon and import the .mogrt file. In Premiere Pro, you can use it directly from the Essential Graphics panel.",
+      "q2": "Which versions are compatible?",
+      "a2": "After Effects 2022 (v22.0) and above, Premiere Pro 2022 (v22.0) and above.",
+      "q3": "Can I use these packs for commercial projects?",
+      "a3": "Yes, the included license covers commercial use for personal or client projects."
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Access your downloads",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "No account yet?",
+      "register": "Create an account",
+      "error": "Invalid email or password."
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Join the JustEdit community",
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Create my account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign in",
+      "terms": "I agree to the {cgv} and the {privacy}. I expressly waive my right of withdrawal for digital content downloaded immediately.",
+      "cgv": "Terms of Sale",
+      "privacy": "Privacy Policy",
+      "error": "Something went wrong. Please try again.",
+      "passwordMismatch": "Passwords do not match.",
+      "successTitle": "Account created!",
+      "successDesc": "Check your email to confirm your account."
+    }
+  },
+  "account": {
+    "title": "My account",
+    "welcome": "Hello, {name}",
+    "purchases": "My purchases",
+    "noOrders": "You haven't made any purchases yet.",
+    "shopCta": "Browse the shop",
+    "table": {
+      "product": "Product",
+      "date": "Date",
+      "amount": "Amount",
+      "status": "Status",
+      "action": "Download"
+    },
+    "status": {
+      "completed": "Paid",
+      "pending": "Pending",
+      "refunded": "Refunded"
+    },
+    "download": "Download",
+    "downloading": "Preparing..."
+  },
+  "checkout": {
+    "success": {
+      "title": "Payment successful!",
+      "subtitle": "Thank you for your purchase.",
+      "downloadNow": "Download now",
+      "goToAccount": "View my purchases"
+    },
+    "cancel": {
+      "title": "Payment cancelled",
+      "subtitle": "Your payment was not completed.",
+      "retry": "Try again",
+      "goBack": "Back to shop"
+    }
+  },
+  "freePacks": {
+    "title": "Free Packs",
+    "subtitle": "Resources offered by JustEdit",
+    "download": "Download for free",
+    "loginRequired": "Log in to download"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about JustEdit"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Got a question? We're here.",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "submit": "Send",
+    "success": "Message sent! We'll reply within 24h.",
+    "error": "Failed to send. Please try again."
+  },
+  "legal": {
+    "mentions": "Legal Notice",
+    "cgv": "Terms of Sale",
+    "privacy": "Privacy Policy"
+  },
+  "footer": {
+    "legal": "Legal Notice",
+    "cgv": "Terms of Sale",
+    "privacy": "Privacy",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "rights": "© {year} JustEdit. All rights reserved.",
+    "tagline": "Edit faster, deliver more."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "back": "Back",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "cookies": {
+    "message": "We use cookies to improve your experience and analyze traffic.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "learnMore": "Learn more"
+  }
+}
