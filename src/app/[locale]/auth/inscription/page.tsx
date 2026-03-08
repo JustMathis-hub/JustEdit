@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, UserPlus, CheckCircle } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
+import Image from 'next/image';
 
 export default function RegisterPage() {
   const t = useTranslations('auth.register');
@@ -79,15 +79,8 @@ export default function RegisterPage() {
 
       <div className="w-full max-w-sm relative z-10">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="w-8 h-8">
-              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
-                <rect x="20" y="20" width="60" height="60" rx="8" fill="#8b1a1a"/>
-                <rect x="32" y="32" width="36" height="36" rx="2" fill="#0a0a0a"/>
-                <path d="M20 68 L32 56 L32 80 L20 80 Z" fill="#6b0f1a"/>
-              </svg>
-            </div>
-            <span className="text-white font-bold text-lg">Just<span className="text-[#8b1a1a]">Edit</span></span>
+          <Link href="/">
+            <Image src="/Logo.png" alt="JustEdit" width={40} height={40} className="mx-auto" />
           </Link>
           <h1 className="text-2xl font-black text-white mt-6 mb-1">{t('title')}</h1>
           <p className="text-sm text-[oklch(0.5_0.005_0)]">{t('subtitle')}</p>
@@ -176,18 +169,13 @@ export default function RegisterPage() {
               </p>
             )}
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-[#8b1a1a] hover:bg-[#a02020] text-white border-0 font-semibold py-2.5 h-auto mt-2"
-            >
-              {loading ? (
-                <Loader2 size={16} className="animate-spin mr-2" />
-              ) : (
-                <UserPlus size={16} className="mr-2" />
-              )}
-              {t('submit')}
-            </Button>
+            <button type="submit" disabled={loading} className="je-auth-btn mt-2">
+              <span className="je-auth-blob" />
+              <span className="je-auth-inner">
+                {loading && <Loader2 size={16} className="animate-spin" />}
+                {t('submit')}
+              </span>
+            </button>
           </form>
         </div>
 

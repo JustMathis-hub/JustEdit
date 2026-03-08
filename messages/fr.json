@@ -10,7 +10,7 @@
   "home": {
     "hero": {
       "headline": "Éditez plus vite.",
-      "subheadline": "Des MOGRTS professionnels pour After Effects & Premiere Pro. Conçus pour les monteurs qui en ont marre de perdre du temps.",
+      "subheadline": "Des MOGRTS professionnels pour Premiere Pro. Conçus pour les monteurs qui en ont marre de perdre du temps.",
       "cta": "Découvrir la boutique",
       "ctaFree": "Packs gratuits"
     },
@@ -20,9 +20,18 @@
     },
     "howItWorks": {
       "title": "Comment ça marche ?",
-      "step1": { "title": "Achète ton pack", "desc": "Paiement sécurisé via Stripe" },
-      "step2": { "title": "Télécharge", "desc": "Accès immédiat depuis ton espace membre" },
-      "step3": { "title": "Importe & monte", "desc": "Compatible After Effects & Premiere Pro" }
+      "step1": {
+        "title": "Achète ton pack",
+        "desc": "Paiement sécurisé via Stripe"
+      },
+      "step2": {
+        "title": "Télécharge",
+        "desc": "Accès immédiat depuis ton espace membre"
+      },
+      "step3": {
+        "title": "Importe & monte",
+        "desc": "Compatible Premiere Pro"
+      }
     },
     "cta": {
       "title": "Prêt à gagner du temps ?",
@@ -40,7 +49,7 @@
     "compatibility": "Compatible avec",
     "category": {
       "all": "Tous",
-      "morgts": "MOGRTS",
+      "mogrt": "MOGRT",
       "presets": "Presets",
       "templates": "Templates"
     },
@@ -62,10 +71,10 @@
     "addedToCart": "Ajouté !",
     "faq": {
       "title": "Questions fréquentes",
-      "q1": "Comment installer un MOGRTS ?",
-      "a1": "Ouvre After Effects, va dans Fenêtre > Propriétés essentielles, clique sur l'icône + et importe le fichier .mogrt. Dans Premiere Pro, tu peux l'utiliser directement depuis le panneau Graphiques essentiels.",
+      "q1": "Comment installer un MOGRT ?",
+      "a1": "Dans Premiere Pro, ouvre le panneau Graphiques essentiels (Fenêtre > Graphiques essentiels), clique sur Parcourir et importe le fichier .mogrt.",
       "q2": "Quelles versions sont compatibles ?",
-      "a2": "After Effects 2022 (v22.0) et supérieur, Premiere Pro 2022 (v22.0) et supérieur.",
+      "a2": "Premiere Pro 2024 et supérieur.",
       "q3": "Puis-je utiliser ces packs pour des projets commerciaux ?",
       "a3": "Oui, la licence incluse couvre l'usage commercial pour un usage personnel ou client."
     }
@@ -169,7 +178,7 @@
     "faq": "FAQ",
     "contact": "Contact",
     "rights": "© {year} JustEdit. Tous droits réservés.",
-    "tagline": "Montez plus vite, rendez plus."
+    "tagline": "Plus rapide, plus rentable."
   },
   "common": {
     "loading": "Chargement...",

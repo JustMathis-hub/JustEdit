@@ -190,3 +190,291 @@ html {
   color: #e07070;
   border: 1px solid rgba(139, 26, 26, 0.3);
 }
+
+/* ── Animations ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%       { transform: translateY(-10px) rotate(0.5deg); }
+}
+@keyframes scan-line {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-in {
+  animation: fade-in 0.6s ease both;
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Delays */
+.delay-100 { animation-delay: 0.10s; }
+.delay-200 { animation-delay: 0.20s; }
+.delay-300 { animation-delay: 0.30s; }
+.delay-400 { animation-delay: 0.40s; }
+.delay-500 { animation-delay: 0.50s; }
+.delay-600 { animation-delay: 0.60s; }
+.delay-700 { animation-delay: 0.70s; }
+.delay-800 { animation-delay: 0.80s; }
+
+/* ── Card "Voir" button (Uiverse-inspired, bordeaux theme) ── */
+.je-card-btn {
+  cursor: pointer;
+  font-size: 0.75rem;
+  border-radius: 12px;
+  border: none;
+  padding: 2px;
+  background: radial-gradient(circle 60px at 80% -10%, #a02020, #0f0505);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.je-card-btn:hover {
+  transform: scale(0.97);
+  background: radial-gradient(circle 60px at 80% -10%, #b82828, #0f0505);
+  box-shadow: 0 0 25px rgba(139,26,26,0.2), 0 0 50px rgba(139,26,26,0.06);
+}
+.je-card-btn::after {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 60%;
+  border-radius: 80px;
+  top: 0;
+  right: 0;
+  box-shadow: 0 0 14px rgba(192,57,43,0.15);
+  z-index: -1;
+  transition: box-shadow 0.3s ease;
+}
+.je-card-btn:hover::after {
+  box-shadow: 0 0 20px rgba(192,57,43,0.22);
+}
+.je-card-blob {
+  position: absolute;
+  width: 50px;
+  height: 100%;
+  border-radius: 12px;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle 40px at 0% 100%, #8b1a1a, #4a0e0e50, transparent);
+  box-shadow: -6px 6px 20px rgba(139,26,26,0.15);
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+.je-card-btn:hover .je-card-blob {
+  box-shadow: -5px 5px 25px rgba(139,26,26,0.28);
+  opacity: 0.85;
+}
+.je-card-inner {
+  padding: 8px 18px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.75rem;
+  z-index: 3;
+  position: relative;
+  background: radial-gradient(circle 60px at 80% -50%, #5c1212, #0d0303);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+.je-card-btn:hover .je-card-inner {
+  background: radial-gradient(circle 60px at 80% -50%, #701818, #100606);
+}
+.je-card-inner::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+  background: radial-gradient(circle 40px at 20% 110%, rgba(139,26,26,0.2), transparent 60%);
+  position: absolute;
+  transition: opacity 0.3s ease;
+}
+.je-card-btn:hover .je-card-inner::before {
+  opacity: 0.5;
+}
+
+/* ── Auth button (full-width, bordeaux theme) ── */
+.je-auth-btn {
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.95rem;
+  border-radius: 14px;
+  border: none;
+  padding: 2px;
+  background: radial-gradient(circle 80px at 80% -10%, #a02020, #0f0505);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.je-auth-btn:hover {
+  transform: scale(0.985);
+  background: radial-gradient(circle 80px at 80% -10%, #b82828, #0f0505);
+  box-shadow: 0 0 30px rgba(139,26,26,0.22), 0 0 60px rgba(139,26,26,0.07);
+}
+.je-auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.je-auth-btn:disabled:hover {
+  box-shadow: none;
+}
+.je-auth-btn::after {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 60%;
+  border-radius: 100px;
+  top: 0;
+  right: 0;
+  box-shadow: 0 0 18px rgba(192,57,43,0.16);
+  z-index: -1;
+  transition: box-shadow 0.3s ease;
+}
+.je-auth-btn:hover::after {
+  box-shadow: 0 0 25px rgba(192,57,43,0.24);
+}
+.je-auth-blob {
+  position: absolute;
+  width: 70px;
+  height: 100%;
+  border-radius: 14px;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle 50px at 0% 100%, #8b1a1a, #4a0e0e50, transparent);
+  box-shadow: -8px 8px 25px rgba(139,26,26,0.16);
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+.je-auth-btn:hover .je-auth-blob {
+  box-shadow: -6px 6px 30px rgba(139,26,26,0.28);
+  opacity: 0.85;
+}
+.je-auth-inner {
+  padding: 14px 24px;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  z-index: 3;
+  position: relative;
+  background: radial-gradient(circle 80px at 80% -50%, #5c1212, #0d0303);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+.je-auth-btn:hover .je-auth-inner {
+  background: radial-gradient(circle 80px at 80% -50%, #701818, #100606);
+}
+.je-auth-inner::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 12px;
+  background: radial-gradient(circle 50px at 20% 110%, rgba(139,26,26,0.2), transparent 60%);
+  position: absolute;
+  transition: opacity 0.3s ease;
+}
+.je-auth-btn:hover .je-auth-inner::before {
+  opacity: 0.5;
+}
+
+/* ── Floating preview card button (compact, full-width) ── */
+.je-float-btn {
+  cursor: pointer;
+  width: 100%;
+  font-size: 0.7rem;
+  border-radius: 10px;
+  border: none;
+  padding: 2px;
+  background: radial-gradient(circle 50px at 80% -10%, #a02020, #0f0505);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.je-float-btn:hover {
+  transform: scale(0.97);
+  background: radial-gradient(circle 50px at 80% -10%, #b82828, #0f0505);
+  box-shadow: 0 0 20px rgba(139,26,26,0.25), 0 0 40px rgba(139,26,26,0.08);
+}
+.je-float-btn::after {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 60%;
+  border-radius: 60px;
+  top: 0;
+  right: 0;
+  box-shadow: 0 0 12px rgba(192,57,43,0.14);
+  z-index: -1;
+  transition: box-shadow 0.3s ease;
+}
+.je-float-btn:hover::after {
+  box-shadow: 0 0 18px rgba(192,57,43,0.2);
+}
+.je-float-blob {
+  position: absolute;
+  width: 40px;
+  height: 100%;
+  border-radius: 10px;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(circle 30px at 0% 100%, #8b1a1a, #4a0e0e50, transparent);
+  box-shadow: -5px 5px 16px rgba(139,26,26,0.14);
+  transition: box-shadow 0.3s ease, opacity 0.3s ease;
+}
+.je-float-btn:hover .je-float-blob {
+  box-shadow: -4px 4px 20px rgba(139,26,26,0.26);
+  opacity: 0.85;
+}
+.je-float-inner {
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.7rem;
+  z-index: 3;
+  position: relative;
+  background: radial-gradient(circle 50px at 80% -50%, #5c1212, #0d0303);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+.je-float-btn:hover .je-float-inner {
+  background: radial-gradient(circle 50px at 80% -50%, #701818, #100606);
+}
+.je-float-inner::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 8px;
+  background: radial-gradient(circle 30px at 20% 110%, rgba(139,26,26,0.2), transparent 60%);
+  position: absolute;
+  transition: opacity 0.3s ease;
+}
+.je-float-btn:hover .je-float-inner::before {
+  opacity: 0.5;
+}

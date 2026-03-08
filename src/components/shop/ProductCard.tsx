@@ -3,9 +3,7 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Play, ShoppingBag } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
 import { useState } from 'react';
@@ -95,13 +93,12 @@ export function ProductCard({ product, purchased, purchaseId }: Props) {
           </span>
 
           <Link href={`/boutique/${product.slug}` as any}>
-            <Button
-              size="sm"
-              className="bg-[#8b1a1a] hover:bg-[#a02020] text-white border-0 text-xs px-3 py-1.5 h-auto"
-            >
-              <ShoppingBag size={12} className="mr-1.5" />
-              {product.is_free ? t('free') : 'Voir'}
-            </Button>
+            <button type="button" className="je-card-btn">
+              <span className="je-card-blob" />
+              <span className="je-card-inner">
+                {product.is_free ? t('free') : 'Voir'}
+              </span>
+            </button>
           </Link>
         </div>
       </div>
