@@ -20,7 +20,6 @@ export function HowItWorks() {
 
       <div className="max-w-5xl mx-auto">
         <AnimateIn className="text-center mb-16">
-          <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-3">Comment ça marche</p>
           <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
             {t('title')}
           </h2>

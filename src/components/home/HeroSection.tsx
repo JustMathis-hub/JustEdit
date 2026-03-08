@@ -192,7 +192,7 @@ export function HeroSection() {
               />
 
               {/* Product card mockup */}
-              <Link href="/boutique/just-number" className="block">
+              <Link href={"/boutique/just-number" as any} className="block">
                 <div className="relative w-72 bg-[oklch(0.10_0_0)] border border-[oklch(0.19_0_0)] rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-[rgba(139,26,26,0.4)] hover:shadow-[0_12px_40px_rgba(139,26,26,0.15)]">
 
                   {/* Preview area */}
@@ -238,7 +238,7 @@ export function HeroSection() {
                     </div>
                     <div className="je-float-btn" role="button">
                       <span className="je-float-blob" />
-                      <span className="je-float-inner">Acheter maintenant</span>
+                      <span className="je-float-inner">{t('buyNow')}</span>
                     </div>
                   </div>
                 </div>
@@ -246,7 +246,7 @@ export function HeroSection() {
 
               {/* Floating chip */}
               <div className="absolute -top-4 -left-4 bg-[oklch(0.12_0_0)] border border-[oklch(0.22_0_0)] rounded-xl px-3 py-2 shadow-xl">
-                <div className="text-xs font-bold text-white">Accès immédiat</div>
+                <div className="text-xs font-bold text-white">NEW</div>
               </div>
             </div>
           </div>

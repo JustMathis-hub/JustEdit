@@ -10,9 +10,10 @@
   "home": {
     "hero": {
       "headline": "Edit faster.",
-      "subheadline": "Professional MOGRT for Premiere Pro. Built for editors who are tired of wasting time.",
+      "subheadline": "Professional MOGRTs for Premiere Pro. Built for editors who are tired of wasting time.",
       "cta": "Browse the shop",
-      "ctaFree": "Free packs"
+      "ctaFree": "Free packs",
+      "buyNow": "Buy now"
     },
     "featured": {
       "title": "Our packs",
@@ -105,8 +106,8 @@
     "title": "My account",
     "welcome": "Hello, {name}",
     "purchases": "My purchases",
-    "noOrders": "You haven't made any purchases yet.",
-    "shopCta": "Browse the shop",
+    "noOrders": "Your cart is as empty as a timeline without rushes... Let's fix that?",
+    "shopCta": "Show me the goods",
     "table": {
       "product": "Product",
       "date": "Date",

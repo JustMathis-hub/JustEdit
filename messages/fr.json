@@ -12,7 +12,8 @@
       "headline": "Éditez plus vite.",
       "subheadline": "Des MOGRTS professionnels pour Premiere Pro. Conçus pour les monteurs qui en ont marre de perdre du temps.",
       "cta": "Découvrir la boutique",
-      "ctaFree": "Packs gratuits"
+      "ctaFree": "Packs gratuits",
+      "buyNow": "Acheter maintenant"
     },
     "featured": {
       "title": "Nos packs",
@@ -114,8 +115,8 @@
     "title": "Mon compte",
     "welcome": "Bonjour, {name}",
     "purchases": "Mes achats",
-    "noOrders": "Tu n'as pas encore d'achats.",
-    "shopCta": "Voir la boutique",
+    "noOrders": "Ton panier est aussi vide qu'une timeline sans rushes... On change ça ?",
+    "shopCta": "Je fonce voir les pépites",
     "table": {
       "product": "Produit",
       "date": "Date",

@@ -2,7 +2,6 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/shop/ProductCard';
-import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
 
@@ -53,9 +52,12 @@ export async function FeaturedProducts() {
               <p className="text-white font-bold text-lg mb-1">{tShop('title')}</p>
               <p className="text-[oklch(0.5_0.005_0)] text-sm mb-4">{tShop('subtitle')}</p>
               <Link href="/boutique">
-                <Button className="bg-[#8b1a1a] hover:bg-[#a02020] text-white border-0 font-semibold">
-                  {tShop('button')} <ArrowRight size={14} className="ml-1.5" />
-                </Button>
+                <button type="button" className="je-card-btn">
+                  <span className="je-card-blob" />
+                  <span className="je-card-inner">
+                    {tShop('button')} <ArrowRight size={14} />
+                  </span>
+                </button>
               </Link>
             </div>
           </div>

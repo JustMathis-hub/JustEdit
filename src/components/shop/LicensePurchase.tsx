@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, User, Building2, Loader2, Download, ArrowRight } from 'lucide-react';
+import { Check, User, Building2, Loader2, Download, ArrowRight, ShoppingBag } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from '@/i18n/navigation';
 import { toast } from 'sonner';

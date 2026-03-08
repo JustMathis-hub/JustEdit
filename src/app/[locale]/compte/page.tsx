@@ -7,7 +7,6 @@ import { formatPrice, formatDate } from '@/lib/utils';
 import { DownloadButton } from '@/components/compte/DownloadButton';
 import { User, Package, Calendar, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
 import type { Purchase, Product } from '@/types';
 
 export default async function AccountPage() {
@@ -35,8 +34,22 @@ export default async function AccountPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+    <div className="relative min-h-screen pt-24 pb-20 overflow-hidden">
+
+      {/* Background */}
+      <div className="absolute inset-0 bg-[oklch(0.07_0_0)]" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent opacity-60" />
+      <div className="absolute -top-20 -left-20 w-[500px] h-[500px] opacity-15 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.7) 0%, transparent 65%)' }} />
+      <div className="absolute bottom-0 right-0 w-[350px] h-[350px] opacity-10 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.6) 0%, transparent 65%)' }} />
+      <div className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(oklch(0.95 0.005 0) 1px, transparent 1px), linear-gradient(90deg, oklch(0.95 0.005 0) 1px, transparent 1px)`,
+          backgroundSize: '56px 56px',
+        }} />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="mb-10">
           <div className="flex items-center gap-3 mb-2">
@@ -64,9 +77,12 @@ export default async function AccountPage() {
               <Package size={32} className="text-[oklch(0.3_0.005_0)] mx-auto mb-3" />
               <p className="text-[oklch(0.5_0.005_0)] mb-5">{t('noOrders')}</p>
               <Link href="/boutique">
-                <Button className="bg-[#8b1a1a] hover:bg-[#a02020] text-white border-0">
-                  {t('shopCta')} <ArrowRight size={14} className="ml-1.5" />
-                </Button>
+                <button type="button" className="je-card-btn">
+                  <span className="je-card-blob" />
+                  <span className="je-card-inner">
+                    {t('shopCta')} <ArrowRight size={14} />
+                  </span>
+                </button>
               </Link>
             </div>
           ) : (
@@ -125,3 +141,4 @@ export default async function AccountPage() {
     </div>
   );
 }
+
