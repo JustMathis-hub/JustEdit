@@ -71,17 +71,9 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 relative">
-              <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                {/* Simplified bordeaux logo mark */}
-                <rect x="20" y="20" width="60" height="60" rx="8" fill="#8b1a1a"/>
-                <rect x="32" y="32" width="36" height="36" rx="2" fill="#0a0a0a"/>
-                <path d="M20 68 L32 56 L32 80 L20 80 Z" fill="#6b0f1a"/>
-              </svg>
+            <div className="h-8 relative">
+              <Image src="/Logo.png" alt="JustEdit" height={32} width={120} className="h-8 w-auto object-contain" />
             </div>
-            <span className="text-white font-bold text-lg tracking-tight">
-              Just<span className="text-[#8b1a1a]">Edit</span>
-            </span>
           </Link>
 
           {/* Desktop nav */}

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: {
-      default: 'JustEdit — MOGRTS & Templates Premiere Pro',
+      default: 'JustEdit — MOGRT & Templates Premiere Pro',
       template: '%s | JustEdit',
     },
     description: t('subheadline'),

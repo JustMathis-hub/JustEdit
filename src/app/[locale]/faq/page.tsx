@@ -8,16 +8,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const faqItems = [
   {
-    q: 'Qu\'est-ce qu\'un MOGRTS ?',
-    a: 'Un MOGRTS (Motion Graphics Template) est un format de fichier Adobe qui permet d\'importer des animations créées dans After Effects directement dans Premiere Pro via le panneau "Graphiques essentiels". C\'est le format parfait pour gagner du temps en montage.',
+    q: 'Qu\'est-ce qu\'un MOGRT ?',
+    a: 'Un MOGRT (Motion Graphics Template) est un format de fichier Adobe qui permet d\'importer des animations directement dans Premiere Pro via le panneau "Graphiques essentiels". C\'est le format parfait pour gagner du temps en montage.',
   },
   {
-    q: 'Comment installer un MOGRTS ?',
+    q: 'Comment installer un MOGRT ?',
     a: 'Dans Premiere Pro : ouvre le panneau Graphiques essentiels (Fenêtre > Graphiques essentiels), clique sur Parcourir, puis importe le fichier .mogrt. L\'animation apparaît dans ta séquence et tu peux modifier ses paramètres directement dans Premiere Pro.',
   },
   {
     q: 'Quelles versions d\'Adobe sont compatibles ?',
-    a: 'Nos packs sont compatibles avec After Effects 2022 (v22.0) et Premiere Pro 2022 (v22.0) ou supérieur. Pour des raisons de performance, nous recommandons les versions 2023 et 2024.',
+    a: 'Nos packs sont compatibles avec Premiere Pro 2024 et supérieur.',
   },
   {
     q: 'Puis-je utiliser les packs pour des projets clients/commerciaux ?',
@@ -25,7 +25,7 @@ const faqItems = [
   },
   {
     q: 'Puis-je modifier les templates ?',
-    a: 'Oui, les templates sont entièrement personnalisables. Tu peux modifier les couleurs, textes, durées et la plupart des paramètres depuis Premiere Pro. Certains éléments avancés peuvent nécessiter After Effects.',
+    a: 'Oui, les templates sont entièrement personnalisables. Tu peux modifier les couleurs, textes, durées et la plupart des paramètres directement depuis Premiere Pro.',
   },
   {
     q: 'Comment télécharger après achat ?',

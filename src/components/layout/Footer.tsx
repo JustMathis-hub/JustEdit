@@ -1,5 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import Image from 'next/image';
 
 export function Footer() {
   const t = useTranslations('footer');
@@ -11,17 +12,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-7 h-7">
-                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                  <rect x="20" y="20" width="60" height="60" rx="8" fill="#8b1a1a"/>
-                  <rect x="32" y="32" width="36" height="36" rx="2" fill="#0a0a0a"/>
-                  <path d="M20 68 L32 56 L32 80 L20 80 Z" fill="#6b0f1a"/>
-                </svg>
-              </div>
-              <span className="text-white font-bold text-base tracking-tight">
-                Just<span className="text-[#8b1a1a]">Edit</span>
-              </span>
+            <div className="mb-3">
+              <Image src="/Logo.png" alt="JustEdit" width={120} height={32} className="h-8 w-auto object-contain" />
             </div>
             <p className="text-sm text-[oklch(0.45_0.005_0)] max-w-xs leading-relaxed">
               {t('tagline')}

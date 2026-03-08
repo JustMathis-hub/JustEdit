@@ -46,7 +46,7 @@ export default async function MentionsLegalesPage() {
               L'ensemble du contenu de ce site (textes, graphismes, logos, icônes, images, vidéos, sons, et logiciels) est la propriété exclusive de JustEdit, sauf mention contraire. Toute reproduction, distribution, modification, adaptation, retransmission ou publication, même partielle, est strictement interdite sans l'accord exprès et écrit de JustEdit.
             </p>
             <p className="mt-3">
-              Les templates, presets et MOGRTS vendus sur ce site sont protégés par le droit d'auteur. Leur achat confère une <strong className="text-white">licence d'utilisation personnelle et commerciale limitée</strong>, définie dans les CGV.
+              Les templates, presets et MOGRT vendus sur ce site sont protégés par le droit d'auteur. Leur achat confère une <strong className="text-white">licence d'utilisation personnelle et commerciale limitée</strong>, définie dans les CGV.
             </p>
           </section>
 

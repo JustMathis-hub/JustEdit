@@ -32,8 +32,8 @@ export function ProductForm({ product }: Props) {
     price_euros: product ? (product.price_cents / 100).toString() : '25',
     is_free: product?.is_free ?? false,
     is_published: product?.is_published ?? false,
-    category: product?.category ?? 'morgts',
-    software_tags: product?.software_tags ?? ['After Effects', 'Premiere Pro'],
+    category: product?.category ?? 'mogrt',
+    software_tags: product?.software_tags ?? ['Premiere Pro'],
     preview_video_url: product?.preview_video_url ?? '',
     sort_order: product?.sort_order ?? 0,
   });
@@ -194,7 +194,7 @@ export function ProductForm({ product }: Props) {
             onChange={(e) => setFormData((p) => ({ ...p, category: e.target.value as any }))}
             className={`w-full h-9 px-3 rounded-md text-sm ${inputClass}`}
           >
-            <option value="morgts">MOGRTS</option>
+            <option value="mogrt">MOGRT</option>
             <option value="presets">Presets</option>
             <option value="templates">Templates</option>
           </select>

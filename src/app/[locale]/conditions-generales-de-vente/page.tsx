@@ -18,7 +18,7 @@ export default function CGVPage() {
           <section>
             <h2 className="text-lg font-bold text-white mb-3">1. Objet et champ d'application</h2>
             <p>
-              Les présentes Conditions Générales de Vente (ci-après "CGV") régissent les ventes de contenus numériques (templates, presets, MOGRTS) effectuées sur le site <strong className="text-white">justedit.fr</strong> par JustEdit (ci-après "le Vendeur") à tout consommateur ou professionnel (ci-après "l'Acheteur").
+              Les présentes Conditions Générales de Vente (ci-après "CGV") régissent les ventes de contenus numériques (templates, presets, MOGRT) effectuées sur le site <strong className="text-white">justedit.fr</strong> par JustEdit (ci-après "le Vendeur") à tout consommateur ou professionnel (ci-après "l'Acheteur").
             </p>
             <p className="mt-3">
               Toute commande implique l'acceptation sans réserve des présentes CGV. Ces CGV prévalent sur tout autre document, sauf accord écrit préalable du Vendeur.
@@ -28,7 +28,7 @@ export default function CGVPage() {
           <section>
             <h2 className="text-lg font-bold text-white mb-3">2. Produits — Description</h2>
             <p>
-              Les produits vendus sont des <strong className="text-white">contenus numériques dématérialisés</strong> (fichiers .mogrt, .zip) destinés à être utilisés avec Adobe After Effects et Adobe Premiere Pro. Ils ne constituent pas des logiciels autonomes.
+              Les produits vendus sont des <strong className="text-white">contenus numériques dématérialisés</strong> (fichiers .mogrt, .zip) destinés à être utilisés avec Adobe Premiere Pro. Ils ne constituent pas des logiciels autonomes.
             </p>
             <p className="mt-3">
               Les descriptions, aperçus et captures d'écran sont fournis à titre indicatif. Le Vendeur s'efforce de représenter les produits de manière fidèle.
@@ -93,7 +93,7 @@ export default function CGVPage() {
           <section>
             <h2 className="text-lg font-bold text-white mb-3">8. Garantie et responsabilité</h2>
             <p>
-              Les produits sont livrés "en l'état". Le Vendeur garantit que les fichiers sont conformes à leur description au moment de la vente. Aucune garantie n'est accordée quant à la compatibilité avec toutes les versions futures d'After Effects ou Premiere Pro.
+              Les produits sont livrés "en l'état". Le Vendeur garantit que les fichiers sont conformes à leur description au moment de la vente. Aucune garantie n'est accordée quant à la compatibilité avec toutes les versions futures de Premiere Pro.
             </p>
             <p className="mt-3">
               En cas de fichier corrompu ou non-conforme à la description, l'Acheteur peut contacter support@justedit.fr pour obtenir un remplacement ou un remboursement, à l'appréciation du Vendeur.

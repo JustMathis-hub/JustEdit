@@ -244,14 +244,9 @@ export function HeroSection() {
                 </div>
               </Link>
 
-              {/* Floating chips */}
+              {/* Floating chip */}
               <div className="absolute -top-4 -left-4 bg-[oklch(0.12_0_0)] border border-[oklch(0.22_0_0)] rounded-xl px-3 py-2 shadow-xl">
-                <div className="text-[10px] text-[oklch(0.45_0.005_0)] font-medium">Accès immédiat</div>
-                <div className="text-xs font-bold text-white mt-0.5">après paiement</div>
-              </div>
-              <div className="absolute -bottom-3 -right-3 bg-[oklch(0.12_0_0)] border border-[rgba(139,26,26,0.3)] rounded-xl px-3 py-2 shadow-xl">
-                <div className="text-[10px] text-[#e07070] font-semibold uppercase tracking-wider">Téléchargeable</div>
-                <div className="text-xs font-bold text-white mt-0.5">.mogrt · .zip</div>
+                <div className="text-xs font-bold text-white">Accès immédiat</div>
               </div>
             </div>
           </div>

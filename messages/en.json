@@ -10,7 +10,7 @@
   "home": {
     "hero": {
       "headline": "Edit faster.",
-      "subheadline": "Professional MOGRTs for After Effects & Premiere Pro. Built for editors who are tired of wasting time.",
+      "subheadline": "Professional MOGRT for Premiere Pro. Built for editors who are tired of wasting time.",
       "cta": "Browse the shop",
       "ctaFree": "Free packs"
     },
@@ -22,7 +22,7 @@
       "title": "How it works",
       "step1": { "title": "Buy your pack", "desc": "Secure payment via Stripe" },
       "step2": { "title": "Download", "desc": "Instant access from your account" },
-      "step3": { "title": "Import & edit", "desc": "Works with After Effects & Premiere Pro" }
+      "step3": { "title": "Import & edit", "desc": "Compatible Premiere Pro" }
     },
     "cta": {
       "title": "Ready to save time?",
@@ -40,7 +40,7 @@
     "compatibility": "Compatible with",
     "category": {
       "all": "All",
-      "morgts": "MOGRTs",
+      "mogrt": "MOGRT",
       "presets": "Presets",
       "templates": "Templates"
     },
@@ -63,9 +63,9 @@
     "faq": {
       "title": "Frequently asked questions",
       "q1": "How do I install a MOGRT?",
-      "a1": "Open After Effects, go to Window > Essential Properties, click the + icon and import the .mogrt file. In Premiere Pro, you can use it directly from the Essential Graphics panel.",
+      "a1": "In Premiere Pro, open the Essential Graphics panel (Window > Essential Graphics), click Browse and import the .mogrt file.",
       "q2": "Which versions are compatible?",
-      "a2": "After Effects 2022 (v22.0) and above, Premiere Pro 2022 (v22.0) and above.",
+      "a2": "Premiere Pro 2024 and above.",
       "q3": "Can I use these packs for commercial projects?",
       "a3": "Yes, the included license covers commercial use for personal or client projects."
     }
@@ -169,7 +169,7 @@
     "faq": "FAQ",
     "contact": "Contact",
     "rights": "© {year} JustEdit. All rights reserved.",
-    "tagline": "Edit faster, deliver more."
+    "tagline": "Faster, more profitable."
   },
   "common": {
     "loading": "Loading...",

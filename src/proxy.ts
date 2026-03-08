@@ -7,7 +7,7 @@ const intlMiddleware = createMiddleware(routing);
 const protectedPaths = ['/compte', '/account'];
 const adminPaths = ['/admin'];
 
-export async function middleware(request: NextRequest) {
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Admin routes — vérification simple via cookie de session Supabase

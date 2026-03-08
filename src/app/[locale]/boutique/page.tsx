@@ -18,12 +18,14 @@ export default async function ShopPage() {
   const t = await getTranslations('shop');
 
   const supabase = await createClient();
-  const { data: products } = await supabase
+  const { data: products, error: productsError } = await supabase
     .from('products')
     .select('*')
     .eq('is_published', true)
     .eq('is_free', false)
     .order('sort_order', { ascending: true });
+
+  if (productsError) console.error('[Boutique] products error:', JSON.stringify(productsError));
 
   const { data: freePacks } = await supabase
     .from('products')

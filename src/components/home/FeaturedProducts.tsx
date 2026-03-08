@@ -1,4 +1,4 @@
-import { useTranslations, useLocale } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/shop/ProductCard';
@@ -7,8 +7,8 @@ import { ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
 
 export async function FeaturedProducts() {
-  const t = useTranslations('home.featured');
-  const tShop = useTranslations('home.cta');
+  const t = await getTranslations('home.featured');
+  const tShop = await getTranslations('home.cta');
 
   const supabase = await createClient();
   const { data: products } = await supabase

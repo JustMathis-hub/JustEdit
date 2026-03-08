@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation';
-import { getTranslations, getLocale } from 'next-intl/server';
+import { ParticlesBg } from '@/components/ui/ParticlesBg';
+import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
-import { formatPrice } from '@/lib/utils';
-import { BuyNowButton } from '@/components/shop/BuyNowButton';
-import { Badge } from '@/components/ui/badge';
-import { Check, Film, FileArchive, Monitor, ChevronDown } from 'lucide-react';
+import { LicensePurchase } from '@/components/shop/LicensePurchase';
+import { Check, Film, ChevronDown } from 'lucide-react';
 import type { Metadata } from 'next';
 import type { Product } from '@/types';
 
@@ -26,7 +25,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductPage({ params }: Props) {
   const { slug, locale } = await params;
   const t = await getTranslations('product');
-  const tShop = await getTranslations('shop');
 
   const supabase = await createClient();
   const { data: product } = await supabase
@@ -54,7 +52,6 @@ export default async function ProductPage({ params }: Props) {
 
   const name = locale === 'fr' ? product.name_fr : product.name_en;
   const description = locale === 'fr' ? product.description_fr : product.description_en;
-  const price = product.is_free ? tShop('free') : formatPrice(product.price_cents, locale);
 
   const faqs = [
     { q: t('faq.q1'), a: t('faq.a1') },
@@ -63,8 +60,56 @@ export default async function ProductPage({ params }: Props) {
   ];
 
   return (
-    <div className="min-h-screen pt-20 pb-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <div className="min-h-screen pt-20 pb-20 relative overflow-hidden">
+
+      {/* ── Interactive particle background ── */}
+      <ParticlesBg />
+
+      {/* ── Static background layers ── */}
+      {/* Top centre bordeaux glow — strong */}
+      <div
+        className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 w-[900px] h-[500px]"
+        style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(139,26,26,0.45) 0%, rgba(139,26,26,0.12) 40%, transparent 70%)' }}
+      />
+      {/* Dot grid */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
+      {/* Subtle diagonal scan lines */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute h-px w-[200%] -left-1/2"
+            style={{
+              top: `${8 + i * 13}%`,
+              background: 'linear-gradient(90deg, transparent 0%, rgba(139,26,26,0.15) 30%, rgba(255,255,255,0.04) 50%, rgba(139,26,26,0.15) 70%, transparent 100%)',
+              transform: 'rotate(-6deg)',
+            }}
+          />
+        ))}
+      </div>
+      {/* Left red glow */}
+      <div
+        className="pointer-events-none absolute top-24 -left-24 w-96 h-96"
+        style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.2) 0%, transparent 70%)' }}
+      />
+      {/* Right faint glow */}
+      <div
+        className="pointer-events-none absolute top-40 -right-24 w-72 h-72"
+        style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.12) 0%, transparent 70%)' }}
+      />
+      {/* Bottom fade */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 right-0 h-48"
+        style={{ background: 'linear-gradient(to top, rgba(10,10,10,0.9), transparent)' }}
+      />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 
         {/* Hero product section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-10">
@@ -108,7 +153,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="flex flex-col">
             <div className="mb-2">
               <span className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest">
-                {product.category.toUpperCase()}
+                {product.category === 'mogrt' ? 'MOGRT' : product.category.toUpperCase()}
               </span>
             </div>
 
@@ -126,13 +171,18 @@ export default async function ProductPage({ params }: Props) {
                 {t('includes')}
               </p>
               <ul className="space-y-2">
-                {[
-                  'Fichier .mogrt',
-                  'Compatible After Effects 2022+',
-                  'Compatible Premiere Pro 2022+',
-                  'Licence commerciale incluse',
-                  'Mises à jour gratuites',
-                ].map((item) => (
+                {(locale === 'fr'
+                  ? [
+                      'Fichier .mogrt',
+                      'Compatible Premiere Pro 2024+',
+                      'Mises à jour gratuites',
+                    ]
+                  : [
+                      '.mogrt file',
+                      'Compatible with Premiere Pro 2024+',
+                      'Free updates',
+                    ]
+                ).map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm text-[oklch(0.7_0.005_0)]">
                     <Check size={14} className="text-[#8b1a1a] shrink-0" />
                     {item}
@@ -141,30 +191,16 @@ export default async function ProductPage({ params }: Props) {
               </ul>
             </div>
 
-            {/* Price + CTA */}
-            <div className="mt-auto">
-              <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-4xl font-black text-white">{price}</span>
-                {!product.is_free && (
-                  <span className="text-sm text-[oklch(0.45_0.005_0)]">TTC</span>
-                )}
-              </div>
-
-              <BuyNowButton
-                productId={product.id}
-                productSlug={product.slug}
-                isFree={product.is_free}
-                alreadyPurchased={!!purchase}
-                purchaseId={purchase?.id}
-                label={
-                  purchase
-                    ? t('alreadyPurchased')
-                    : product.is_free
-                    ? t('claimFree')
-                    : t('buyNow', { price })
-                }
-              />
-            </div>
+            {/* License selector + CTA */}
+            <LicensePurchase
+              productId={product.id}
+              productSlug={product.slug}
+              isFree={product.is_free}
+              priceCents={product.price_cents}
+              locale={locale}
+              alreadyPurchased={!!purchase}
+              purchaseId={purchase?.id}
+            />
           </div>
         </div>
 
@@ -193,3 +229,4 @@ export default async function ProductPage({ params }: Props) {
     </div>
   );
 }
+

@@ -27,7 +27,7 @@ export interface Product {
   file_path: string | null;
   file_size_bytes: number | null;
   software_tags: string[];
-  category: 'morgts' | 'presets' | 'templates';
+  category: 'mogrt' | 'presets' | 'templates';
   sort_order: number;
   created_at: string;
   updated_at: string;
