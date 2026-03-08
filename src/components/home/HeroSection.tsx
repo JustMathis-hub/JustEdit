@@ -7,7 +7,7 @@ export function HeroSection() {
   const t = useTranslations('home.hero');
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative flex items-center overflow-hidden">
 
       {/* ── Background ── */}
       <div className="absolute inset-0 bg-[oklch(0.07_0_0)]" />
