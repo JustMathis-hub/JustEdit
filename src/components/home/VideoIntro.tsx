@@ -8,6 +8,14 @@ export function VideoIntro() {
   const [scrollY, setScrollY] = useState(0);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
+  /* ── Check if video already loaded (cached) ── */
+  useEffect(() => {
+    const vid = videoRef.current;
+    if (vid && vid.readyState >= 3) {
+      setVideoLoaded(true);
+    }
+  }, []);
+
   /* ── Parallax on scroll ── */
   useEffect(() => {
     function onScroll() {
@@ -40,10 +48,10 @@ export function VideoIntro() {
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ opacity: videoLoaded ? 0.45 : 0 }}
+          style={{ opacity: videoLoaded ? 0.80 : 0 }}
           onLoadedData={() => setVideoLoaded(true)}
         >
-          <source src="/hero-video.mp4" type="video/mp4" />
+          <source src="/api/media/hero-video.mp4" type="video/mp4" />
         </video>
 
         {/* ── Fallback background (shown when video not loaded) ── */}
