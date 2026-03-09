@@ -8,6 +8,11 @@ import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
 import { useState } from 'react';
 
+const TAGLINES: Record<string, string> = {
+  'just-number': 'Compteur · Titre · Animation',
+  'just-text': 'Texte · Titre · Motion',
+};
+
 interface Props {
   product: Product;
   purchased?: boolean;
@@ -20,16 +25,26 @@ export function ProductCard({ product, purchased, purchaseId }: Props) {
   const [imgError, setImgError] = useState(false);
 
   const name = locale === 'fr' ? product.name_fr : product.name_en;
+  const tagline = TAGLINES[product.slug];
   const price = product.is_free
     ? t('free')
     : formatPrice(product.price_cents, locale);
 
   return (
     <div className="group relative bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl overflow-hidden card-hover cursor-pointer">
-      {/* Thumbnail */}
+      {/* Thumbnail / Video */}
       <Link href={`/boutique/${product.slug}` as any}>
         <div className="relative aspect-video bg-[oklch(0.09_0_0)] overflow-hidden">
-          {product.thumbnail_url && !imgError ? (
+          {product.preview_video_url ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              src={product.preview_video_url}
+            />
+          ) : product.thumbnail_url && !imgError ? (
             <Image
               src={product.thumbnail_url}
               alt={name}
@@ -82,12 +97,17 @@ export function ProductCard({ product, purchased, purchaseId }: Props) {
         )}
 
         <Link href={`/boutique/${product.slug}` as any}>
-          <h3 className="font-bold text-white text-sm mb-1 group-hover:text-[#e07070] transition-colors line-clamp-2">
+          <h3 className="font-bold text-white text-sm mb-0.5 group-hover:text-[#e07070] transition-colors line-clamp-2">
             {name}
           </h3>
         </Link>
+        {tagline && (
+          <p className="text-[11px] text-[oklch(0.42_0.005_0)] mt-0.5">
+            {tagline}
+          </p>
+        )}
 
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-2">
           <span className="text-white font-black text-base">
             {price}
           </span>

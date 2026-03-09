@@ -130,7 +130,7 @@ export function VideoIntro() {
           className="mt-4 text-[oklch(0.45_0.005_0)] text-sm sm:text-base tracking-[0.25em] uppercase font-medium"
           style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
         >
-          Éditez plus vite
+          Plus rapide, plus rentable
         </p>
         {/* Accent line under text */}
         <div className="mt-6 h-px w-16 bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent opacity-60" />
