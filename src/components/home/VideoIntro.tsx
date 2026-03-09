@@ -51,7 +51,7 @@ export function VideoIntro() {
           style={{ opacity: videoLoaded ? 0.80 : 0 }}
           onLoadedData={() => setVideoLoaded(true)}
         >
-          <source src="/api/media/hero-video.mp4" type="video/mp4" />
+          <source src="/hero-video.mp4" type="video/mp4" />
         </video>
 
         {/* ── Fallback background (shown when video not loaded) ── */}
