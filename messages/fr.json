@@ -58,7 +58,10 @@
       "all": "Tous les packs",
       "free": "Gratuits",
       "paid": "Payants"
-    }
+    },
+    "like": "J'aime",
+    "unlike": "Je n'aime plus",
+    "loginToLike": "Connecte-toi pour liker"
   },
   "product": {
     "includes": "Ce pack contient",

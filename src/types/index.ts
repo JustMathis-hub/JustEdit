@@ -55,6 +55,13 @@ export interface Download {
   downloaded_at: string;
 }
 
+export interface ProductLike {
+  id: string;
+  user_id: string;
+  product_id: string;
+  created_at: string;
+}
+
 export interface ProductWithPurchase extends Product {
   purchased?: boolean;
   purchase_id?: string;

@@ -49,7 +49,10 @@
       "all": "All packs",
       "free": "Free",
       "paid": "Paid"
-    }
+    },
+    "like": "Like",
+    "unlike": "Unlike",
+    "loginToLike": "Log in to like"
   },
   "product": {
     "includes": "This pack includes",
