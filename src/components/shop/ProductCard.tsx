@@ -7,6 +7,7 @@ import { Play } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
 import { useState } from 'react';
+import { HeartLike } from './HeartLike';
 
 const TAGLINES: Record<string, string> = {
   'just-number': 'Compteur · Titre · Animation',
@@ -19,9 +20,10 @@ interface Props {
   product: Product;
   purchased?: boolean;
   purchaseId?: string;
+  likeCount?: number;
 }
 
-export function ProductCard({ product, purchased, purchaseId }: Props) {
+export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: Props) {
   const locale = useLocale();
   const t = useTranslations('shop');
   const [imgError, setImgError] = useState(false);
@@ -148,6 +150,16 @@ export function ProductCard({ product, purchased, purchaseId }: Props) {
               <span className="px-2 py-0.5 text-xs font-semibold bg-[rgba(139,26,26,0.9)] text-white rounded-md">
                 {t('free')}
               </span>
+            </div>
+          )}
+
+          {/* Heart like button — bottom right */}
+          {!comingSoon && (
+            <div className="absolute bottom-2.5 right-2.5 z-10">
+              <HeartLike
+                productId={product.id}
+                initialLikeCount={likeCount}
+              />
             </div>
           )}
         </div>

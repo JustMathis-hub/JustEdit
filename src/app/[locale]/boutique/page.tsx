@@ -34,6 +34,24 @@ export default async function ShopPage() {
     .eq('is_free', true)
     .order('sort_order', { ascending: true });
 
+  // Fetch like counts grouped by product_id
+  const allProducts = [...(products ?? []), ...(freePacks ?? [])];
+  const productIds = allProducts.map((p) => p.id);
+
+  const likeCountMap: Record<string, number> = {};
+  if (productIds.length > 0) {
+    const { data: likeCounts } = await supabase
+      .from('product_likes')
+      .select('product_id')
+      .in('product_id', productIds);
+
+    if (likeCounts) {
+      for (const row of likeCounts) {
+        likeCountMap[row.product_id] = (likeCountMap[row.product_id] ?? 0) + 1;
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-20">
       {/* Header */}
@@ -62,7 +80,7 @@ export default async function ShopPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {(products as Product[]).map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} likeCount={likeCountMap[product.id] ?? 0} />
             ))}
           </div>
         )}
@@ -78,7 +96,7 @@ export default async function ShopPage() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {(freePacks as Product[]).map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard key={product.id} product={product} likeCount={likeCountMap[product.id] ?? 0} />
               ))}
             </div>
           </div>

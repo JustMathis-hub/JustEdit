@@ -22,6 +22,22 @@ export async function FeaturedProducts() {
     return null;
   }
 
+  // Fetch like counts
+  const productIds = products.map((p) => p.id);
+  const likeCountMap: Record<string, number> = {};
+  if (productIds.length > 0) {
+    const { data: likeCounts } = await supabase
+      .from('product_likes')
+      .select('product_id')
+      .in('product_id', productIds);
+
+    if (likeCounts) {
+      for (const row of likeCounts) {
+        likeCountMap[row.product_id] = (likeCountMap[row.product_id] ?? 0) + 1;
+      }
+    }
+  }
+
   return (
     <section className="py-20 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
@@ -42,7 +58,7 @@ export async function FeaturedProducts() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {(products as Product[]).map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} likeCount={likeCountMap[product.id] ?? 0} />
           ))}
         </div>
 
