@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
       await resend.emails.send({
         from: `JustEdit Contact <noreply@justedit.fr>`,
-        to: process.env.CONTACT_EMAIL ?? 'contact@justedit.fr',
+        to: process.env.CONTACT_EMAIL ?? 'justmathis.contact@gmail.com',
         subject: `[JustEdit] ${subject}`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">

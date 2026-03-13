@@ -13,11 +13,16 @@
       "subheadline": "Professional MOGRTs for Premiere Pro. Built for editors who are tired of wasting time.",
       "cta": "Browse the shop",
       "ctaFree": "Free packs",
-      "buyNow": "Buy now"
+      "buyNow": "Buy now",
+      "packsAvailable": "Packs available",
+      "satisfied": "Satisfaction guaranteed",
+      "compatible": "Compatible",
+      "cardTagline": "Counter · Title · Animation"
     },
     "featured": {
       "title": "Our packs",
-      "subtitle": "Ready-to-use template selection"
+      "subtitle": "Ready-to-use template selection",
+      "viewAll": "View all"
     },
     "howItWorks": {
       "title": "How it works",
@@ -29,16 +34,24 @@
       "title": "Ready to save time?",
       "subtitle": "Join hundreds of editors using JustEdit.",
       "button": "Browse the shop"
-    }
+    },
+    "videoTagline": "Faster, more profitable",
+    "scroll": "Scroll"
   },
   "shop": {
     "title": "Shop",
     "subtitle": "Professional templates & presets",
     "free": "Free",
+    "freeSection": "Free",
+    "freePacks": "Free packs",
     "buyNow": "Buy — {price}",
     "preview": "Preview",
+    "view": "View",
     "noProducts": "No products available yet.",
+    "noFreePacks": "No free packs available yet.",
     "compatibility": "Compatible with",
+    "comingSoon": "Coming soon",
+    "comingSoonLong": "Coming soon",
     "category": {
       "all": "All",
       "mogrt": "MOGRT",
@@ -64,6 +77,9 @@
     "free": "Free",
     "claimFree": "Get for free",
     "addedToCart": "Added!",
+    "mogrtFile": ".mogrt file",
+    "compatiblePr": "Compatible Premiere Pro 2024+",
+    "freeUpdates": "Free updates",
     "faq": {
       "title": "Frequently asked questions",
       "q1": "How do I install a MOGRT?",
@@ -73,6 +89,16 @@
       "q3": "Can I use these packs for commercial projects?",
       "a3": "Yes, the included license covers commercial use for personal or client projects."
     }
+  },
+  "license": {
+    "chooseLicense": "Choose a license",
+    "popular": "Popular",
+    "personal": "Personal",
+    "commercial": "Commercial",
+    "vat": "Incl. tax",
+    "buy": "Buy",
+    "personalFeatures": ["Personal use", "YouTube & social media", "1 user", "Free updates"],
+    "commercialFeatures": ["Commercial & client use", "Agencies & companies", "Multi-user"]
   },
   "auth": {
     "login": {
@@ -84,7 +110,8 @@
       "forgotPassword": "Forgot password?",
       "noAccount": "No account yet?",
       "register": "Create an account",
-      "error": "Invalid email or password."
+      "error": "Invalid email or password.",
+      "emailPlaceholder": "you@example.com"
     },
     "register": {
       "title": "Create an account",
@@ -92,17 +119,19 @@
       "fullName": "Full name",
       "email": "Email",
       "password": "Password",
+      "passwordMin": "Min. 8 characters",
       "confirmPassword": "Confirm password",
       "submit": "Create my account",
       "hasAccount": "Already have an account?",
       "login": "Sign in",
-      "terms": "I agree to the {cgv} and the {privacy}. I expressly waive my right of withdrawal for digital content downloaded immediately.",
-      "cgv": "Terms of Sale",
-      "privacy": "Privacy Policy",
+      "termsRequired": "You must accept the Terms of Sale to continue.",
+      "terms": "I agree to the <cgvLink>Terms of Sale</cgvLink> and the <privacyLink>Privacy Policy</privacyLink>. I expressly waive my right of withdrawal for digital content downloaded immediately.",
       "error": "Something went wrong. Please try again.",
       "passwordMismatch": "Passwords do not match.",
       "successTitle": "Account created!",
-      "successDesc": "Check your email to confirm your account."
+      "successDesc": "Check your email to confirm your account.",
+      "namePlaceholder": "John Doe",
+      "emailPlaceholder": "you@example.com"
     }
   },
   "account": {
@@ -124,14 +153,17 @@
       "refunded": "Refunded"
     },
     "download": "Download",
-    "downloading": "Preparing..."
+    "downloading": "Preparing...",
+    "downloadError": "Download failed. Please try again."
   },
   "checkout": {
     "success": {
       "title": "Payment successful!",
       "subtitle": "Thank you for your purchase.",
       "downloadNow": "Download now",
-      "goToAccount": "View my purchases"
+      "goToAccount": "View my purchases",
+      "yourPurchase": "Your purchase",
+      "goToShop": "Browse the shop"
     },
     "cancel": {
       "title": "Payment cancelled",
@@ -144,22 +176,51 @@
     "title": "Free Packs",
     "subtitle": "Resources offered by JustEdit",
     "download": "Download for free",
-    "loginRequired": "Log in to download"
+    "loginRequired": "Log in to download",
+    "noPacks": "No free packs available at the moment."
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "subtitle": "Everything you need to know about JustEdit"
+    "subtitle": "Everything you need to know about JustEdit",
+    "contactSupport": "Contact support",
+    "notFound": "Didn't find your answer?",
+    "helpText": "We're here to help.",
+    "support": "Support",
+    "q1": "What is a MOGRT?",
+    "a1": "A MOGRT (Motion Graphics Template) is an Adobe file format that lets you import animations directly into Premiere Pro via the Essential Graphics panel. It's the perfect format to save time in editing.",
+    "q2": "How do I install a MOGRT?",
+    "a2": "In Premiere Pro: open the Essential Graphics panel (Window > Essential Graphics), click Browse, then import the .mogrt file.",
+    "q3": "Which Adobe versions are compatible?",
+    "a3": "Our packs are compatible with Premiere Pro 2024 and above.",
+    "q4": "Can I use the packs for client/commercial projects?",
+    "a4": "Yes. The license included with each purchase covers use in personal and commercial projects (YouTube, social media, client videos, etc.). Resale or redistribution of the files is prohibited.",
+    "q5": "Can I modify the templates?",
+    "a5": "Yes, the templates are fully customizable. You can modify colors, text, durations, and most parameters directly from Premiere Pro.",
+    "q6": "How do I download after purchase?",
+    "a6": "After payment, you are redirected to a confirmation page with a download button. Your purchase is also accessible from your account area.",
+    "q7": "I can't download, what should I do?",
+    "a7": "Download links expire after 15 minutes but you can generate a new one from your account. If the problem persists, contact us at justmathis.contact@gmail.com.",
+    "q8": "Can I get a refund?",
+    "a8": "Downloaded digital content is non-refundable. In case of a verified technical issue, contact us and we'll find a solution."
   },
   "contact": {
     "title": "Contact",
     "subtitle": "Got a question? We're here.",
+    "section": "Support",
     "name": "Name",
     "email": "Email",
     "subject": "Subject",
     "message": "Message",
     "submit": "Send",
     "success": "Message sent! We'll reply within 24h.",
-    "error": "Failed to send. Please try again."
+    "successTitle": "Message sent!",
+    "error": "Failed to send. Please try again.",
+    "responseTime": "Response time",
+    "responseDelay": "Within 24h on business days",
+    "namePlaceholder": "John Doe",
+    "emailPlaceholder": "you@example.com",
+    "subjectPlaceholder": "Download issue...",
+    "messagePlaceholder": "Describe your issue or question..."
   },
   "legal": {
     "mentions": "Legal Notice",
@@ -172,8 +233,11 @@
     "privacy": "Privacy",
     "faq": "FAQ",
     "contact": "Contact",
+    "support": "Support",
+    "legalSection": "Legal",
     "rights": "© {year} JustEdit. All rights reserved.",
-    "tagline": "Faster, more profitable."
+    "tagline": "Faster, more profitable.",
+    "securePayments": "Secure payments via Stripe"
   },
   "common": {
     "loading": "Loading...",

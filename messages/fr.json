@@ -13,11 +13,16 @@
       "subheadline": "Des MOGRTS professionnels pour Premiere Pro. Conçus pour les monteurs qui en ont marre de perdre du temps.",
       "cta": "Découvrir la boutique",
       "ctaFree": "Packs gratuits",
-      "buyNow": "Acheter maintenant"
+      "buyNow": "Acheter maintenant",
+      "packsAvailable": "Packs disponibles",
+      "satisfied": "Satisfait ou remboursé",
+      "compatible": "Compatible",
+      "cardTagline": "Compteur · Titre · Animation"
     },
     "featured": {
       "title": "Nos packs",
-      "subtitle": "Sélection de templates prêts à l'emploi"
+      "subtitle": "Sélection de templates prêts à l'emploi",
+      "viewAll": "Voir tout"
     },
     "howItWorks": {
       "title": "Comment ça marche ?",
@@ -38,16 +43,24 @@
       "title": "Prêt à gagner du temps ?",
       "subtitle": "Rejoins des centaines de monteurs qui utilisent JustEdit.",
       "button": "Voir la boutique"
-    }
+    },
+    "videoTagline": "Plus rapide, plus rentable",
+    "scroll": "Scroll"
   },
   "shop": {
     "title": "Boutique",
     "subtitle": "Templates & presets professionnels",
     "free": "Gratuit",
+    "freeSection": "Gratuit",
+    "freePacks": "Packs gratuits",
     "buyNow": "Acheter — {price}",
     "preview": "Aperçu",
+    "view": "Voir",
     "noProducts": "Aucun produit disponible pour le moment.",
+    "noFreePacks": "Aucun pack gratuit disponible pour le moment.",
     "compatibility": "Compatible avec",
+    "comingSoon": "Bientôt dispo",
+    "comingSoonLong": "Bientôt disponible",
     "category": {
       "all": "Tous",
       "mogrt": "MOGRT",
@@ -73,6 +86,9 @@
     "free": "Gratuit",
     "claimFree": "Obtenir gratuitement",
     "addedToCart": "Ajouté !",
+    "mogrtFile": "Fichier .mogrt",
+    "compatiblePr": "Compatible Premiere Pro 2024+",
+    "freeUpdates": "Mises à jour gratuites",
     "faq": {
       "title": "Questions fréquentes",
       "q1": "Comment installer un MOGRT ?",
@@ -82,6 +98,16 @@
       "q3": "Puis-je utiliser ces packs pour des projets commerciaux ?",
       "a3": "Oui, la licence incluse couvre l'usage commercial pour un usage personnel ou client."
     }
+  },
+  "license": {
+    "chooseLicense": "Choisir une licence",
+    "popular": "Populaire",
+    "personal": "Personnelle",
+    "commercial": "Commerciale",
+    "vat": "TTC",
+    "buy": "Acheter",
+    "personalFeatures": ["Usage personnel", "YouTube & réseaux sociaux", "1 utilisateur", "Mises à jour gratuites"],
+    "commercialFeatures": ["Usage commercial & clients", "Agences & entreprises", "Multi-utilisateurs"]
   },
   "auth": {
     "login": {
@@ -93,7 +119,8 @@
       "forgotPassword": "Mot de passe oublié ?",
       "noAccount": "Pas encore de compte ?",
       "register": "Créer un compte",
-      "error": "Email ou mot de passe incorrect."
+      "error": "Email ou mot de passe incorrect.",
+      "emailPlaceholder": "vous@exemple.com"
     },
     "register": {
       "title": "Créer un compte",
@@ -101,17 +128,19 @@
       "fullName": "Nom complet",
       "email": "Email",
       "password": "Mot de passe",
+      "passwordMin": "Min. 8 caractères",
       "confirmPassword": "Confirmer le mot de passe",
       "submit": "Créer mon compte",
       "hasAccount": "Déjà un compte ?",
       "login": "Se connecter",
-      "terms": "J'accepte les {cgv} et la {privacy}. Je renonce expressément à mon droit de rétractation pour les contenus numériques téléchargés immédiatement (art. L221-28 Code de la consommation).",
-      "cgv": "CGV",
-      "privacy": "politique de confidentialité",
+      "termsRequired": "Tu dois accepter les CGV pour continuer.",
+      "terms": "J'accepte les <cgvLink>CGV</cgvLink> et la <privacyLink>politique de confidentialité</privacyLink>. Je renonce expressément à mon droit de rétractation pour les contenus numériques téléchargés immédiatement (art. L221-28 Code de la conso.).",
       "error": "Une erreur est survenue. Réessaie.",
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "successTitle": "Compte créé !",
-      "successDesc": "Vérifie ton email pour confirmer ton compte."
+      "successDesc": "Vérifie ton email pour confirmer ton compte.",
+      "namePlaceholder": "Jean Dupont",
+      "emailPlaceholder": "vous@exemple.com"
     }
   },
   "account": {
@@ -133,14 +162,17 @@
       "refunded": "Remboursé"
     },
     "download": "Télécharger",
-    "downloading": "Préparation..."
+    "downloading": "Préparation...",
+    "downloadError": "Erreur lors du téléchargement. Réessaie."
   },
   "checkout": {
     "success": {
       "title": "Paiement réussi !",
       "subtitle": "Merci pour ton achat.",
       "downloadNow": "Télécharger maintenant",
-      "goToAccount": "Voir mes achats"
+      "goToAccount": "Voir mes achats",
+      "yourPurchase": "Ton achat",
+      "goToShop": "Voir la boutique"
     },
     "cancel": {
       "title": "Paiement annulé",
@@ -153,22 +185,51 @@
     "title": "Packs Gratuits",
     "subtitle": "Des ressources offertes par JustEdit",
     "download": "Télécharger gratuitement",
-    "loginRequired": "Connecte-toi pour télécharger"
+    "loginRequired": "Connecte-toi pour télécharger",
+    "noPacks": "Aucun pack gratuit disponible pour le moment."
   },
   "faq": {
     "title": "Questions fréquentes",
-    "subtitle": "Tout ce que tu dois savoir sur JustEdit"
+    "subtitle": "Tout ce que tu dois savoir sur JustEdit",
+    "contactSupport": "Contacter le support",
+    "notFound": "Tu n'as pas trouvé ta réponse ?",
+    "helpText": "On est là pour t'aider.",
+    "support": "Support",
+    "q1": "Qu'est-ce qu'un MOGRT ?",
+    "a1": "Un MOGRT (Motion Graphics Template) est un format de fichier Adobe qui permet d'importer des animations directement dans Premiere Pro via le panneau \"Graphiques essentiels\". C'est le format parfait pour gagner du temps en montage.",
+    "q2": "Comment installer un MOGRT ?",
+    "a2": "Dans Premiere Pro : ouvre le panneau Graphiques essentiels (Fenêtre > Graphiques essentiels), clique sur Parcourir, puis importe le fichier .mogrt.",
+    "q3": "Quelles versions d'Adobe sont compatibles ?",
+    "a3": "Nos packs sont compatibles avec Premiere Pro 2024 et supérieur.",
+    "q4": "Puis-je utiliser les packs pour des projets clients/commerciaux ?",
+    "a4": "Oui. La licence incluse avec chaque achat couvre l'utilisation dans des projets personnels et commerciaux (YouTube, réseaux sociaux, vidéos clients, etc.). La revente ou redistribution des fichiers est interdite.",
+    "q5": "Puis-je modifier les templates ?",
+    "a5": "Oui, les templates sont entièrement personnalisables. Tu peux modifier les couleurs, textes, durées et la plupart des paramètres directement depuis Premiere Pro.",
+    "q6": "Comment télécharger après achat ?",
+    "a6": "Après paiement, tu es redirigé vers une page de confirmation avec un bouton de téléchargement. Ton achat est également accessible depuis ton espace membre.",
+    "q7": "Je n'arrive pas à télécharger, que faire ?",
+    "a7": "Les liens de téléchargement expirent après 15 minutes mais tu peux en générer un nouveau depuis ton espace membre. Si le problème persiste, contacte-nous à justmathis.contact@gmail.com.",
+    "q8": "Puis-je obtenir un remboursement ?",
+    "a8": "Les contenus numériques téléchargés ne sont pas remboursables. En cas de problème technique avéré, contacte-nous et nous trouverons une solution."
   },
   "contact": {
     "title": "Contact",
     "subtitle": "Une question ? On est là.",
+    "section": "Support",
     "name": "Nom",
     "email": "Email",
     "subject": "Sujet",
     "message": "Message",
     "submit": "Envoyer",
     "success": "Message envoyé ! On te répond dans les 24h.",
-    "error": "Erreur lors de l'envoi. Réessaie."
+    "successTitle": "Message envoyé !",
+    "error": "Erreur lors de l'envoi. Réessaie.",
+    "responseTime": "Délai de réponse",
+    "responseDelay": "Sous 24h en jours ouvrés",
+    "namePlaceholder": "Jean Dupont",
+    "emailPlaceholder": "vous@exemple.com",
+    "subjectPlaceholder": "Problème de téléchargement...",
+    "messagePlaceholder": "Décris ton problème ou ta question..."
   },
   "legal": {
     "mentions": "Mentions légales",
@@ -181,8 +242,11 @@
     "privacy": "Confidentialité",
     "faq": "FAQ",
     "contact": "Contact",
+    "support": "Support",
+    "legalSection": "Légal",
     "rights": "© {year} JustEdit. Tous droits réservés.",
-    "tagline": "Plus rapide, plus rentable."
+    "tagline": "Plus rapide, plus rentable.",
+    "securePayments": "Paiements sécurisés via Stripe"
   },
   "common": {
     "loading": "Chargement...",

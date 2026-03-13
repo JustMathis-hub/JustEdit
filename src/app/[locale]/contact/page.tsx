@@ -40,7 +40,7 @@ export default function ContactPage() {
     <div className="min-h-screen pt-24 pb-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="mb-10">
-          <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">Support</p>
+          <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">{t('section')}</p>
           <h1 className="text-3xl font-black text-white tracking-tight">{t('title')}</h1>
           <p className="text-[oklch(0.5_0.005_0)] mt-2">{t('subtitle')}</p>
         </div>
@@ -53,14 +53,14 @@ export default function ContactPage() {
                 <Mail size={16} className="text-[#8b1a1a]" />
                 <span className="text-white font-semibold text-sm">Email</span>
               </div>
-              <p className="text-xs text-[oklch(0.5_0.005_0)]">contact@justedit.fr</p>
+              <p className="text-xs text-[oklch(0.5_0.005_0)]">justmathis.contact@gmail.com</p>
             </div>
             <div className="bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl p-4">
               <div className="flex items-center gap-2.5 mb-2">
                 <Clock size={16} className="text-[#8b1a1a]" />
-                <span className="text-white font-semibold text-sm">Délai de réponse</span>
+                <span className="text-white font-semibold text-sm">{t('responseTime')}</span>
               </div>
-              <p className="text-xs text-[oklch(0.5_0.005_0)]">Sous 24h en jours ouvrés</p>
+              <p className="text-xs text-[oklch(0.5_0.005_0)]">{t('responseDelay')}</p>
             </div>
           </div>
 
@@ -71,7 +71,7 @@ export default function ContactPage() {
                 <div className="w-14 h-14 rounded-full bg-[rgba(139,26,26,0.15)] border border-[rgba(139,26,26,0.3)] flex items-center justify-center mx-auto mb-4">
                   <CheckCircle size={24} className="text-[#8b1a1a]" />
                 </div>
-                <p className="text-white font-bold text-lg mb-2">Message envoyé !</p>
+                <p className="text-white font-bold text-lg mb-2">{t('successTitle')}</p>
                 <p className="text-sm text-[oklch(0.5_0.005_0)]">{t('success')}</p>
               </div>
             ) : (
@@ -84,7 +84,7 @@ export default function ContactPage() {
                       onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
                       required
                       className={inputClass}
-                      placeholder="Jean Dupont"
+                      placeholder={t('namePlaceholder')}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -95,7 +95,7 @@ export default function ContactPage() {
                       onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
                       required
                       className={inputClass}
-                      placeholder="vous@exemple.com"
+                      placeholder={t('emailPlaceholder')}
                     />
                   </div>
                 </div>
@@ -106,7 +106,7 @@ export default function ContactPage() {
                     onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
                     required
                     className={inputClass}
-                    placeholder="Problème de téléchargement..."
+                    placeholder={t('subjectPlaceholder')}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -117,7 +117,7 @@ export default function ContactPage() {
                     required
                     rows={5}
                     className={`w-full px-3 py-2 rounded-md text-sm resize-none ${inputClass}`}
-                    placeholder="Décris ton problème ou ta question..."
+                    placeholder={t('messagePlaceholder')}
                   />
                 </div>
                 {error && (

@@ -2,10 +2,11 @@ import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/fr/compte';
+  const next = searchParams.get('next') ?? `/${locale}/compte`;
 
   if (code) {
     const supabase = await createClient();
@@ -15,5 +16,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/fr/auth/connexion?error=auth_callback_error`);
+  return NextResponse.redirect(`${origin}/${locale}/auth/connexion?error=auth_callback_error`);
 }

@@ -1,8 +1,10 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 export function VideoIntro() {
+  const t = useTranslations('home');
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -130,7 +132,7 @@ export function VideoIntro() {
           className="mt-4 text-[oklch(0.45_0.005_0)] text-sm sm:text-base tracking-[0.25em] uppercase font-medium"
           style={{ textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
         >
-          Plus rapide, plus rentable
+          {t('videoTagline')}
         </p>
         {/* Accent line under text */}
         <div className="mt-6 h-px w-16 bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent opacity-60" />
@@ -141,7 +143,7 @@ export function VideoIntro() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[4] flex flex-col items-center gap-2 pointer-events-none"
         style={{ opacity: Math.max(0, 1 - scrollY / 300) }}
       >
-        <span className="text-[9px] text-[oklch(0.35_0.005_0)] tracking-[0.3em] uppercase">Scroll</span>
+        <span className="text-[9px] text-[oklch(0.35_0.005_0)] tracking-[0.3em] uppercase">{t('scroll')}</span>
         <div className="w-px h-8 bg-gradient-to-b from-[oklch(0.35_0.005_0)] to-transparent" />
       </div>
     </section>

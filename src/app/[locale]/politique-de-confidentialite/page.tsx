@@ -1,10 +1,134 @@
+import { getLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'Politique de confidentialité | JustEdit' };
+  const locale = await getLocale();
+  return {
+    title: locale === 'en' ? 'Privacy Policy | JustEdit' : 'Politique de confidentialité | JustEdit',
+  };
 }
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const locale = await getLocale();
+  const isFr = locale !== 'en';
+  const dateStr = new Date().toLocaleDateString(isFr ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  if (!isFr) {
+    return (
+      <div className="min-h-screen pt-24 pb-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="mb-10">
+            <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">Legal</p>
+            <h1 className="text-3xl font-black text-white tracking-tight">Privacy Policy</h1>
+          </div>
+
+          <div className="space-y-8 text-[oklch(0.65_0.005_0)] text-sm leading-relaxed">
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">1. Data Controller</h2>
+              <p>
+                JustEdit is responsible for the processing of personal data collected on justedit.fr. DPO contact: justmathis.contact@gmail.com
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">2. Data Collected</h2>
+              <div className="space-y-3">
+                <div>
+                  <p className="font-semibold text-white">When creating an account:</p>
+                  <p>Full name, email address, password (hashed).</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-white">When making a purchase:</p>
+                  <p>Payment data (processed exclusively by Stripe), product purchased, date and amount of the transaction.</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Automatically:</p>
+                  <p>IP address (for security purposes only, during downloads), anonymised browsing data.</p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">3. Purposes of Processing</h2>
+              <ul className="list-disc list-inside space-y-1 ml-2">
+                <li>User account management and authentication</li>
+                <li>Order processing and tracking</li>
+                <li>Access to purchased downloads</li>
+                <li>Sending transactional emails (order confirmation)</li>
+                <li>Security and fraud prevention</li>
+                <li>Compliance with legal obligations</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">4. Legal Basis</h2>
+              <p>
+                Processing is based on the performance of a contract (Art. 6.1.b GDPR) for order-related data, and on legitimate interest (Art. 6.1.f) for security purposes.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">5. Sub-processors</h2>
+              <div className="space-y-2">
+                {[
+                  { name: 'Supabase Inc.', role: 'Database hosting and authentication', link: 'https://supabase.com/privacy' },
+                  { name: 'Stripe Inc.', role: 'Payment processing', link: 'https://stripe.com/en/privacy' },
+                  { name: 'Resend Inc.', role: 'Transactional email sending', link: 'https://resend.com/privacy' },
+                  { name: 'Vercel Inc.', role: 'Website hosting', link: 'https://vercel.com/legal/privacy-policy' },
+                ].map((sub) => (
+                  <div key={sub.name} className="flex items-start gap-2 p-3 bg-[oklch(0.11_0_0)] rounded-lg border border-[oklch(0.18_0_0)]">
+                    <div>
+                      <span className="font-semibold text-white">{sub.name}</span>
+                      <span className="text-[oklch(0.5_0.005_0)]"> — {sub.role}</span>
+                      <br/>
+                      <a href={sub.link} className="text-[#8b1a1a] hover:text-[#c0392b] text-xs" target="_blank" rel="noopener">
+                        Privacy policy →
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">6. Retention Period</h2>
+              <p>
+                Account data is retained for the duration of account activity, then deleted within 3 years of the last activity. Transaction data is retained for 10 years in accordance with French accounting obligations.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">7. Your Rights (GDPR)</h2>
+              <p>In accordance with Articles 15 to 22 of the GDPR, you have the following rights:</p>
+              <ul className="list-disc list-inside space-y-1 ml-2 mt-2">
+                <li><strong className="text-white">Right of access</strong> — obtain a copy of your data</li>
+                <li><strong className="text-white">Right of rectification</strong> — correct inaccurate data</li>
+                <li><strong className="text-white">Right to erasure</strong> — request deletion of your data</li>
+                <li><strong className="text-white">Right to portability</strong> — receive your data in a readable format</li>
+                <li><strong className="text-white">Right to object</strong> — object to certain processing</li>
+              </ul>
+              <p className="mt-3">
+                To exercise these rights: <a href="mailto:justmathis.contact@gmail.com" className="text-[#8b1a1a] hover:text-[#c0392b]">justmathis.contact@gmail.com</a>. You may also lodge a complaint with your national data protection authority (e.g. the <a href="https://ico.org.uk" className="text-[#8b1a1a] hover:text-[#c0392b]" target="_blank" rel="noopener">ICO</a> in the UK, or the <a href="https://www.cnil.fr" className="text-[#8b1a1a] hover:text-[#c0392b]" target="_blank" rel="noopener">CNIL</a> in France).
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-white mb-3">8. Cookies</h2>
+              <p>
+                This site uses only technical cookies (authentication session, language preferences). No advertising or third-party tracking cookies are installed. You may refuse non-essential cookies from the banner displayed on your first visit.
+              </p>
+            </section>
+
+            <p className="text-xs text-[oklch(0.4_0.005_0)] pt-4 border-t border-[oklch(0.15_0_0)]">
+              Last updated: {dateStr}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen pt-24 pb-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
@@ -18,7 +142,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-lg font-bold text-white mb-3">1. Responsable du traitement</h2>
             <p>
-              JustEdit est responsable du traitement des données personnelles collectées sur justedit.fr. Contact DPO : contact@justedit.fr
+              JustEdit est responsable du traitement des données personnelles collectées sur justedit.fr. Contact DPO : justmathis.contact@gmail.com
             </p>
           </section>
 
@@ -100,7 +224,7 @@ export default function PrivacyPage() {
               <li><strong className="text-white">Droit d'opposition</strong> — t'opposer à certains traitements</li>
             </ul>
             <p className="mt-3">
-              Pour exercer ces droits : <a href="mailto:contact@justedit.fr" className="text-[#8b1a1a] hover:text-[#c0392b]">contact@justedit.fr</a>. Tu peux également introduire une réclamation auprès de la <a href="https://www.cnil.fr" className="text-[#8b1a1a] hover:text-[#c0392b]" target="_blank" rel="noopener">CNIL</a>.
+              Pour exercer ces droits : <a href="mailto:justmathis.contact@gmail.com" className="text-[#8b1a1a] hover:text-[#c0392b]">justmathis.contact@gmail.com</a>. Tu peux également introduire une réclamation auprès de la <a href="https://www.cnil.fr" className="text-[#8b1a1a] hover:text-[#c0392b]" target="_blank" rel="noopener">CNIL</a>.
             </p>
           </section>
 
@@ -112,7 +236,7 @@ export default function PrivacyPage() {
           </section>
 
           <p className="text-xs text-[oklch(0.4_0.005_0)] pt-4 border-t border-[oklch(0.15_0_0)]">
-            Dernière mise à jour : {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+            Dernière mise à jour : {dateStr}
           </p>
         </div>
       </div>

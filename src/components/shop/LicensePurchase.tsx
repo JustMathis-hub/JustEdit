@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Check, User, Building2, Loader2, Download, ArrowRight, ShoppingBag } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from '@/i18n/navigation';
@@ -29,6 +30,8 @@ export function LicensePurchase({
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const tLicense = useTranslations('license');
+  const tProduct = useTranslations('product');
 
   const personalPrice = priceCents;
   const commercialPrice = 5000; // 50 €
@@ -69,7 +72,7 @@ export function LicensePurchase({
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, licenseType: license }),
+        body: JSON.stringify({ productId, licenseType: license, locale }),
       });
 
       if (!res.ok) {
@@ -80,13 +83,11 @@ export function LicensePurchase({
       const { url } = await res.json();
       window.location.href = url;
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Une erreur est survenue');
+      toast.error(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setLoading(false);
     }
   };
-
-  const isFr = locale === 'fr';
 
   /* Already purchased → download only */
   if (alreadyPurchased) {
@@ -103,7 +104,7 @@ export function LicensePurchase({
             ) : (
               <Download size={18} />
             )}
-            {isFr ? 'Déjà acheté — Télécharger' : 'Already purchased — Download'}
+            {tProduct('alreadyPurchased')}
           </span>
         </button>
       </div>
@@ -126,7 +127,7 @@ export function LicensePurchase({
             ) : (
               <ShoppingBag size={18} />
             )}
-            {isFr ? 'Obtenir gratuitement' : 'Get for free'}
+            {tProduct('claimFree')}
           </span>
         </button>
       </div>
@@ -134,19 +135,14 @@ export function LicensePurchase({
   }
 
   /* ── Paid product — License selector ── */
-  const personalFeatures = isFr
-    ? ['Usage personnel', 'YouTube & réseaux sociaux', '1 utilisateur', 'Mises à jour gratuites']
-    : ['Personal use', 'YouTube & social media', '1 user', 'Free updates'];
-
-  const commercialFeatures = isFr
-    ? ['Usage commercial & clients', 'Agences & entreprises', 'Multi-utilisateurs']
-    : ['Commercial & client use', 'Agencies & companies', 'Multi-user'];
+  const personalFeatures = tLicense.raw('personalFeatures') as string[];
+  const commercialFeatures = tLicense.raw('commercialFeatures') as string[];
 
   return (
     <div className="mt-auto space-y-4">
       {/* ── License cards ── */}
       <p className="text-xs font-semibold text-[oklch(0.4_0.005_0)] uppercase tracking-widest">
-        {isFr ? 'Choisir une licence' : 'Choose a license'}
+        {tLicense('chooseLicense')}
       </p>
 
       <div className="grid grid-cols-2 gap-3">
@@ -168,16 +164,16 @@ export function LicensePurchase({
 
           {/* Popular badge on Personal */}
           <div className="absolute -top-2.5 left-4 px-2 py-0.5 bg-[#8b1a1a] rounded text-[10px] font-bold text-white uppercase tracking-wider">
-            {isFr ? 'Populaire' : 'Popular'}
+            {tLicense('popular')}
           </div>
 
           <User
             size={18}
             className={`mb-2 ${license === 'personal' ? 'text-[#8b1a1a]' : 'text-[oklch(0.4_0.005_0)]'}`}
           />
-          <p className="text-white font-bold text-sm">{isFr ? 'Personnelle' : 'Personal'}</p>
+          <p className="text-white font-bold text-sm">{tLicense('personal')}</p>
           <p className="text-2xl font-black text-white mt-1">{fmt(personalPrice)}</p>
-          <p className="text-[10px] text-[oklch(0.4_0.005_0)] mt-0.5">TTC</p>
+          <p className="text-[10px] text-[oklch(0.4_0.005_0)] mt-0.5">{tLicense('vat')}</p>
           <ul className="mt-3 space-y-1.5">
             {personalFeatures.map((f) => (
               <li
@@ -211,9 +207,9 @@ export function LicensePurchase({
             size={18}
             className={`mb-2 ${license === 'commercial' ? 'text-[#8b1a1a]' : 'text-[oklch(0.4_0.005_0)]'}`}
           />
-          <p className="text-white font-bold text-sm">{isFr ? 'Commerciale' : 'Commercial'}</p>
+          <p className="text-white font-bold text-sm">{tLicense('commercial')}</p>
           <p className="text-2xl font-black text-white mt-1">{fmt(commercialPrice)}</p>
-          <p className="text-[10px] text-[oklch(0.4_0.005_0)] mt-0.5">TTC</p>
+          <p className="text-[10px] text-[oklch(0.4_0.005_0)] mt-0.5">{tLicense('vat')}</p>
           <ul className="mt-3 space-y-1.5">
             {commercialFeatures.map((f) => (
               <li
@@ -313,7 +309,7 @@ export function LicensePurchase({
       <button onClick={handleBuy} disabled={loading} className="je-buy-btn">
         <span className="je-buy-blob" />
         <span className="je-buy-inner">
-          {loading ? <Loader2 size={18} className="animate-spin" /> : (isFr ? 'Acheter' : 'Buy')}
+          {loading ? <Loader2 size={18} className="animate-spin" /> : tLicense('buy')}
         </span>
       </button>
     </div>
