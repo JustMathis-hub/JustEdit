@@ -44,7 +44,7 @@ export default async function SuccessPage({ searchParams }: Props) {
 
         {purchase && (
           <div className="bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl p-5 mb-6 text-left">
-            <p className="text-xs text-[oklch(0.45_0.005_0)] mb-2">Ton achat</p>
+            <p className="text-xs text-[oklch(0.45_0.005_0)] mb-2">{t('yourPurchase')}</p>
             <p className="font-bold text-white">
               {locale === 'fr' ? (purchase.product as any)?.name_fr : (purchase.product as any)?.name_en}
             </p>
@@ -62,7 +62,7 @@ export default async function SuccessPage({ searchParams }: Props) {
           </Link>
           <Link href="/boutique">
             <Button variant="outline" className="border-[oklch(0.25_0_0)] text-[oklch(0.65_0.005_0)] hover:text-white bg-transparent">
-              Voir la boutique
+              {t('goToShop')}
             </Button>
           </Link>
         </div>

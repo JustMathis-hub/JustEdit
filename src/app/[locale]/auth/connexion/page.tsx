@@ -65,7 +65,7 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
-                placeholder="vous@exemple.com"
+                placeholder={t('emailPlaceholder')}
               />
             </div>
 

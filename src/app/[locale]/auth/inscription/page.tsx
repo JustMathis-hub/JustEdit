@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import Image from 'next/image';
 
 export default function RegisterPage() {
   const t = useTranslations('auth.register');
+  const locale = useLocale();
   const router = useRouter();
   const supabase = createClient();
 
@@ -33,7 +34,7 @@ export default function RegisterPage() {
     }
 
     if (!termsAccepted) {
-      setError('Tu dois accepter les CGV pour continuer.');
+      setError(t('termsRequired'));
       return;
     }
 
@@ -44,7 +45,7 @@ export default function RegisterPage() {
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: `${window.location.origin}/fr/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
       },
     });
 
@@ -97,7 +98,7 @@ export default function RegisterPage() {
                 onChange={(e) => setFullName(e.target.value)}
                 required
                 className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
-                placeholder="Jean Dupont"
+                placeholder={t('namePlaceholder')}
               />
             </div>
 
@@ -111,7 +112,7 @@ export default function RegisterPage() {
                 required
                 autoComplete="email"
                 className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
-                placeholder="vous@exemple.com"
+                placeholder={t('emailPlaceholder')}
               />
             </div>
 
@@ -125,7 +126,7 @@ export default function RegisterPage() {
                 required
                 minLength={8}
                 className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
-                placeholder="Min. 8 caractères"
+                placeholder={t('passwordMin')}
               />
             </div>
 
@@ -151,15 +152,18 @@ export default function RegisterPage() {
                 className="mt-0.5 accent-[#8b1a1a] w-4 h-4 shrink-0"
               />
               <span className="text-xs text-[oklch(0.5_0.005_0)] leading-relaxed">
-                J'accepte les{' '}
-                <Link href="/conditions-generales-de-vente" className="text-[#8b1a1a] hover:text-[#c0392b] underline" target="_blank">
-                  CGV
-                </Link>{' '}
-                et la{' '}
-                <Link href="/politique-de-confidentialite" className="text-[#8b1a1a] hover:text-[#c0392b] underline" target="_blank">
-                  politique de confidentialité
-                </Link>
-                . Je renonce expressément à mon droit de rétractation pour les contenus numériques téléchargés immédiatement (art. L221-28 Code de la conso.).
+                {t.rich('terms', {
+                  cgvLink: (chunks) => (
+                    <Link href="/conditions-generales-de-vente" className="text-[#8b1a1a] hover:text-[#c0392b] underline" target="_blank">
+                      {chunks}
+                    </Link>
+                  ),
+                  privacyLink: (chunks) => (
+                    <Link href="/politique-de-confidentialite" className="text-[#8b1a1a] hover:text-[#c0392b] underline" target="_blank">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </span>
             </label>
 

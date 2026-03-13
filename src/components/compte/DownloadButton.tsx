@@ -18,7 +18,7 @@ export function DownloadButton({ purchaseId }: { purchaseId: string }) {
       const { url } = await res.json();
       window.open(url, '_blank');
     } catch {
-      toast.error('Erreur lors du téléchargement. Réessaie.');
+      toast.error(t('downloadError'));
     } finally {
       setLoading(false);
     }

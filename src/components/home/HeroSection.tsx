@@ -170,9 +170,8 @@ export function HeroSection() {
             {/* Stats */}
             <div className="animate-fade-up delay-500 flex items-center gap-5 sm:gap-10">
               {[
-                { value: '2', label: 'Packs disponibles' },
-                { value: '100%', label: 'Satisfait ou remboursé' },
-                { value: 'Pr', label: 'Compatible' },
+                { value: '2', label: t('packsAvailable') },
+                { value: 'Pr', label: t('compatible') },
               ].map((stat, i) => (
                 <div key={stat.label} className={`text-center ${i > 0 ? 'border-l border-[oklch(0.16_0_0)] pl-5 sm:pl-10' : ''}`}>
                   <div className="text-lg sm:text-2xl font-black text-white whitespace-nowrap">{stat.value}</div>
@@ -229,7 +228,7 @@ export function HeroSection() {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <h3 className="font-bold text-white text-sm leading-tight">Just Number</h3>
-                        <p className="text-[11px] text-[oklch(0.42_0.005_0)] mt-0.5">Compteur · Titre · Animation</p>
+                        <p className="text-[11px] text-[oklch(0.42_0.005_0)] mt-0.5">{t('cardTagline')}</p>
                       </div>
                       <span className="text-lg font-black text-white">25€</span>
                     </div>

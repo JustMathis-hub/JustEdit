@@ -9,9 +9,9 @@ import type { Product } from '@/types';
 import { useState } from 'react';
 import { HeartLike } from './HeartLike';
 
-const TAGLINES: Record<string, string> = {
-  'just-number': 'Compteur · Titre · Animation',
-  'just-text': 'Texte · Titre · Motion',
+const TAGLINES: Record<string, Record<string, string>> = {
+  'just-number': { fr: 'Compteur · Titre · Animation', en: 'Counter · Title · Animation' },
+  'just-text': { fr: 'Texte · Titre · Motion', en: 'Text · Title · Motion' },
 };
 
 const COMING_SOON_SLUGS = ['just-text'];
@@ -29,9 +29,9 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
   const [imgError, setImgError] = useState(false);
 
   const name = locale === 'fr' ? product.name_fr : product.name_en;
-  const tagline = TAGLINES[product.slug];
+  const taglineObj = TAGLINES[product.slug];
+  const tagline = taglineObj ? taglineObj[locale] || taglineObj['fr'] : undefined;
   const comingSoon = COMING_SOON_SLUGS.includes(product.slug);
-  const comingSoonLabel = locale === 'fr' ? 'Bientôt dispo' : 'Coming soon';
   const price = product.is_free
     ? t('free')
     : formatPrice(product.price_cents, locale);
@@ -128,7 +128,7 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
                 }
               `}</style>
               <div className="je-coming-soon">
-                <span>{comingSoonLabel}</span>
+                <span>{t('comingSoon')}</span>
               </div>
             </div>
           )}
@@ -193,7 +193,7 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
         <div className="flex items-center justify-between mt-2">
           {comingSoon ? (
             <span className="text-[oklch(0.42_0.005_0)] font-semibold text-sm italic">
-              {locale === 'fr' ? 'Bientôt disponible' : 'Coming soon'}
+              {t('comingSoonLong')}
             </span>
           ) : (
             <>
@@ -205,7 +205,7 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
                 <button type="button" className="je-card-btn">
                   <span className="je-card-blob" />
                   <span className="je-card-inner">
-                    {product.is_free ? t('free') : 'Voir'}
+                    {product.is_free ? t('free') : t('view')}
                   </span>
                 </button>
               </Link>

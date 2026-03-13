@@ -1,54 +1,28 @@
 import { getTranslations } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
 import { ChevronDown } from 'lucide-react';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: 'FAQ | JustEdit' };
+  const t = await getTranslations('faq');
+  return { title: `${t('title')} | JustEdit` };
 }
 
-const faqItems = [
-  {
-    q: 'Qu\'est-ce qu\'un MOGRT ?',
-    a: 'Un MOGRT (Motion Graphics Template) est un format de fichier Adobe qui permet d\'importer des animations directement dans Premiere Pro via le panneau "Graphiques essentiels". C\'est le format parfait pour gagner du temps en montage.',
-  },
-  {
-    q: 'Comment installer un MOGRT ?',
-    a: 'Dans Premiere Pro : ouvre le panneau Graphiques essentiels (Fenêtre > Graphiques essentiels), clique sur Parcourir, puis importe le fichier .mogrt. L\'animation apparaît dans ta séquence et tu peux modifier ses paramètres directement dans Premiere Pro.',
-  },
-  {
-    q: 'Quelles versions d\'Adobe sont compatibles ?',
-    a: 'Nos packs sont compatibles avec Premiere Pro 2024 et supérieur.',
-  },
-  {
-    q: 'Puis-je utiliser les packs pour des projets clients/commerciaux ?',
-    a: 'Oui. La licence incluse avec chaque achat couvre l\'utilisation dans des projets personnels et commerciaux (YouTube, réseaux sociaux, vidéos clients, etc.). La revente ou redistribution des fichiers est interdite.',
-  },
-  {
-    q: 'Puis-je modifier les templates ?',
-    a: 'Oui, les templates sont entièrement personnalisables. Tu peux modifier les couleurs, textes, durées et la plupart des paramètres directement depuis Premiere Pro.',
-  },
-  {
-    q: 'Comment télécharger après achat ?',
-    a: 'Après paiement, tu es redirigé vers une page de confirmation avec un bouton de téléchargement. Ton achat est également accessible en permanence depuis ton espace membre (Mon Compte > Mes achats).',
-  },
-  {
-    q: 'Je n\'arrive pas à télécharger, que faire ?',
-    a: 'Les liens de téléchargement expirent après 15 minutes mais tu peux en générer un nouveau depuis ton espace membre. Si le problème persiste, contacte-nous à contact@justedit.fr.',
-  },
-  {
-    q: 'Puis-je obtenir un remboursement ?',
-    a: 'Les contenus numériques téléchargés ne sont pas remboursables (conformément à l\'article L221-28 du Code de la consommation). En cas de problème technique avéré, contacte-nous et nous trouverons une solution.',
-  },
-];
+const FAQ_COUNT = 8;
 
 export default async function FAQPage() {
   const t = await getTranslations('faq');
+
+  const faqItems = Array.from({ length: FAQ_COUNT }, (_, i) => ({
+    q: t(`q${i + 1}`),
+    a: t(`a${i + 1}`),
+  }));
 
   return (
     <div className="min-h-screen pt-24 pb-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="mb-10">
-          <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">Support</p>
+          <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">{t('support')}</p>
           <h1 className="text-3xl font-black text-white tracking-tight">{t('title')}</h1>
           <p className="text-[oklch(0.5_0.005_0)] mt-2">{t('subtitle')}</p>
         </div>
@@ -74,14 +48,14 @@ export default async function FAQPage() {
         </div>
 
         <div className="mt-10 p-5 bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl text-center">
-          <p className="text-white font-semibold mb-1">Tu n'as pas trouvé ta réponse ?</p>
-          <p className="text-sm text-[oklch(0.5_0.005_0)] mb-4">On est là pour t'aider.</p>
-          <a
-            href="/fr/contact"
+          <p className="text-white font-semibold mb-1">{t('notFound')}</p>
+          <p className="text-sm text-[oklch(0.5_0.005_0)] mb-4">{t('helpText')}</p>
+          <Link
+            href="/contact"
             className="inline-flex items-center px-5 py-2.5 bg-[#8b1a1a] hover:bg-[#a02020] text-white font-medium text-sm rounded-lg transition-colors"
           >
-            Contacter le support
-          </a>
+            {t('contactSupport')}
+          </Link>
         </div>
       </div>
     </div>

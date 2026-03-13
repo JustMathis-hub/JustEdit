@@ -171,18 +171,7 @@ export default async function ProductPage({ params }: Props) {
                 {t('includes')}
               </p>
               <ul className="space-y-2">
-                {(locale === 'fr'
-                  ? [
-                      'Fichier .mogrt',
-                      'Compatible Premiere Pro 2024+',
-                      'Mises à jour gratuites',
-                    ]
-                  : [
-                      '.mogrt file',
-                      'Compatible with Premiere Pro 2024+',
-                      'Free updates',
-                    ]
-                ).map((item) => (
+                {[t('mogrtFile'), t('compatiblePr'), t('freeUpdates')].map((item) => (
                   <li key={item} className="flex items-center gap-2.5 text-sm text-[oklch(0.7_0.005_0)]">
                     <Check size={14} className="text-[#8b1a1a] shrink-0" />
                     {item}

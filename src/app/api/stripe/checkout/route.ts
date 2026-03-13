@@ -4,7 +4,8 @@ import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: Request) {
   try {
-    const { productId } = await request.json();
+    const { productId, locale: reqLocale } = await request.json();
+    const locale = reqLocale === 'en' ? 'en' : 'fr';
 
     if (!productId) {
       return NextResponse.json({ error: 'Missing productId' }, { status: 400 });
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
-    const productName = product.name_fr;
+    const productName = locale === 'fr' ? product.name_fr : product.name_en;
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -71,21 +72,22 @@ export async function POST(request: Request) {
         user_id: user.id,
         product_id: product.id,
       },
-      success_url: `${siteUrl}/fr/checkout/succes?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/fr/boutique/${product.slug}`,
+      success_url: `${siteUrl}/${locale}/checkout/succes?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/${locale}/boutique/${product.slug}`,
       payment_intent_data: {
         metadata: {
           user_id: user.id,
           product_id: product.id,
         },
       },
-      // Conformité loi française — biens numériques
       custom_text: {
         submit: {
-          message: 'En confirmant, vous renoncez à votre droit de rétractation pour ce contenu numérique (art. L221-28 Code de la consommation).',
+          message: locale === 'en'
+            ? 'By confirming, you waive your right of withdrawal for this digital content.'
+            : 'En confirmant, vous renoncez à votre droit de rétractation pour ce contenu numérique (art. L221-28 Code de la consommation).',
         },
       },
-      locale: 'fr',
+      locale: locale === 'en' ? 'en' : 'fr',
     });
 
     return NextResponse.json({ url: session.url });

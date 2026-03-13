@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ interface Props {
 
 export function BuyNowButton({ productId, productSlug, isFree, alreadyPurchased, purchaseId, label }: Props) {
   const [loading, setLoading] = useState(false);
+  const locale = useLocale();
   const router = useRouter();
   const supabase = createClient();
 
@@ -43,7 +45,7 @@ export function BuyNowButton({ productId, productSlug, isFree, alreadyPurchased,
 
       // Free pack claim — use window.location for dynamic slug routes
       if (isFree) {
-        window.location.href = `/fr/boutique/${productSlug}`;
+        window.location.href = `/${locale}/boutique/${productSlug}`;
         return;
       }
 
@@ -51,7 +53,7 @@ export function BuyNowButton({ productId, productSlug, isFree, alreadyPurchased,
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId }),
+        body: JSON.stringify({ productId, locale }),
       });
 
       if (!res.ok) {
@@ -62,7 +64,7 @@ export function BuyNowButton({ productId, productSlug, isFree, alreadyPurchased,
       const { url } = await res.json();
       window.location.href = url;
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Une erreur est survenue');
+      toast.error(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setLoading(false);
     }

@@ -90,9 +90,9 @@ export default async function ShopPage() {
       {freePacks && freePacks.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-20">
           <div className="border-t border-[oklch(0.15_0_0)] pt-14">
-            <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">Gratuit</p>
+            <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">{t('freeSection')}</p>
             <h2 className="text-2xl font-black text-white tracking-tight mb-8">
-              Packs gratuits
+              {t('freePacks')}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               {(freePacks as Product[]).map((product) => (

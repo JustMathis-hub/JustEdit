@@ -52,7 +52,7 @@ export async function FeaturedProducts() {
             <p className="text-[oklch(0.5_0.005_0)] mt-2 text-sm">{t('subtitle')}</p>
           </div>
           <Link href="/boutique" className="hidden md:flex items-center gap-1.5 text-sm text-[oklch(0.5_0.005_0)] hover:text-white transition-colors">
-            Voir tout <ArrowRight size={14} />
+            {t('viewAll')} <ArrowRight size={14} />
           </Link>
         </div>
 

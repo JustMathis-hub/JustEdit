@@ -23,7 +23,7 @@ export function Footer() {
           {/* Links */}
           <div>
             <h3 className="text-xs font-semibold text-[oklch(0.35_0.005_0)] uppercase tracking-widest mb-4">
-              Support
+              {t('support')}
             </h3>
             <ul className="space-y-2.5">
               {[
@@ -45,7 +45,7 @@ export function Footer() {
           {/* Legal */}
           <div>
             <h3 className="text-xs font-semibold text-[oklch(0.35_0.005_0)] uppercase tracking-widest mb-4">
-              Légal
+              {t('legalSection')}
             </h3>
             <ul className="space-y-2.5">
               {[
@@ -73,7 +73,7 @@ export function Footer() {
           </p>
           <div className="flex items-center gap-4">
             <span className="text-xs text-[oklch(0.3_0.005_0)]">
-              Paiements sécurisés via Stripe
+              {t('securePayments')}
             </span>
             <div className="flex items-center gap-1.5">
               <div className="w-8 h-5 bg-[oklch(0.18_0_0)] rounded flex items-center justify-center">
