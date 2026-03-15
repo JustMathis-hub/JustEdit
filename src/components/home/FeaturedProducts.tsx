@@ -39,7 +39,7 @@ export async function FeaturedProducts() {
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6 relative overflow-hidden">
+    <section className="py-8 sm:py-14 px-4 sm:px-6 relative overflow-hidden">
       {/* Background — grid + glows matching HeroSection */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Grid */}

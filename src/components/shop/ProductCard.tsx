@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { Play } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { PROMO_PRICES } from '@/lib/promoConfig';
 import type { Product } from '@/types';
 import { useState } from 'react';
 import { HeartLike } from './HeartLike';
@@ -32,9 +33,10 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
   const taglineObj = TAGLINES[product.slug];
   const tagline = taglineObj ? taglineObj[locale] || taglineObj['fr'] : undefined;
   const comingSoon = COMING_SOON_SLUGS.includes(product.slug);
+  const salePrice = !product.is_free ? PROMO_PRICES[product.slug] : undefined;
   const price = product.is_free
     ? t('free')
-    : formatPrice(product.price_cents, locale);
+    : formatPrice(salePrice ?? product.price_cents, locale);
 
   const thumbnailBlock = (
     <div className="relative aspect-video bg-[oklch(0.09_0_0)] overflow-hidden">
@@ -159,8 +161,46 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
     </div>
   );
 
+  const promoBadge = salePrice && !comingSoon ? (
+    <div
+      className="absolute -top-4 -right-4 z-20 pointer-events-none select-none"
+      style={{ transform: 'rotate(14deg)' }}
+    >
+      <svg
+        width="56"
+        height="56"
+        className="sm:!w-[72px] sm:!h-[72px]"
+        viewBox="0 0 100 100"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ filter: 'drop-shadow(0 0 5px rgba(139,26,26,0.95)) drop-shadow(0 0 16px rgba(139,26,26,0.55))' }}
+      >
+        <defs>
+          <radialGradient id={`pg-${product.slug}`} cx="38%" cy="32%" r="68%">
+            <stop offset="0%" stopColor="#b52a2a" />
+            <stop offset="100%" stopColor="#1e0204" />
+          </radialGradient>
+        </defs>
+        <polygon
+          points="50,3 57,17 68,7 69,21 83,17 79,31 93,32 84,43 97,50 84,57 93,68 79,69 83,83 69,79 68,93 57,83 50,97 43,83 32,93 31,79 17,83 21,69 7,68 16,57 3,50 16,43 7,32 21,31 17,17 31,21 32,7 43,17"
+          fill={`url(#pg-${product.slug})`}
+          stroke="rgba(210,70,70,0.25)"
+          strokeWidth="0.8"
+        />
+        <line x1="34" y1="55" x2="66" y2="55" stroke="rgba(255,255,255,0.18)" strokeWidth="0.8" />
+        <text x="50" y="47" textAnchor="middle" dominantBaseline="middle" fill="white" fontSize="14.5" fontWeight="900" letterSpacing="1.5" fontFamily="system-ui,-apple-system,sans-serif">PROMO</text>
+        <text x="50" y="62" textAnchor="middle" dominantBaseline="middle" fill="rgba(255,185,185,0.8)" fontSize="7" fontWeight="700" letterSpacing="1.8" fontFamily="system-ui,-apple-system,sans-serif">LANCEMENT</text>
+      </svg>
+    </div>
+  ) : null;
+
   return (
-    <div className={`group relative bg-[oklch(0.11_0_0)] rounded-xl overflow-hidden card-hover ${comingSoon ? 'cursor-default' : 'cursor-pointer'}`}
+    <div
+      className="relative"
+      style={{ transition: 'transform 0.2s ease' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ''; }}
+    >
+    <div className={`group relative bg-[oklch(0.11_0_0)] rounded-xl overflow-hidden ${comingSoon ? 'cursor-default' : 'cursor-pointer'}`}
       style={{
         border: '1px solid rgba(139,26,26,0.35)',
         boxShadow: '0 0 0 1px rgba(139,26,26,0.08), 0 0 16px rgba(139,26,26,0.12), inset 0 1px 0 rgba(255,255,255,0.04)',
@@ -214,8 +254,13 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
             </span>
           ) : (
             <>
-              <span className="text-white font-black text-base">
-                {price}
+              <span className="flex items-baseline gap-1.5">
+                <span className="text-white font-black text-base">{price}</span>
+                {salePrice && (
+                  <span className="text-[oklch(0.45_0.005_0)] text-sm line-through">
+                    {formatPrice(product.price_cents, locale)}
+                  </span>
+                )}
               </span>
 
               <Link href={`/boutique/${product.slug}` as any}>
@@ -230,6 +275,8 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
           )}
         </div>
       </div>
+    </div>
+    {promoBadge}
     </div>
   );
 }

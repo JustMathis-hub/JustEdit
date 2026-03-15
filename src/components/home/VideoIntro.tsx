@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { ArrowRight } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { PROMO_PRICES } from '@/lib/promoConfig';
 import Image from 'next/image';
 
 interface LatestProduct {
@@ -205,8 +206,15 @@ export function VideoIntro({ latestProduct }: Props) {
                   {locale === 'fr' ? latestProduct.name_fr : latestProduct.name_en}
                 </div>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 900, color: '#e07070', marginLeft: 4 }}>
-                {formatPrice(latestProduct.price_cents, locale)}
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', marginLeft: 4 }}>
+                <span style={{ fontSize: 14, fontWeight: 900, color: '#e07070' }}>
+                  {formatPrice(PROMO_PRICES[latestProduct.slug] ?? latestProduct.price_cents, locale)}
+                </span>
+                {PROMO_PRICES[latestProduct.slug] && (
+                  <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', textDecoration: 'line-through', lineHeight: 1 }}>
+                    {formatPrice(latestProduct.price_cents, locale)}
+                  </span>
+                )}
               </div>
               <ArrowRight size={14} color="rgba(255,255,255,0.4)" />
             </Link>
@@ -214,14 +222,6 @@ export function VideoIntro({ latestProduct }: Props) {
         )}
       </div>
 
-      {/* ── Scroll indicator ── */}
-      <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[4] flex flex-col items-center gap-2 pointer-events-none"
-        style={{ opacity: Math.max(0, 1 - scrollY / 300) }}
-      >
-        <span className="text-[9px] text-[oklch(0.35_0.005_0)] tracking-[0.3em] uppercase">{t('scroll')}</span>
-        <div className="w-px h-8 bg-gradient-to-b from-[oklch(0.35_0.005_0)] to-transparent" />
-      </div>
     </section>
   );
 }

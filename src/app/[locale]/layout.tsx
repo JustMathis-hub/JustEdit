@@ -6,6 +6,7 @@ import { routing } from '@/i18n/routing';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CookieBanner } from '@/components/layout/CookieBanner';
+import { PromoBannerProvider, PromoBanner } from '@/components/layout/PromoBanner';
 import { Toaster } from '@/components/ui/sonner';
 import '../globals.css';
 
@@ -49,22 +50,25 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale} className="dark">
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Navbar />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <Footer />
-          <CookieBanner />
-          <Toaster
-            theme="dark"
-            toastOptions={{
-              style: {
-                background: 'oklch(0.13 0 0)',
-                border: '1px solid oklch(0.22 0 0)',
-                color: 'oklch(0.95 0.005 0)',
-              },
-            }}
-          />
+          <PromoBannerProvider>
+            <PromoBanner />
+            <Navbar />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            <Footer />
+            <CookieBanner />
+            <Toaster
+              theme="dark"
+              toastOptions={{
+                style: {
+                  background: 'oklch(0.13 0 0)',
+                  border: '1px solid oklch(0.22 0 0)',
+                  color: 'oklch(0.95 0.005 0)',
+                },
+              }}
+            />
+          </PromoBannerProvider>
         </NextIntlClientProvider>
       </body>
     </html>

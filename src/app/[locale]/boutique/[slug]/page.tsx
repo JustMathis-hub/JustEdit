@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { LicensePurchase } from '@/components/shop/LicensePurchase';
 import { Check, Film, ChevronDown } from 'lucide-react';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
+import { PROMO_PRICES } from '@/lib/promoConfig';
 import type { Metadata } from 'next';
 import type { Product } from '@/types';
 
@@ -186,7 +187,8 @@ export default async function ProductPage({ params }: Props) {
               productId={product.id}
               productSlug={product.slug}
               isFree={product.is_free}
-              priceCents={product.price_cents}
+              priceCents={PROMO_PRICES[product.slug] ?? product.price_cents}
+              originalPriceCents={PROMO_PRICES[product.slug] ? product.price_cents : undefined}
               locale={locale}
               alreadyPurchased={!!purchase}
               purchaseId={purchase?.id}

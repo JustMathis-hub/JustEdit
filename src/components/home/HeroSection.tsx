@@ -41,7 +41,7 @@ export function HeroSection() {
       <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[oklch(0.07_0_0)] to-transparent pointer-events-none" />
 
       {/* ── Content ── */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-16">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-6 sm:pb-16">
         <div className="grid lg:grid-cols-[1fr_360px] xl:grid-cols-[1fr_400px] gap-12 xl:gap-20 items-center">
 
           {/* Left — Text */}
@@ -256,10 +256,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-30 animate-fade-in delay-700">
-        <div className="w-px h-10 bg-gradient-to-b from-transparent to-[oklch(0.4_0.005_0)]" />
-      </div>
 
     </section>
   );
