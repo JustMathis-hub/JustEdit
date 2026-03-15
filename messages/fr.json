@@ -1,5 +1,6 @@
 {
   "nav": {
+    "home": "Accueil",
     "shop": "Boutique",
     "freePacks": "Packs Gratuits",
     "login": "Connexion",
@@ -41,7 +42,7 @@
     },
     "cta": {
       "title": "Prêt à gagner du temps ?",
-      "subtitle": "Rejoins des centaines de monteurs qui utilisent JustEdit.",
+      "subtitle": "Passez dans le camp des monteurs qui livrent avant l'heure.",
       "button": "Voir la boutique"
     },
     "videoTagline": "Plus rapide, plus rentable",
@@ -290,5 +291,9 @@
     "accept": "Accepter",
     "decline": "Refuser",
     "learnMore": "En savoir plus"
+  },
+  "promoBanner": {
+    "text": "Offre de lancement limitée",
+    "close": "Fermer"
   }
 }

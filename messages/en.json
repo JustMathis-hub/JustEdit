@@ -1,5 +1,6 @@
 {
   "nav": {
+    "home": "Home",
     "shop": "Shop",
     "freePacks": "Free Packs",
     "login": "Login",
@@ -281,5 +282,9 @@
     "accept": "Accept",
     "decline": "Decline",
     "learnMore": "Learn more"
+  },
+  "promoBanner": {
+    "text": "Limited launch offer",
+    "close": "Close"
   }
 }

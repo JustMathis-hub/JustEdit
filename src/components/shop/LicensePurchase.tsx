@@ -12,6 +12,7 @@ interface Props {
   productSlug: string;
   isFree: boolean;
   priceCents: number;
+  originalPriceCents?: number;
   locale: string;
   alreadyPurchased: boolean;
   purchaseId?: string;
@@ -22,6 +23,7 @@ export function LicensePurchase({
   productSlug,
   isFree,
   priceCents,
+  originalPriceCents,
   locale,
   alreadyPurchased,
   purchaseId,
@@ -172,7 +174,12 @@ export function LicensePurchase({
             className={`mb-2 ${license === 'personal' ? 'text-[#8b1a1a]' : 'text-[oklch(0.4_0.005_0)]'}`}
           />
           <p className="text-white font-bold text-sm">{tLicense('personal')}</p>
-          <p className="text-2xl font-black text-white mt-1">{fmt(personalPrice)}</p>
+          <div className="flex items-baseline gap-1.5 mt-1">
+            <p className="text-2xl font-black text-white">{fmt(personalPrice)}</p>
+            {originalPriceCents && (
+              <p className="text-sm text-[oklch(0.4_0.005_0)] line-through">{fmt(originalPriceCents)}</p>
+            )}
+          </div>
           <p className="text-[10px] text-[oklch(0.4_0.005_0)] mt-0.5">{tLicense('vat')}</p>
           <ul className="mt-3 space-y-1.5">
             {personalFeatures.map((f) => (

@@ -15,7 +15,7 @@ export function HowItWorks() {
   ] as const;
 
   return (
-    <section className="py-40 px-4 sm:px-6 relative overflow-hidden">
+    <section className="py-8 sm:py-20 px-4 sm:px-6 relative overflow-hidden">
       {/* Interactive glass background */}
       <GlassBackground />
 
@@ -36,8 +36,8 @@ export function HowItWorks() {
               position: relative;
               border-radius: 50%;
               background:
-                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.18) 0%, transparent 65%),
-                rgba(255, 255, 255, 0.06);
+                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.22) 0%, transparent 65%),
+                oklch(0.14 0 0);
               backdrop-filter: blur(16px) saturate(1.4);
               -webkit-backdrop-filter: blur(16px) saturate(1.4);
               border: 1px solid rgba(200, 70, 70, 0.2);
@@ -81,8 +81,8 @@ export function HowItWorks() {
             .group:hover .je-step-icon {
               border-color: rgba(180, 40, 40, 0.5);
               background:
-                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.28) 0%, transparent 65%),
-                rgba(255, 255, 255, 0.08);
+                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.32) 0%, transparent 65%),
+                oklch(0.16 0 0);
               box-shadow:
                 0 8px 36px rgba(139, 26, 26, 0.3),
                 0 0 0 1px rgba(139, 26, 26, 0.22),
@@ -100,7 +100,7 @@ export function HowItWorks() {
             {steps.map((step, i) => {
               const Icon = step.icon;
               return (
-                <AnimateIn key={step.key} delay={i * 120} className="relative flex flex-col items-center text-center group">
+                <AnimateIn key={step.key} delay={i * 120} className="relative z-10 flex flex-col items-center text-center group">
                   <div className="relative mb-5">
                     <div className="je-step-icon w-10 h-10 sm:w-20 sm:h-20">
                       <Icon size={15} className="sm:hidden relative z-10" style={{ color: 'rgba(255,255,255,0.8)', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))' }} />

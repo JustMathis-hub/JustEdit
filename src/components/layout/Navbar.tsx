@@ -6,6 +6,7 @@ import { Link, usePathname } from '@/i18n/navigation';
 import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { usePromoBanner } from './PromoBanner';
 import { Button } from '@/components/ui/button';
 import { Menu, X, User, LogOut, Settings } from 'lucide-react';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
@@ -16,6 +17,7 @@ export function Navbar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const router = useRouter();
+  const { isBannerVisible } = usePromoBanner();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,24 +57,26 @@ export function Navbar() {
   };
 
   const navLinks = [
+    { href: '/' as const, label: t('home') },
     { href: '/boutique' as const, label: t('shop') },
     { href: '/packs-gratuits' as const, label: t('freePacks') },
   ];
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'bg-[oklch(0.07_0_0)]/95 backdrop-blur-md border-b border-[oklch(0.18_0_0)]'
           : 'bg-transparent'
       }`}
+      style={{ top: isBannerVisible ? '40px' : '0px' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="h-8 relative">
-              <Image src="/Logo.png" alt="JustEdit" height={32} width={120} className="h-8 w-auto object-contain" />
+            <div className="h-10 relative">
+              <Image src="/Logo.png" alt="JustEdit" height={40} width={150} className="h-10 w-auto object-contain" />
             </div>
           </Link>
 
@@ -83,7 +87,7 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                  pathname === link.href
+                  (link.href === '/' ? pathname === '/' : pathname === link.href)
                     ? 'text-white bg-[oklch(0.15_0_0)]'
                     : 'text-[oklch(0.65_0.005_0)] hover:text-white hover:bg-[oklch(0.13_0_0)]'
                 }`}
