@@ -1,10 +1,27 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import { ArrowRight } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
+import Image from 'next/image';
 
-export function VideoIntro() {
+interface LatestProduct {
+  slug: string;
+  name_fr: string;
+  name_en: string;
+  price_cents: number;
+  is_free: boolean;
+}
+
+interface Props {
+  latestProduct?: LatestProduct;
+}
+
+export function VideoIntro({ latestProduct }: Props) {
   const t = useTranslations('home');
+  const locale = useLocale();
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -136,6 +153,65 @@ export function VideoIntro() {
         </p>
         {/* Accent line under text */}
         <div className="mt-6 h-px w-16 bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent opacity-60" />
+
+        {/* Floating product button */}
+        {latestProduct && (
+          <div className="mt-8 pointer-events-auto" style={{ animation: 'float 4s ease-in-out infinite' }}>
+            <style>{`
+              @keyframes float {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-8px); }
+              }
+              .je-intro-pill {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 14px 10px 10px;
+                background: rgba(10, 3, 3, 0.75);
+                border: 1px solid rgba(139,26,26,0.4);
+                border-radius: 99px;
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(139,26,26,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
+                transition: border-color 0.25s, box-shadow 0.25s;
+                text-decoration: none;
+                cursor: pointer;
+              }
+              .je-intro-pill:hover {
+                border-color: rgba(139,26,26,0.7);
+                box-shadow: 0 8px 40px rgba(139,26,26,0.2), 0 0 0 1px rgba(139,26,26,0.2);
+              }
+              .je-intro-pill-thumb {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: rgba(5, 1, 1, 0.9);
+                border: 1px solid rgba(139,26,26,0.3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+              }
+            `}</style>
+            <Link href={`/boutique/${latestProduct.slug}` as any} className="je-intro-pill">
+              <div className="je-intro-pill-thumb">
+                <Image src="/Logo.png" alt="JustEdit" width={22} height={22} style={{ objectFit: 'contain' }} />
+              </div>
+              <div style={{ lineHeight: 1.2 }}>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                  {locale === 'fr' ? 'Dernier pack' : 'Latest pack'}
+                </div>
+                <div style={{ fontSize: 13, color: '#fff', fontWeight: 700 }}>
+                  {locale === 'fr' ? latestProduct.name_fr : latestProduct.name_en}
+                </div>
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 900, color: '#e07070', marginLeft: 4 }}>
+                {formatPrice(latestProduct.price_cents, locale)}
+              </div>
+              <ArrowRight size={14} color="rgba(255,255,255,0.4)" />
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* ── Scroll indicator ── */}

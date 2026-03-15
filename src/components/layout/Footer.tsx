@@ -7,7 +7,9 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-[oklch(0.15_0_0)] bg-[oklch(0.07_0_0)]">
+    <footer className="relative bg-[oklch(0.07_0_0)]">
+      {/* Red separator line — mirrors the VideoIntro/HeroSection divider */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#8b1a1a] to-transparent opacity-70" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}

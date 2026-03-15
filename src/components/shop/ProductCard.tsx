@@ -160,7 +160,21 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
   );
 
   return (
-    <div className={`group relative bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl overflow-hidden card-hover ${comingSoon ? 'cursor-default' : 'cursor-pointer'}`}>
+    <div className={`group relative bg-[oklch(0.11_0_0)] rounded-xl overflow-hidden card-hover ${comingSoon ? 'cursor-default' : 'cursor-pointer'}`}
+      style={{
+        border: '1px solid rgba(139,26,26,0.35)',
+        boxShadow: '0 0 0 1px rgba(139,26,26,0.08), 0 0 16px rgba(139,26,26,0.12), inset 0 1px 0 rgba(255,255,255,0.04)',
+        transition: 'box-shadow 0.3s ease, border-color 0.3s ease',
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(139,26,26,0.65)';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 1px rgba(139,26,26,0.15), 0 0 28px rgba(139,26,26,0.22), inset 0 1px 0 rgba(255,255,255,0.05)';
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(139,26,26,0.35)';
+        (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 1px rgba(139,26,26,0.08), 0 0 16px rgba(139,26,26,0.12), inset 0 1px 0 rgba(255,255,255,0.04)';
+      }}
+    >
       {/* Thumbnail / Video */}
       {comingSoon ? (
         <div>{thumbnailBlock}</div>
