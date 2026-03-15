@@ -122,6 +122,29 @@
       "error": "Email ou mot de passe incorrect.",
       "emailPlaceholder": "vous@exemple.com"
     },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "subtitle": "On t'envoie un lien de réinitialisation",
+      "email": "Email",
+      "emailPlaceholder": "vous@exemple.com",
+      "submit": "Envoyer le lien",
+      "error": "Une erreur est survenue. Vérifie l'adresse email.",
+      "successTitle": "Email envoyé !",
+      "successDesc": "Si cette adresse existe, tu recevras un lien de réinitialisation dans quelques minutes.",
+      "backToLogin": "Retour à la connexion"
+    },
+    "resetPassword": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Choisis un nouveau mot de passe sécurisé",
+      "password": "Nouveau mot de passe",
+      "passwordMin": "Min. 8 caractères",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Enregistrer",
+      "error": "Une erreur est survenue. Réessaie.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "successTitle": "Mot de passe mis à jour !",
+      "successDesc": "Tu vas être redirigé vers ton compte."
+    },
     "register": {
       "title": "Créer un compte",
       "subtitle": "Rejoins la communauté JustEdit",

@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
+import { contactRatelimit, getIp } from '@/lib/ratelimit';
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    if (contactRatelimit) {
+      const ip = getIp(request);
+      const { success } = await contactRatelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
+      }
+    }
+
     const { name, email, subject, message } = await request.json();
 
     if (!name || !email || !subject || !message) {
@@ -14,7 +24,7 @@ export async function POST(request: Request) {
       const resend = new Resend(process.env.RESEND_API_KEY);
 
       await resend.emails.send({
-        from: `JustEdit Contact <noreply@justedit.fr>`,
+        from: `JustEdit Contact <noreply@justedit.store>`,
         to: process.env.CONTACT_EMAIL ?? 'justmathis.contact@gmail.com',
         subject: `[JustEdit] ${subject}`,
         html: `

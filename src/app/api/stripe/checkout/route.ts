@@ -1,9 +1,19 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@/lib/supabase/server';
+import { checkoutRatelimit, getIp } from '@/lib/ratelimit';
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    if (checkoutRatelimit) {
+      const ip = getIp(request);
+      const { success } = await checkoutRatelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
+      }
+    }
+
     const { productId, locale: reqLocale } = await request.json();
     const locale = reqLocale === 'en' ? 'en' : 'fr';
 

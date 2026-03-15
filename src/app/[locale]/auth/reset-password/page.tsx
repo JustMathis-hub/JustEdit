@@ -6,44 +6,64 @@ import { Link, useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
 
-export default function LoginPage() {
-  const t = useTranslations('auth.login');
+export default function ResetPasswordPage() {
+  const t = useTranslations('auth.resetPassword');
   const router = useRouter();
   const supabase = createClient();
 
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (password !== confirmPassword) {
+      setError(t('passwordMismatch'));
+      return;
+    }
+
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       setError(t('error'));
     } else {
-      router.push('/compte');
+      setSuccess(true);
+      setTimeout(() => router.push('/compte'), 2000);
     }
     setLoading(false);
   };
 
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 pt-20">
+        <div className="text-center max-w-sm">
+          <div className="w-16 h-16 rounded-full bg-[rgba(139,26,26,0.15)] border border-[rgba(139,26,26,0.3)] flex items-center justify-center mx-auto mb-5">
+            <CheckCircle size={30} className="text-[#8b1a1a]" />
+          </div>
+          <h2 className="text-2xl font-black text-white mb-2">{t('successTitle')}</h2>
+          <p className="text-[oklch(0.55_0.005_0)] text-sm">{t('successDesc')}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 pt-20">
-      {/* Background glow */}
       <div
         className="fixed top-0 left-1/2 -translate-x-1/2 w-96 h-96 opacity-20 pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.7) 0%, transparent 70%)' }}
       />
 
       <div className="w-full max-w-sm relative z-10">
-        {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/">
             <Image src="/Logo.png" alt="JustEdit" width={40} height={40} className="mx-auto" />
@@ -52,37 +72,32 @@ export default function LoginPage() {
           <p className="text-sm text-[oklch(0.5_0.005_0)]">{t('subtitle')}</p>
         </div>
 
-        {/* Form */}
         <div className="bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-2xl p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-sm text-[oklch(0.7_0.005_0)]">{t('email')}</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoComplete="email"
-                className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
-                placeholder={t('emailPlaceholder')}
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <Label htmlFor="password" className="text-sm text-[oklch(0.7_0.005_0)]">{t('password')}</Label>
-                <Link href="/auth/mot-de-passe-oublie" className="text-xs text-[#8b1a1a] hover:text-[#c0392b] transition-colors">
-                  {t('forgotPassword')}
-                </Link>
-              </div>
+              <Label htmlFor="password" className="text-sm text-[oklch(0.7_0.005_0)]">{t('password')}</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
+                minLength={8}
+                autoComplete="new-password"
+                className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
+                placeholder={t('passwordMin')}
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="confirmPassword" className="text-sm text-[oklch(0.7_0.005_0)]">{t('confirmPassword')}</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                autoComplete="new-password"
                 className="bg-[oklch(0.09_0_0)] border-[oklch(0.22_0_0)] text-white placeholder:text-[oklch(0.35_0.005_0)] focus:border-[#8b1a1a]"
                 placeholder="••••••••"
               />
@@ -103,13 +118,6 @@ export default function LoginPage() {
             </button>
           </form>
         </div>
-
-        <p className="text-center text-sm text-[oklch(0.5_0.005_0)] mt-5">
-          {t('noAccount')}{' '}
-          <Link href="/auth/inscription" className="text-[#8b1a1a] hover:text-[#c0392b] font-medium transition-colors">
-            {t('register')}
-          </Link>
-        </p>
       </div>
     </div>
   );
