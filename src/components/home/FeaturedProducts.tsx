@@ -39,14 +39,41 @@ export async function FeaturedProducts() {
   }
 
   return (
-    <section className="py-20 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-20 px-4 sm:px-6 relative overflow-hidden">
+      {/* Background — grid + glows matching HeroSection */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Grid */}
+        <div
+          className="absolute inset-0 opacity-[0.032]"
+          style={{
+            backgroundImage: `
+              linear-gradient(oklch(0.95 0.005 0) 1px, transparent 1px),
+              linear-gradient(90deg, oklch(0.95 0.005 0) 1px, transparent 1px)
+            `,
+            backgroundSize: '56px 56px',
+          }}
+        />
+        {/* Top fade — blends from previous section */}
+        <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-[oklch(0.07_0_0)] to-transparent" />
+        {/* Bordeaux glow — bottom left */}
+        <div
+          className="absolute -bottom-20 -left-20 w-[500px] h-[500px] opacity-15"
+          style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.7) 0%, transparent 65%)' }}
+        />
+        {/* Bordeaux glow — top right */}
+        <div
+          className="absolute -top-10 right-0 w-[400px] h-[400px] opacity-10"
+          style={{ background: 'radial-gradient(circle, rgba(139,26,26,0.6) 0%, transparent 65%)' }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">
               JustEdit
             </p>
-            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            <h2 className="text-xl sm:text-4xl font-black text-white tracking-tight">
               {t('title')}
             </h2>
             <p className="text-[oklch(0.5_0.005_0)] mt-2 text-sm">{t('subtitle')}</p>
@@ -56,7 +83,7 @@ export async function FeaturedProducts() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {(products as Product[]).map((product) => (
             <ProductCard key={product.id} product={product} likeCount={likeCountMap[product.id] ?? 0} />
           ))}
@@ -82,3 +109,4 @@ export async function FeaturedProducts() {
     </section>
   );
 }
+

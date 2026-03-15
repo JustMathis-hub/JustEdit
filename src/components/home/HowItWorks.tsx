@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { CreditCard, Download, Film } from 'lucide-react';
 import { AnimateIn } from '@/components/ui/AnimateIn';
+import { GlassBackground } from './GlassBackground';
 
 const icons = [CreditCard, Download, Film];
 
@@ -14,46 +15,112 @@ export function HowItWorks() {
   ] as const;
 
   return (
-    <section className="py-28 px-4 sm:px-6 relative">
-      {/* Top separator */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-16 bg-gradient-to-b from-[oklch(0.18_0_0)] to-transparent" />
+    <section className="py-40 px-4 sm:px-6 relative overflow-hidden">
+      {/* Interactive glass background */}
+      <GlassBackground />
 
-      <div className="max-w-5xl mx-auto">
-        <AnimateIn className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+      <div className="max-w-5xl mx-auto relative z-10">
+        <AnimateIn className="text-center mb-10 sm:mb-16">
+          <h2 className="text-xl sm:text-4xl font-black text-white tracking-tight">
             {t('title')}
           </h2>
         </AnimateIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          {/* Connecting line */}
-          <div className="hidden md:block absolute top-10 left-[22%] right-[22%] h-px">
-            <div className="h-full bg-gradient-to-r from-transparent via-[oklch(0.22_0_0)] to-transparent" />
+        {/* Glass card */}
+        <div className="je-glass-card p-4 sm:p-10">
+          <div className="je-scan" />
+
+          <style>{`
+            /* ── Glass bubble icon ── */
+            .je-step-icon {
+              position: relative;
+              border-radius: 50%;
+              background:
+                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.18) 0%, transparent 65%),
+                rgba(255, 255, 255, 0.06);
+              backdrop-filter: blur(16px) saturate(1.4);
+              -webkit-backdrop-filter: blur(16px) saturate(1.4);
+              border: 1px solid rgba(200, 70, 70, 0.2);
+              box-shadow:
+                0 8px 28px rgba(0, 0, 0, 0.55),
+                0 0 0 1px rgba(139, 26, 26, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              transition: box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+            }
+            /* Top reflection arc — circle */
+            .je-step-icon::before {
+              content: '';
+              position: absolute;
+              top: 4%; left: 12%; right: 12%;
+              height: 42%;
+              background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.32) 0%,
+                rgba(255, 255, 255, 0.10) 45%,
+                transparent 100%
+              );
+              border-radius: 50%;
+              pointer-events: none;
+              z-index: 1;
+            }
+            /* Bordeaux inner glow rim */
+            .je-step-icon::after {
+              content: '';
+              position: absolute;
+              inset: 0;
+              border-radius: 50%;
+              box-shadow: inset 0 0 18px rgba(139, 26, 26, 0.22);
+              pointer-events: none;
+              z-index: 1;
+            }
+            .group:hover .je-step-icon {
+              border-color: rgba(180, 40, 40, 0.5);
+              background:
+                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.28) 0%, transparent 65%),
+                rgba(255, 255, 255, 0.08);
+              box-shadow:
+                0 8px 36px rgba(139, 26, 26, 0.3),
+                0 0 0 1px rgba(139, 26, 26, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.26),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+            }
+          `}</style>
+
+          <div className="grid grid-cols-3 gap-2 sm:gap-6 relative">
+            {/* Connecting line */}
+            <div className="block absolute top-5 sm:top-10 left-[22%] right-[22%] h-px">
+              <div className="h-full bg-gradient-to-r from-transparent via-[oklch(0.22_0_0)] to-transparent" />
+            </div>
+
+            {steps.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <AnimateIn key={step.key} delay={i * 120} className="relative flex flex-col items-center text-center group">
+                  <div className="relative mb-5">
+                    <div className="je-step-icon w-10 h-10 sm:w-20 sm:h-20">
+                      <Icon size={15} className="sm:hidden relative z-10" style={{ color: 'rgba(255,255,255,0.8)', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))' }} />
+                      <Icon size={26} className="hidden sm:block relative z-10" style={{ color: 'rgba(255,255,255,0.8)', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))' }} />
+                    </div>
+                    <div className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-[oklch(0.07_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
+                      <span className="text-[9px] sm:text-[11px] font-black text-[oklch(0.45_0.005_0)]">{i + 1}</span>
+                    </div>
+                  </div>
+
+                  <h3 className="text-[10px] sm:text-base font-bold text-white mb-1 sm:mb-2 group-hover:text-[oklch(0.9_0.005_0)] transition-colors">
+                    {t(`${step.key}.title`)}
+                  </h3>
+                  <p className="hidden sm:block text-sm text-[oklch(0.48_0.005_0)] leading-relaxed max-w-[200px]">
+                    {t(`${step.key}.desc`)}
+                  </p>
+                </AnimateIn>
+              );
+            })}
           </div>
-
-          {steps.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <AnimateIn key={step.key} delay={i * 120} className="relative flex flex-col items-center text-center group">
-                {/* Step number + icon */}
-                <div className="relative mb-5">
-                  <div className="w-20 h-20 rounded-2xl bg-[oklch(0.10_0_0)] border border-[oklch(0.18_0_0)] group-hover:border-[rgba(139,26,26,0.35)] transition-colors flex items-center justify-center shadow-lg">
-                    <Icon size={26} className="text-[#8b1a1a]" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[oklch(0.07_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
-                    <span className="text-[11px] font-black text-[oklch(0.45_0.005_0)]">{i + 1}</span>
-                  </div>
-                </div>
-
-                <h3 className="text-base font-bold text-white mb-2 group-hover:text-[oklch(0.9_0.005_0)] transition-colors">
-                  {t(`${step.key}.title`)}
-                </h3>
-                <p className="text-sm text-[oklch(0.48_0.005_0)] leading-relaxed max-w-[200px]">
-                  {t(`${step.key}.desc`)}
-                </p>
-              </AnimateIn>
-            );
-          })}
         </div>
       </div>
     </section>

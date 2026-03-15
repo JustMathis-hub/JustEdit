@@ -53,14 +53,14 @@ export function HeroSection() {
             </div>
 
             {/* Headline */}
-            <h1 className="animate-fade-up delay-200 text-5xl sm:text-6xl md:text-7xl xl:text-8xl font-black tracking-tighter text-white leading-[0.92] mb-3">
+            <h1 className="animate-fade-up delay-200 text-4xl sm:text-6xl md:text-7xl xl:text-8xl font-black tracking-tighter text-white leading-[0.92] mb-3">
               {t('headline')}
             </h1>
             {/* Bordeaux underline accent */}
             <div className="animate-fade-up delay-300 h-1 w-24 bg-gradient-to-r from-[#8b1a1a] to-transparent rounded-full mb-8" />
 
             {/* Subheadline */}
-            <p className="animate-fade-up delay-300 text-lg sm:text-xl text-[oklch(0.52_0.005_0)] max-w-xl mb-10 leading-relaxed">
+            <p className="animate-fade-up delay-300 text-sm sm:text-xl text-[oklch(0.52_0.005_0)] max-w-xl mb-10 leading-relaxed">
               {t('subheadline')}
             </p>
 
@@ -114,11 +114,11 @@ export function HeroSection() {
                     opacity: 0.85;
                   }
                   .je-hero-inner {
-                    padding: 14px 28px;
+                    padding: 10px 16px;
                     border-radius: 14px;
                     color: #fff;
                     font-weight: 700;
-                    font-size: 1rem;
+                    font-size: 0.875rem;
                     z-index: 3;
                     position: relative;
                     background: radial-gradient(circle 80px at 80% -50%, #5c1212, #0d0303);
@@ -131,6 +131,9 @@ export function HeroSection() {
                   }
                   .je-hero-btn:hover .je-hero-inner {
                     background: radial-gradient(circle 80px at 80% -50%, #701818, #100606);
+                  }
+                  @media (min-width: 640px) {
+                    .je-hero-inner { padding: 14px 28px; font-size: 1rem; }
                   }
                   .je-hero-inner::before {
                     content: "";
@@ -159,7 +162,7 @@ export function HeroSection() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-[oklch(0.22_0_0)] text-[oklch(0.62_0.005_0)] hover:text-white hover:border-[oklch(0.32_0_0)] px-8 py-3 text-base font-semibold bg-transparent gap-2"
+                  className="border-[oklch(0.22_0_0)] text-[oklch(0.62_0.005_0)] hover:text-white hover:border-[oklch(0.32_0_0)] px-4 py-2 sm:px-8 sm:py-3 text-sm sm:text-base font-semibold bg-transparent gap-2"
                 >
                   <Play size={13} className="fill-current" />
                   {t('ctaFree')}
