@@ -22,6 +22,11 @@ export const routing = defineRouting({
       fr: '/auth/inscription',
       en: '/auth/register',
     },
+    '/auth/mot-de-passe-oublie': {
+      fr: '/auth/mot-de-passe-oublie',
+      en: '/auth/forgot-password',
+    },
+    '/auth/reset-password': '/auth/reset-password',
     '/compte': {
       fr: '/compte',
       en: '/account',
