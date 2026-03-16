@@ -7,7 +7,9 @@ import { Check, Film, ChevronDown } from 'lucide-react';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
 import { PROMO_PRICES } from '@/lib/promoConfig';
 import { PRODUCT_CHANGELOGS } from '@/lib/productChangelogs';
+import { PRODUCT_EXTRA_VIDEOS, PRODUCT_EXTRA_IMAGES } from '@/lib/productMediaConfig';
 import { ChangelogAccordion } from '@/components/shop/ChangelogAccordion';
+import { ProductMediaGallery } from '@/components/shop/ProductMediaGallery';
 import type { Metadata } from 'next';
 import type { Product } from '@/types';
 
@@ -115,81 +117,109 @@ export default async function ProductPage({ params }: Props) {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
 
-        {/* Hero product section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-10">
-          {/* Left — Preview */}
-          <div>
-            <div className="aspect-video bg-[oklch(0.09_0_0)] rounded-2xl border border-[oklch(0.18_0_0)] overflow-hidden relative">
-              {product.thumbnail_url ? (
-                <img
-                  src={product.thumbnail_url}
-                  alt={name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Film size={48} className="text-[oklch(0.25_0.005_0)]" />
-                </div>
-              )}
-              {product.preview_video_url && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                  <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/25 flex items-center justify-center cursor-pointer hover:bg-white/20 transition-colors">
-                    <div className="w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-l-[14px] border-l-white ml-1" />
-                  </div>
-                </div>
-              )}
-            </div>
+        {/* ══════════════════════════════════════
+            MEDIA GALLERY — full width, centered
+            ══════════════════════════════════════ */}
+        <div className="w-full max-w-4xl mx-auto mt-10 mb-14">
+          <ProductMediaGallery
+            videoUrl={product.preview_video_url ?? undefined}
+            extraVideos={PRODUCT_EXTRA_VIDEOS[product.slug] ?? []}
+            images={PRODUCT_EXTRA_IMAGES[product.slug] ?? []}
+            title={name}
+          />
+        </div>
 
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {product.software_tags.map((tag: string) => (
-                <span key={tag} className="px-3 py-1 text-xs font-medium bg-[oklch(0.13_0_0)] border border-[oklch(0.2_0_0)] rounded-full text-[oklch(0.6_0.005_0)]">
-                  {tag}
-                </span>
-              ))}
-              <span className="px-3 py-1 text-xs font-medium bg-[oklch(0.13_0_0)] border border-[oklch(0.2_0_0)] rounded-full text-[oklch(0.6_0.005_0)]">
-                .mogrt
-              </span>
-            </div>
+        {/* ══════════════════════════════════════
+            PRODUCT INFO — centered below gallery
+            ══════════════════════════════════════ */}
+        <div className="max-w-3xl mx-auto">
 
-            {/* Changelog */}
-            {PRODUCT_CHANGELOGS[product.slug] && (
-              <ChangelogAccordion entries={PRODUCT_CHANGELOGS[product.slug]} />
-            )}
+          {/* Category badge */}
+          <div className="mb-2">
+            <span className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest">
+              {product.category === 'mogrt' ? 'MOGRT' : product.category.toUpperCase()}
+            </span>
           </div>
 
-          {/* Right — Info + Buy */}
-          <div className="flex flex-col">
-            <div className="mb-2">
-              <span className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest">
-                {product.category === 'mogrt' ? 'MOGRT' : product.category.toUpperCase()}
+          {/* Title */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+            {name}
+          </h1>
+
+          {/* Description */}
+          <p className="text-sm sm:text-base leading-relaxed mb-6" style={{ color: 'oklch(0.55 0.005 0)' }}>
+            {description}
+          </p>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-10">
+            {product.software_tags.map((tag: string) => (
+              <span
+                key={tag}
+                className="px-3 py-1 text-xs font-medium rounded-full"
+                style={{
+                  background: 'oklch(0.13 0 0)',
+                  border: '1px solid oklch(0.2 0 0)',
+                  color: 'oklch(0.6 0.005 0)',
+                }}
+              >
+                {tag}
               </span>
-            </div>
+            ))}
+            <span
+              className="px-3 py-1 text-xs font-medium rounded-full"
+              style={{
+                background: 'oklch(0.13 0 0)',
+                border: '1px solid oklch(0.2 0 0)',
+                color: 'oklch(0.6 0.005 0)',
+              }}
+            >
+              .mogrt
+            </span>
+          </div>
 
-            <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-4">
-              {name}
-            </h1>
+          {/* Divider */}
+          <div
+            className="mb-10 h-px w-full"
+            style={{ background: 'linear-gradient(90deg, transparent, oklch(0.18 0 0) 30%, oklch(0.18 0 0) 70%, transparent)' }}
+          />
 
-            <p className="text-[oklch(0.55_0.005_0)] leading-relaxed mb-8 text-sm">
-              {description}
-            </p>
+          {/* ── Bottom grid: includes + price/CTA ── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
 
-            {/* What's included */}
-            <div className="bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl p-5 mb-6">
-              <p className="text-xs font-semibold text-[oklch(0.4_0.005_0)] uppercase tracking-widest mb-3">
+            {/* Ce pack contient */}
+            <div
+              className="rounded-2xl p-6"
+              style={{
+                background: 'oklch(0.095 0 0)',
+                border: '1px solid oklch(0.16 0 0)',
+              }}
+            >
+              <p
+                className="text-[10px] font-bold uppercase tracking-widest mb-5"
+                style={{ color: 'oklch(0.35 0.005 0)' }}
+              >
                 {t('includes')}
               </p>
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {[t('mogrtFile'), t('compatiblePr'), t('freeUpdates')].map((item) => (
-                  <li key={item} className="flex items-center gap-2.5 text-sm text-[oklch(0.7_0.005_0)]">
-                    <Check size={14} className="text-[#8b1a1a] shrink-0" />
+                  <li key={item} className="flex items-center gap-3 text-sm" style={{ color: 'oklch(0.72 0.005 0)' }}>
+                    <span
+                      className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+                      style={{
+                        background: 'rgba(139,26,26,0.15)',
+                        border: '1px solid rgba(139,26,26,0.3)',
+                      }}
+                    >
+                      <Check size={11} className="text-[#c04040]" />
+                    </span>
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* License selector + CTA */}
+            {/* Price + CTA */}
             <LicensePurchase
               productId={product.id}
               productSlug={product.slug}
@@ -201,6 +231,14 @@ export default async function ProductPage({ params }: Props) {
               purchaseId={purchase?.id}
             />
           </div>
+
+          {/* Changelog / Notes de version */}
+          {PRODUCT_CHANGELOGS[product.slug] && (
+            <div className="mt-4">
+              <ChangelogAccordion entries={PRODUCT_CHANGELOGS[product.slug]} />
+            </div>
+          )}
+
         </div>
 
         {/* ── Product Showcase ── */}
@@ -382,4 +420,3 @@ export default async function ProductPage({ params }: Props) {
     </div>
   );
 }
-
