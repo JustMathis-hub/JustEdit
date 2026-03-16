@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Zap, Play } from 'lucide-react';
+import { ArrowRight, Zap, Package } from 'lucide-react';
 
 export function HeroSection() {
   const t = useTranslations('home.hero');
@@ -166,24 +166,24 @@ export function HeroSection() {
                     border-radius: 16px;
                     border: none;
                     padding: 2px;
-                    background: radial-gradient(circle 80px at 80% -10%, #2a2a2a, #0a0a0a);
+                    background: radial-gradient(circle 80px at 80% -10%, #3a3a3a, #161616);
                     position: relative;
                     transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
                   }
                   .je-free-btn:hover {
                     transform: scale(0.98);
-                    background: radial-gradient(circle 80px at 80% -10%, #363636, #0d0d0d);
+                    background: radial-gradient(circle 80px at 80% -10%, #484848, #1a1a1a);
                     box-shadow: 0 0 30px rgba(255,255,255,0.04);
                   }
                   .je-free-inner {
                     padding: 10px 16px;
                     border-radius: 14px;
-                    color: oklch(0.65 0.005 0);
+                    color: oklch(0.78 0.005 0);
                     font-weight: 700;
                     font-size: 0.875rem;
                     z-index: 3;
                     position: relative;
-                    background: radial-gradient(circle 80px at 80% -50%, #1e1e1e, #080808);
+                    background: radial-gradient(circle 80px at 80% -50%, #2e2e2e, #121212);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -192,7 +192,7 @@ export function HeroSection() {
                     transition: background 0.35s ease, color 0.35s ease;
                   }
                   .je-free-btn:hover .je-free-inner {
-                    background: radial-gradient(circle 80px at 80% -50%, #262626, #0a0a0a);
+                    background: radial-gradient(circle 80px at 80% -50%, #363636, #161616);
                     color: #fff;
                   }
                   @media (min-width: 640px) {
@@ -201,7 +201,7 @@ export function HeroSection() {
                 `}</style>
                 <button type="button" className="je-free-btn">
                   <span className="je-free-inner">
-                    <Play size={13} className="fill-current" />
+                    <Package size={13} />
                     {t('ctaFree')}
                   </span>
                 </button>

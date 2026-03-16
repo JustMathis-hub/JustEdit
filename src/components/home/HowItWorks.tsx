@@ -1,9 +1,9 @@
 import { useTranslations } from 'next-intl';
-import { CreditCard, Download, Film } from 'lucide-react';
+import { ShoppingCart, Download, Clapperboard } from 'lucide-react';
 import { AnimateIn } from '@/components/ui/AnimateIn';
 import { GlassBackground } from './GlassBackground';
 
-const icons = [CreditCard, Download, Film];
+const icons = [ShoppingCart, Download, Clapperboard];
 
 export function HowItWorks() {
   const t = useTranslations('home.howItWorks');
@@ -31,63 +31,54 @@ export function HowItWorks() {
           <div className="je-scan" />
 
           <style>{`
-            /* ── Glass bubble icon ── */
+            /* ── Metallic black sphere icon ── */
             .je-step-icon {
               position: relative;
               border-radius: 50%;
-              background:
-                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.22) 0%, transparent 65%),
-                oklch(0.14 0 0);
-              backdrop-filter: blur(16px) saturate(1.4);
-              -webkit-backdrop-filter: blur(16px) saturate(1.4);
-              border: 1px solid rgba(200, 70, 70, 0.2);
+              background: #080808;
+              border: 1.5px solid rgba(139, 26, 26, 0.7);
               box-shadow:
-                0 8px 28px rgba(0, 0, 0, 0.55),
-                0 0 0 1px rgba(139, 26, 26, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+                0 0 10px rgba(139, 26, 26, 0.4),
+                0 0 26px rgba(139, 26, 26, 0.18),
+                0 6px 22px rgba(0, 0, 0, 0.75),
+                inset 0 1px 0 rgba(255, 255, 255, 0.13),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.6);
               display: flex;
               align-items: center;
               justify-content: center;
               overflow: hidden;
-              transition: box-shadow 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+              transition: box-shadow 0.35s ease, border-color 0.35s ease;
             }
-            /* Top reflection arc — circle */
+            /* Grain texture */
             .je-step-icon::before {
               content: '';
               position: absolute;
-              top: 4%; left: 12%; right: 12%;
-              height: 42%;
-              background: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0.32) 0%,
-                rgba(255, 255, 255, 0.10) 45%,
-                transparent 100%
-              );
+              inset: 0;
               border-radius: 50%;
+              background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+              opacity: 0.07;
+              mix-blend-mode: overlay;
               pointer-events: none;
-              z-index: 1;
+              z-index: 2;
             }
-            /* Bordeaux inner glow rim */
+            /* Inner bordeaux rim glow */
             .je-step-icon::after {
               content: '';
               position: absolute;
               inset: 0;
               border-radius: 50%;
-              box-shadow: inset 0 0 18px rgba(139, 26, 26, 0.22);
+              box-shadow: inset 0 0 10px rgba(139, 26, 26, 0.2);
               pointer-events: none;
               z-index: 1;
             }
             .group:hover .je-step-icon {
-              border-color: rgba(180, 40, 40, 0.5);
-              background:
-                radial-gradient(circle at 40% 35%, rgba(180, 40, 40, 0.32) 0%, transparent 65%),
-                oklch(0.16 0 0);
+              border-color: rgba(180, 40, 40, 0.95);
               box-shadow:
-                0 8px 36px rgba(139, 26, 26, 0.3),
-                0 0 0 1px rgba(139, 26, 26, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.26),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+                0 0 16px rgba(139, 26, 26, 0.6),
+                0 0 40px rgba(139, 26, 26, 0.28),
+                0 6px 22px rgba(0, 0, 0, 0.75),
+                inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.6);
             }
           `}</style>
 

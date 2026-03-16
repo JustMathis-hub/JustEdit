@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@/lib/supabase/server';
 import { checkoutRatelimit, getIp } from '@/lib/ratelimit';
+import { PROMO_PRICES } from '@/lib/promoConfig';
+
+const COMMERCIAL_PRICE_CENTS = 5000; // 50 €
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +17,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const { productId, locale: reqLocale } = await request.json();
+    const { productId, licenseType, locale: reqLocale } = await request.json();
     const locale = reqLocale === 'en' ? 'en' : 'fr';
 
     if (!productId) {
@@ -60,6 +63,12 @@ export async function POST(request: Request) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
     const productName = locale === 'fr' ? product.name_fr : product.name_en;
 
+    // Resolve correct price: commercial fixed at 50€, personal uses promo if available
+    const isCommercial = licenseType === 'commercial';
+    const unitAmount = isCommercial
+      ? COMMERCIAL_PRICE_CENTS
+      : (PROMO_PRICES[product.slug] ?? product.price_cents);
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -68,7 +77,7 @@ export async function POST(request: Request) {
         {
           price_data: {
             currency: 'eur',
-            unit_amount: product.price_cents,
+            unit_amount: unitAmount,
             product_data: {
               name: productName,
               description: `JustEdit — ${product.category.toUpperCase()} pack`,
@@ -81,6 +90,7 @@ export async function POST(request: Request) {
       metadata: {
         user_id: user.id,
         product_id: product.id,
+        license_type: isCommercial ? 'commercial' : 'personal',
       },
       success_url: `${siteUrl}/${locale}/checkout/succes?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/${locale}/boutique/${product.slug}`,
