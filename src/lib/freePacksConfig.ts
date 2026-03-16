@@ -43,7 +43,7 @@ export const FREE_PACKS: FreePack[] = [
     ],
     itemCount: 11,
     category: 'MOGRT',
-    downloadUrl: 'https://pub-f52afe70f2bb4d0c5b5bad5e8f377368.r2.dev/11-backgrounds-animes.zip',
+    downloadUrl: 'https://assets.justedit.store/11-backgrounds-animes.zip',
   },
 ];
 
