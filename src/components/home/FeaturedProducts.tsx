@@ -1,7 +1,8 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { FreePackCard } from '@/components/shop/FreePackCard';
 import { ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
 
@@ -9,21 +10,31 @@ export async function FeaturedProducts() {
   const t = await getTranslations('home.featured');
   const tShop = await getTranslations('home.cta');
 
+  const locale = await getLocale();
   const supabase = await createClient();
-  const { data: products } = await supabase
-    .from('products')
-    .select('*')
-    .eq('is_published', true)
-    .eq('is_free', false)
-    .order('sort_order', { ascending: true })
-    .limit(4);
+  const [{ data: products }, { data: { user } }] = await Promise.all([
+    supabase
+      .from('products')
+      .select('*')
+      .eq('is_published', true)
+      .eq('is_free', false)
+      .order('sort_order', { ascending: true })
+      .limit(4),
+    supabase.auth.getUser(),
+  ]);
+  const isAuthenticated = !!user;
+  const userName: string =
+    user?.user_metadata?.full_name ??
+    user?.user_metadata?.name ??
+    user?.email ??
+    '';
 
   if (!products || products.length === 0) {
     return null;
   }
 
   // Fetch like counts
-  const productIds = products.map((p) => p.id);
+  const productIds = (products ?? []).map((p) => p.id);
   const likeCountMap: Record<string, number> = {};
   if (productIds.length > 0) {
     const { data: likeCounts } = await supabase
@@ -87,6 +98,38 @@ export async function FeaturedProducts() {
           {(products as Product[]).map((product) => (
             <ProductCard key={product.id} product={product} likeCount={likeCountMap[product.id] ?? 0} />
           ))}
+        </div>
+
+        <div className="mt-16">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <h2 className="text-xl sm:text-4xl font-black text-white tracking-tight">
+                {locale === 'en' ? 'Free packs' : 'Packs gratuits'}
+              </h2>
+              <p className="text-[oklch(0.5_0.005_0)] mt-2 text-sm">
+                {locale === 'en' ? 'Our most downloaded free packs' : 'Nos packs gratuits les plus téléchargés'}
+              </p>
+            </div>
+            <Link href="/packs-gratuits" className="hidden md:flex items-center gap-1.5 text-sm text-[oklch(0.5_0.005_0)] hover:text-white transition-colors">
+              {t('viewAllFree')} <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+            <FreePackCard
+              title="11 Backgrounds Animés"
+              description="Une collection de 11 fonds animés prêts à l'emploi pour habiller vos montages. Modernes, épurés, compatibles Premiere Pro."
+              itemCount={11}
+              itemLabel="backgrounds"
+              tags={['Premiere Pro', '.mogrt', 'Backgrounds']}
+              videoUrl="/videos/video-11backgrounds-free.mp4"
+              slug="11-backgrounds-animes"
+              locale={locale}
+              isAuthenticated={isAuthenticated}
+              userName={userName}
+            />
+          </div>
+
         </div>
 
         <div className="text-center mt-12">

@@ -23,7 +23,10 @@
     "featured": {
       "title": "Our packs",
       "subtitle": "Ready-to-use template selection",
-      "viewAll": "View all"
+      "viewAll": "View all",
+      "freePacks": "Free packs",
+      "freePacksTitle": "Our most downloaded free packs",
+      "viewAllFree": "View all free packs"
     },
     "howItWorks": {
       "title": "How it works",

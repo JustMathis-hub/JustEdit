@@ -215,12 +215,13 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 1px rgba(139,26,26,0.08), 0 0 16px rgba(139,26,26,0.12), inset 0 1px 0 rgba(255,255,255,0.04)';
       }}
     >
-      {/* Thumbnail / Video */}
-      {comingSoon ? (
-        <div>{thumbnailBlock}</div>
-      ) : (
-        <Link href={`/boutique/${product.slug}` as any}>{thumbnailBlock}</Link>
+      {/* Full-card overlay link */}
+      {!comingSoon && (
+        <Link href={`/boutique/${product.slug}` as any} className="absolute inset-0 z-0" aria-label={name} />
       )}
+
+      {/* Thumbnail / Video */}
+      <div>{thumbnailBlock}</div>
 
       {/* Info */}
       <div className="p-4">
@@ -238,7 +239,7 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
           </div>
         )}
 
-        <h3 className={`font-bold text-white text-sm mb-0.5 line-clamp-2 ${comingSoon ? '' : 'group-hover:text-[#e07070] transition-colors'}`}>
+        <h3 className={`font-bold text-white text-sm mb-0.5 line-clamp-2 ${!comingSoon ? 'group-hover:text-[#e07070] transition-colors' : ''}`}>
           {name}
         </h3>
         {tagline && (
@@ -263,14 +264,16 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
                 )}
               </span>
 
-              <Link href={`/boutique/${product.slug}` as any}>
-                <button type="button" className="je-card-btn">
-                  <span className="je-card-blob" />
-                  <span className="je-card-inner">
-                    {product.is_free ? t('free') : t('view')}
-                  </span>
-                </button>
-              </Link>
+              <div className="relative z-10">
+                <Link href={`/boutique/${product.slug}` as any}>
+                  <button type="button" className="je-card-btn">
+                    <span className="je-card-blob" />
+                    <span className="je-card-inner">
+                      {product.is_free ? t('free') : t('view')}
+                    </span>
+                  </button>
+                </Link>
+              </div>
             </>
           )}
         </div>

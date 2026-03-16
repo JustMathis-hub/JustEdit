@@ -23,7 +23,10 @@
     "featured": {
       "title": "Nos packs",
       "subtitle": "Sélection de templates prêts à l'emploi",
-      "viewAll": "Voir tout"
+      "viewAll": "Voir tout",
+      "freePacks": "Packs gratuits",
+      "freePacksTitle": "Nos packs gratuits les plus téléchargés",
+      "viewAllFree": "Voir tous les packs gratuits"
     },
     "howItWorks": {
       "title": "Comment ça marche ?",

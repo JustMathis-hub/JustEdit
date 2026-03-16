@@ -47,16 +47,15 @@ export function GlassBackground() {
       style={({ '--mx': '50%', '--my': '50%', '--mx2': '50%', '--my2': '50%' }) as React.CSSProperties}
     >
       <style>{`
-        /* ── Grid quadrillage — red-tinted, radial fade ── */
+        /* ── Grid quadrillage — neutral, full coverage ── */
         .je-grid {
           position: absolute;
-          inset: -20%;
+          inset: 0;
           background-image:
-            linear-gradient(rgba(200, 50, 50, 0.055) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(200, 50, 50, 0.055) 1px, transparent 1px);
-          background-size: 44px 44px;
-          mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, black 10%, transparent 75%);
-          -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 50%, black 10%, transparent 75%);
+            linear-gradient(oklch(0.95 0.005 0) 1px, transparent 1px),
+            linear-gradient(90deg, oklch(0.95 0.005 0) 1px, transparent 1px);
+          background-size: 56px 56px;
+          opacity: 0.032;
           z-index: 0;
         }
 
@@ -158,16 +157,16 @@ export function GlassBackground() {
         .je-fade-top {
           position: absolute;
           top: 0; left: 0; right: 0;
-          height: 45%;
-          background: linear-gradient(to bottom, oklch(0.07 0 0) 0%, oklch(0.07 0 0 / 0.7) 40%, transparent 100%);
+          height: 20%;
+          background: linear-gradient(to bottom, oklch(0.07 0 0) 0%, transparent 100%);
           z-index: 3;
           pointer-events: none;
         }
         .je-fade-bottom {
           position: absolute;
           bottom: 0; left: 0; right: 0;
-          height: 45%;
-          background: linear-gradient(to top, oklch(0.07 0 0) 0%, oklch(0.07 0 0 / 0.7) 40%, transparent 100%);
+          height: 20%;
+          background: linear-gradient(to top, oklch(0.07 0 0) 0%, transparent 100%);
           z-index: 3;
           pointer-events: none;
         }
