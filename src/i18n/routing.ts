@@ -35,6 +35,10 @@ export const routing = defineRouting({
       fr: '/packs-gratuits',
       en: '/free-packs',
     },
+    '/packs-gratuits/[slug]': {
+      fr: '/packs-gratuits/[slug]',
+      en: '/free-packs/[slug]',
+    },
     '/faq': '/faq',
     '/contact': '/contact',
     '/mentions-legales': {

@@ -41,7 +41,7 @@
   },
   "shop": {
     "title": "Shop",
-    "subtitle": "Professional templates & presets",
+    "subtitle": "Templates, MOGRT & presets specially designed to enhance your edits",
     "free": "Free",
     "freeSection": "Free",
     "freePacks": "Free packs",
@@ -98,7 +98,7 @@
     "commercial": "Commercial",
     "vat": "Incl. tax",
     "buy": "Buy",
-    "personalFeatures": ["Personal use", "YouTube & social media", "1 user", "Free updates"],
+    "personalFeatures": ["Personal use", "1 user", "Free updates"],
     "commercialFeatures": ["Commercial & client use", "Agencies & companies", "Multi-user"]
   },
   "auth": {

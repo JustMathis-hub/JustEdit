@@ -50,7 +50,7 @@
   },
   "shop": {
     "title": "Boutique",
-    "subtitle": "Templates & presets professionnels",
+    "subtitle": "Templates, MOGRT & presets spécialement conçus pour optimiser vos montages",
     "free": "Gratuit",
     "freeSection": "Gratuit",
     "freePacks": "Packs gratuits",
@@ -107,7 +107,7 @@
     "commercial": "Commerciale",
     "vat": "TTC",
     "buy": "Acheter",
-    "personalFeatures": ["Usage personnel", "YouTube & réseaux sociaux", "1 utilisateur", "Mises à jour gratuites"],
+    "personalFeatures": ["Usage personnel", "1 utilisateur", "Mises à jour gratuites"],
     "commercialFeatures": ["Usage commercial & clients", "Agences & entreprises", "Multi-utilisateurs"]
   },
   "auth": {
@@ -207,7 +207,7 @@
   },
   "freePacks": {
     "title": "Packs Gratuits",
-    "subtitle": "Des ressources offertes par JustEdit",
+    "subtitle": "Des ressources offertes par JustEdit ! La gratuité ça fait plaisir hehe",
     "download": "Télécharger gratuitement",
     "loginRequired": "Connecte-toi pour télécharger",
     "noPacks": "Aucun pack gratuit disponible pour le moment."

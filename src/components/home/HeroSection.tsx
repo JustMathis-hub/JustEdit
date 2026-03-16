@@ -159,14 +159,52 @@ export function HeroSection() {
                 </button>
               </Link>
               <Link href="/packs-gratuits">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-[oklch(0.22_0_0)] text-[oklch(0.62_0.005_0)] hover:text-white hover:border-[oklch(0.32_0_0)] px-4 py-2 sm:px-8 sm:py-3 text-sm sm:text-base font-semibold bg-transparent gap-2"
-                >
-                  <Play size={13} className="fill-current" />
-                  {t('ctaFree')}
-                </Button>
+                <style>{`
+                  .je-free-btn {
+                    cursor: pointer;
+                    font-size: 1rem;
+                    border-radius: 16px;
+                    border: none;
+                    padding: 2px;
+                    background: radial-gradient(circle 80px at 80% -10%, #2a2a2a, #0a0a0a);
+                    position: relative;
+                    transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+                  }
+                  .je-free-btn:hover {
+                    transform: scale(0.98);
+                    background: radial-gradient(circle 80px at 80% -10%, #363636, #0d0d0d);
+                    box-shadow: 0 0 30px rgba(255,255,255,0.04);
+                  }
+                  .je-free-inner {
+                    padding: 10px 16px;
+                    border-radius: 14px;
+                    color: oklch(0.65 0.005 0);
+                    font-weight: 700;
+                    font-size: 0.875rem;
+                    z-index: 3;
+                    position: relative;
+                    background: radial-gradient(circle 80px at 80% -50%, #1e1e1e, #080808);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    overflow: hidden;
+                    transition: background 0.35s ease, color 0.35s ease;
+                  }
+                  .je-free-btn:hover .je-free-inner {
+                    background: radial-gradient(circle 80px at 80% -50%, #262626, #0a0a0a);
+                    color: #fff;
+                  }
+                  @media (min-width: 640px) {
+                    .je-free-inner { padding: 14px 28px; font-size: 1rem; }
+                  }
+                `}</style>
+                <button type="button" className="je-free-btn">
+                  <span className="je-free-inner">
+                    <Play size={13} className="fill-current" />
+                    {t('ctaFree')}
+                  </span>
+                </button>
               </Link>
             </div>
 
@@ -233,7 +271,10 @@ export function HeroSection() {
                         <h3 className="font-bold text-white text-sm leading-tight">Just Number</h3>
                         <p className="text-[11px] text-[oklch(0.42_0.005_0)] mt-0.5">{t('cardTagline')}</p>
                       </div>
-                      <span className="text-lg font-black text-white">25€</span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-lg font-black text-[#e07070]">16€</span>
+                        <span className="text-xs text-[oklch(0.42_0.005_0)] line-through leading-none">25€</span>
+                      </div>
                     </div>
                     <div className="flex gap-1.5 mb-3">
                       <span className="px-2 py-0.5 text-[10px] rounded-full bg-[rgba(139,26,26,0.12)] text-[#c07070] border border-[rgba(139,26,26,0.2)]">Premiere Pro</span>
