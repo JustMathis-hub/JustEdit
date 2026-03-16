@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
 import { FreeClaimButton } from '@/components/shop/FreeClaimButton';
 import { FreePackMediaGallery } from '@/components/shop/FreePackMediaGallery';
-import { Check, Sparkles, ArrowLeft } from 'lucide-react';
+import { Check, Sparkles, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
@@ -100,8 +100,8 @@ export default async function FreePackPage({ params }: Props) {
         <div className="w-full max-w-4xl mx-auto mb-14">
           <FreePackMediaGallery
             videoUrl={pack.videoUrl}
+            images={pack.images}
             title={name}
-            slideCount={5}
           />
         </div>
 
@@ -157,6 +157,25 @@ export default async function FreePackPage({ params }: Props) {
               </span>
             ))}
           </div>
+
+          {/* Already claimed banner */}
+          {alreadyClaimed && (
+            <div
+              className="flex items-center gap-3 px-5 py-4 rounded-2xl mb-8"
+              style={{
+                background: 'rgba(16,185,129,0.07)',
+                border: '1px solid rgba(16,185,129,0.2)',
+              }}
+            >
+              <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+              <div>
+                <p className="text-sm font-bold text-emerald-400">Vous possédez déjà ce pack</p>
+                <p className="text-xs mt-0.5" style={{ color: 'oklch(0.45 0.005 0)' }}>
+                  Retrouvez-le dans votre <a href={`/${locale}/compte`} className="underline hover:text-white transition-colors">espace personnel</a> pour le retélécharger.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Divider */}
           <div

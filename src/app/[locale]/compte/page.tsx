@@ -5,8 +5,10 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { formatPrice, formatDate } from '@/lib/utils';
 import { DownloadButton } from '@/components/compte/DownloadButton';
-import { User, Package, Calendar, ArrowRight } from 'lucide-react';
+import { User, Package, Calendar, ArrowRight, Gift } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { ClaimedFreePackCard } from '@/components/shop/ClaimedFreePackCard';
+import { getFreePackBySlug } from '@/lib/freePacksConfig';
 import type { Purchase, Product } from '@/types';
 
 export default async function AccountPage() {
@@ -31,6 +33,12 @@ export default async function AccountPage() {
     .select('*, product:products(*)')
     .eq('user_id', user.id)
     .eq('status', 'completed')
+    .order('created_at', { ascending: false });
+
+  const { data: freeClaims } = await supabase
+    .from('free_claims')
+    .select('pack_slug, download_url, created_at')
+    .eq('user_id', user.id)
     .order('created_at', { ascending: false });
 
   return (
@@ -64,6 +72,33 @@ export default async function AccountPage() {
             </div>
           </div>
         </div>
+
+        {/* ── Free packs section ── */}
+        {freeClaims && freeClaims.length > 0 && (
+          <div className="mb-10">
+            <div className="flex items-center gap-2 mb-5">
+              <Gift size={16} className="text-[#8b1a1a]" />
+              <h2 className="text-lg font-bold text-white">Packs gratuits</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {freeClaims.map((claim) => {
+                const pack = getFreePackBySlug(claim.pack_slug);
+                if (!pack) return null;
+                const packName = locale === 'fr' ? pack.name_fr : pack.name_en;
+                return (
+                  <ClaimedFreePackCard
+                    key={claim.pack_slug}
+                    title={packName}
+                    slug={claim.pack_slug}
+                    locale={locale}
+                    downloadUrl={claim.download_url ?? pack.downloadUrl}
+                    videoUrl={pack.videoUrl}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Purchases section */}
         <div>

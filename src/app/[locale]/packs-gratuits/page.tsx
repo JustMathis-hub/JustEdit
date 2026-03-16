@@ -20,6 +20,15 @@ export default async function FreePacksPage() {
   const locale = await getLocale();
 
   const supabase = await createClient();
+
+  /* Current user */
+  const { data: { user } } = await supabase.auth.getUser();
+  const userName: string =
+    user?.user_metadata?.full_name ??
+    user?.user_metadata?.name ??
+    user?.email ??
+    '';
+
   const { data: freePacks } = await supabase
     .from('products')
     .select('*')
@@ -65,8 +74,11 @@ export default async function FreePacksPage() {
             itemCount={11}
             itemLabel="backgrounds"
             tags={['Premiere Pro', '.mogrt', 'Backgrounds']}
+            videoUrl="/videos/video-11backgrounds-free.mp4"
             slug="11-backgrounds-animes"
             locale={locale}
+            isAuthenticated={!!user}
+            userName={userName}
           />
 
           {/* ── Supabase free packs ── */}

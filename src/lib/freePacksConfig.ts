@@ -7,9 +7,10 @@ export interface FreePack {
   tags: string[];
   videoUrl?: string;
   thumbnailUrl?: string;
+  images?: string[]; // Preview screenshots
   includes_fr: string[];
   includes_en: string[];
-  downloadUrl?: string; // Will be set when file is uploaded to Supabase Storage
+  downloadUrl?: string;
   itemCount: number;
   category: string;
 }
@@ -34,9 +35,15 @@ export const FREE_PACKS: FreePack[] = [
       'Free to use (personal & commercial)',
       'Free updates',
     ],
+    videoUrl: '/videos/video-11backgrounds-free.mp4',
+    images: [
+      '/images/packs/bg-1.png',
+      '/images/packs/bg-2.png',
+      '/images/packs/bg-3.png',
+    ],
     itemCount: 11,
     category: 'MOGRT',
-    // downloadUrl: 'https://...' // Uncomment and fill when file is ready in Supabase Storage
+    downloadUrl: 'https://pub-f52afe70f2bb4d0c5b5bad5e8f377368.r2.dev/11-backgrounds-animes.zip',
   },
 ];
 
