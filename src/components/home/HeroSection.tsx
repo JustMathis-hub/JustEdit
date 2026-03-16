@@ -246,18 +246,6 @@ export function HeroSection() {
                       className="absolute inset-0 w-full h-full object-cover"
                       src="/just-number-preview-v3.mp4"
                     />
-                    {/* Fallback: subtle grid + number if video not available */}
-                    <div
-                      className="absolute inset-0 opacity-[0.06]"
-                      style={{
-                        backgroundImage: 'linear-gradient(oklch(0.9 0 0) 1px, transparent 1px), linear-gradient(90deg, oklch(0.9 0 0) 1px, transparent 1px)',
-                        backgroundSize: '24px 24px',
-                      }}
-                    />
-                    <div
-                      className="absolute inset-0 opacity-20"
-                      style={{ background: 'radial-gradient(circle at 50% 60%, rgba(139,26,26,0.6) 0%, transparent 60%)' }}
-                    />
                     {/* Corner badge */}
                     <div className="absolute top-3 right-3 px-2 py-0.5 text-[10px] font-bold rounded-full bg-[rgba(139,26,26,0.25)] text-[#e07070] border border-[rgba(139,26,26,0.3)] z-10">
                       MOGRT
