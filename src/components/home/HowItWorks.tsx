@@ -97,9 +97,6 @@ export function HowItWorks() {
                       <Icon size={15} className="sm:hidden relative z-10" style={{ color: 'rgba(255,255,255,0.8)', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))' }} />
                       <Icon size={26} className="hidden sm:block relative z-10" style={{ color: 'rgba(255,255,255,0.8)', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))' }} />
                     </div>
-                    <div className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-[oklch(0.07_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
-                      <span className="text-[9px] sm:text-[11px] font-black text-[oklch(0.45_0.005_0)]">{i + 1}</span>
-                    </div>
                   </div>
 
                   <h3 className="text-[10px] sm:text-base font-bold text-white mb-1 sm:mb-2 group-hover:text-[oklch(0.9_0.005_0)] transition-colors">
