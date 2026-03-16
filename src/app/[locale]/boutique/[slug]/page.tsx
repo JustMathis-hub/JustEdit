@@ -6,6 +6,8 @@ import { LicensePurchase } from '@/components/shop/LicensePurchase';
 import { Check, Film, ChevronDown } from 'lucide-react';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
 import { PROMO_PRICES } from '@/lib/promoConfig';
+import { PRODUCT_CHANGELOGS } from '@/lib/productChangelogs';
+import { ChangelogAccordion } from '@/components/shop/ChangelogAccordion';
 import type { Metadata } from 'next';
 import type { Product } from '@/types';
 
@@ -149,6 +151,11 @@ export default async function ProductPage({ params }: Props) {
                 .mogrt
               </span>
             </div>
+
+            {/* Changelog */}
+            {PRODUCT_CHANGELOGS[product.slug] && (
+              <ChangelogAccordion entries={PRODUCT_CHANGELOGS[product.slug]} />
+            )}
           </div>
 
           {/* Right — Info + Buy */}

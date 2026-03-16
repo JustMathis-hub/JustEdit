@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { FreePackCard } from '@/components/shop/FreePackCard';
 import type { Product } from '@/types';
 import type { Metadata } from 'next';
 
@@ -16,6 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function FreePacksPage() {
   const t = await getTranslations('freePacks');
+  const locale = await getLocale();
 
   const supabase = await createClient();
   const { data: freePacks } = await supabase
@@ -54,17 +56,25 @@ export default async function FreePacksPage() {
         </div>
 
         {/* Products grid */}
-        {!freePacks || freePacks.length === 0 ? (
-          <div className="text-center py-20 text-[oklch(0.4_0.005_0)]">
-            {t('noPacks')}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {(freePacks as Product[]).map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {/* ── Hardcoded free pack — 11 Backgrounds ── */}
+          <FreePackCard
+            title="11 Backgrounds Animés"
+            description="Une collection de 11 fonds animés prêts à l'emploi pour habiller vos montages. Modernes, épurés, compatibles Premiere Pro."
+            itemCount={11}
+            itemLabel="backgrounds"
+            tags={['Premiere Pro', '.mogrt', 'Backgrounds']}
+            slug="11-backgrounds-animes"
+            locale={locale}
+          />
+
+          {/* ── Supabase free packs ── */}
+          {freePacks && (freePacks as Product[]).map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+
+        </div>
       </div>
     </div>
   );
