@@ -49,7 +49,7 @@ export default async function FreePackPage({ params }: Props) {
 
     if (claim) {
       alreadyClaimed = true;
-      existingDownloadUrl = claim.download_url ?? pack.downloadUrl;
+      existingDownloadUrl = pack.downloadUrl ?? claim.download_url;
     }
   }
 

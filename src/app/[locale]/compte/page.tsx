@@ -91,7 +91,7 @@ export default async function AccountPage() {
                     title={packName}
                     slug={claim.pack_slug}
                     locale={locale}
-                    downloadUrl={claim.download_url ?? pack.downloadUrl}
+                    downloadUrl={pack.downloadUrl ?? claim.download_url}
                     videoUrl={pack.videoUrl}
                   />
                 );
