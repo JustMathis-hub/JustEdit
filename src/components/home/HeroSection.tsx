@@ -244,7 +244,7 @@ export function HeroSection() {
                       loop
                       playsInline
                       className="absolute inset-0 w-full h-full object-cover"
-                      src="/hero-preview.mp4"
+                      src="/just-number-preview-v3.mp4"
                     />
                     {/* Fallback: subtle grid + number if video not available */}
                     <div

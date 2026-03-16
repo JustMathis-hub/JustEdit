@@ -129,16 +129,6 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
         </div>
       )}
 
-      {/* Overlay on hover */}
-      {!comingSoon && (
-        <div className="absolute inset-0 bg-[oklch(0_0_0)]/0 group-hover:bg-[oklch(0_0_0)]/30 transition-all duration-300 flex items-center justify-center">
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
-              <Play size={16} className="text-white ml-0.5" />
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Free badge */}
       {product.is_free && !comingSoon && (
@@ -151,7 +141,7 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
 
       {/* Heart like button — bottom right */}
       {!comingSoon && (
-        <div className="absolute bottom-2.5 right-2.5 z-10">
+        <div className="absolute bottom-2.5 right-2.5 z-[2]">
           <HeartLike
             productId={product.id}
             initialLikeCount={likeCount}
@@ -215,13 +205,13 @@ export function ProductCard({ product, purchased, purchaseId, likeCount = 0 }: P
         (e.currentTarget as HTMLDivElement).style.boxShadow = '0 0 0 1px rgba(139,26,26,0.08), 0 0 16px rgba(139,26,26,0.12), inset 0 1px 0 rgba(255,255,255,0.04)';
       }}
     >
-      {/* Full-card overlay link */}
-      {!comingSoon && (
-        <Link href={`/boutique/${product.slug}` as any} className="absolute inset-0 z-0" aria-label={name} />
-      )}
-
       {/* Thumbnail / Video */}
       <div>{thumbnailBlock}</div>
+
+      {/* Full-card overlay link */}
+      {!comingSoon && (
+        <Link href={`/boutique/${product.slug}` as any} className="absolute inset-0 z-[1]" aria-label={name} />
+      )}
 
       {/* Info */}
       <div className="p-4">
