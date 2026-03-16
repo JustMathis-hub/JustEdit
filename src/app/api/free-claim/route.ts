@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: true,
         alreadyClaimed: true,
-        downloadUrl: existing.download_url ?? pack.downloadUrl ?? null,
+        downloadUrl: pack.downloadUrl ?? existing.download_url ?? null,
       });
     }
 
