@@ -605,3 +605,27 @@ html {
 .je-heart-liked .je-heart-count {
   color: #e07070;
 }
+
+/* ── Account page — profile card glow animation ── */
+@keyframes cardPulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(139, 26, 26, 0.15), 0 0 30px rgba(139, 26, 26, 0.08); }
+  50% { box-shadow: 0 0 0 1px rgba(192, 57, 43, 0.3), 0 0 50px rgba(192, 57, 43, 0.15); }
+}
+.je-profile-card {
+  animation: cardPulse 3s ease-in-out infinite;
+}
+
+/* ── Profile avatar ring glow ── */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(139, 26, 26, 0.5), 0 0 12px rgba(139, 26, 26, 0.2); }
+  50% { box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.8), 0 0 20px rgba(192, 57, 43, 0.4); }
+}
+.profile-avatar-ring {
+  background: linear-gradient(135deg, rgba(192,57,43,0.8), rgba(139,26,26,0.4), rgba(192,57,43,0.8));
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+/* ── Navbar avatar ring ── */
+.navbar-avatar-ring {
+  background: linear-gradient(135deg, rgba(192,57,43,0.9), rgba(139,26,26,0.5), rgba(192,57,43,0.9));
+}
