@@ -132,7 +132,7 @@ export default async function ProductPage({ params }: Props) {
         {/* ══════════════════════════════════════
             PRODUCT INFO — centered below gallery
             ══════════════════════════════════════ */}
-        <div className="max-w-3xl mx-auto">
+        <div data-reveal className="max-w-3xl mx-auto">
 
           {/* Category badge */}
           <div className="mb-2">
@@ -209,7 +209,7 @@ export default async function ProductPage({ params }: Props) {
 
         {/* ── Tutoriel vidéo ── */}
         {PRODUCT_YOUTUBE_VIDEOS[product.slug] && (
-          <div className="mt-24">
+          <div data-reveal className="mt-24">
             <h2 className="text-2xl font-black text-white tracking-tight mb-2">Tutoriel</h2>
             <p className="text-sm text-[oklch(0.45_0.005_0)] mb-8">Regardez le tutoriel complet pour prendre en main ce produit.</p>
             <div
@@ -228,7 +228,7 @@ export default async function ProductPage({ params }: Props) {
         )}
 
         {/* ── Problèmes potentiels ── */}
-        <div className="mt-24">
+        <div data-reveal className="mt-24">
           <h2 className="text-2xl font-black text-white tracking-tight mb-2">Problèmes potentiels</h2>
           <p className="text-sm text-[oklch(0.45_0.005_0)] mb-12">Solutions aux problèmes les plus courants rencontrés avec ce produit.</p>
 
@@ -278,7 +278,7 @@ export default async function ProductPage({ params }: Props) {
         </div>
 
         {/* FAQ */}
-        <div className="mt-20">
+        <div data-reveal className="mt-20">
           <h2 className="text-2xl font-black text-white tracking-tight mb-6">{t('faq.title')}</h2>
           <div className="space-y-3">
             {faqs.map((faq, i) => (

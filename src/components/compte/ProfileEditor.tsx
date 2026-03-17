@@ -38,6 +38,7 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
       if (!res.ok || data.error) throw new Error(data.error || 'Erreur');
       toast.success('Profil mis à jour');
       setIsEditing(false);
+      window.dispatchEvent(new CustomEvent('profile-updated'));
       router.refresh();
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Erreur lors de la mise à jour');

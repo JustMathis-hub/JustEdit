@@ -44,6 +44,19 @@ export function Navbar() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Re-fetch profile when user saves changes from ProfileEditor
+  useEffect(() => {
+    const handler = async () => {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (currentUser) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        setProfile(data);
+      }
+    };
+    window.addEventListener('profile-updated', handler);
+    return () => window.removeEventListener('profile-updated', handler);
+  }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -72,7 +85,7 @@ export function Navbar() {
       style={{ top: isBannerVisible ? '40px' : '0px' }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative flex items-center justify-between h-16">
+        <div className="relative flex items-center justify-between h-14 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
             <div className="h-10 relative">
@@ -164,13 +177,30 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu toggle */}
-          <button
-            className="md:hidden p-2 text-[oklch(0.65_0.005_0)] hover:text-white"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile right: avatar + menu toggle */}
+          <div className="md:hidden flex items-center gap-2">
+            {user && (
+              <Link href="/compte" onClick={() => setMenuOpen(false)}>
+                <div className="navbar-avatar-ring w-7 h-7 rounded-full p-[1.5px] shrink-0">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-[oklch(0.08_0_0)]">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={profile?.avatar_url ?? '/images/avatars/avatar-1.png'}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                </div>
+              </Link>
+            )}
+            <button
+              className="p-2 text-[oklch(0.65_0.005_0)] hover:text-white"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -192,10 +222,24 @@ export function Navbar() {
               <LanguageSwitcher />
               {user ? (
                 <div className="flex items-center gap-2">
-                  <Link href="/compte" onClick={() => setMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="text-sm">
-                      <User size={14} className="mr-1.5" /> {t('account')}
-                    </Button>
+                  <Link href="/compte" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
+                    <div className="navbar-avatar-ring w-7 h-7 rounded-full p-[1.5px] shrink-0">
+                      <div className="w-full h-full rounded-full overflow-hidden bg-[oklch(0.08_0_0)]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={profile?.avatar_url ?? '/images/avatars/avatar-1.png'}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col leading-tight">
+                      <span className="text-[13px] font-semibold text-white">
+                        {profile?.full_name ?? t('account')}
+                      </span>
+                      <span className="text-[10px] text-[oklch(0.45_0.005_0)]">Espace personnel</span>
+                    </div>
                   </Link>
                   <button onClick={handleLogout} className="p-2 text-[oklch(0.45_0.005_0)] hover:text-white">
                     <LogOut size={16} />

@@ -7,6 +7,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { CookieBanner } from '@/components/layout/CookieBanner';
 import { PromoBannerProvider, PromoBanner } from '@/components/layout/PromoBanner';
+import { ScrollRevealInit } from '@/components/layout/ScrollRevealInit';
 import { Toaster } from '@/components/ui/sonner';
 import '../globals.css';
 
@@ -53,6 +54,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <PromoBannerProvider>
             <PromoBanner />
             <Navbar />
+            <ScrollRevealInit />
             <main className="min-h-screen">
               {children}
             </main>

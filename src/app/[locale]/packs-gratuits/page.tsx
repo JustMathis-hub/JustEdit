@@ -71,7 +71,7 @@ export default async function FreePacksPage() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="mb-12">
+        <div data-reveal className="mb-12">
           <p className="text-xs font-semibold text-[#8b1a1a] uppercase tracking-widest mb-2">
             JustEdit
           </p>
@@ -82,7 +82,7 @@ export default async function FreePacksPage() {
         </div>
 
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div data-reveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {/* ── Hardcoded free pack — 11 Backgrounds ── */}
           <FreePackCard
