@@ -3,11 +3,11 @@ import { ParticlesBg } from '@/components/ui/ParticlesBg';
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { LicensePurchase } from '@/components/shop/LicensePurchase';
-import { Check, Film, ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
 import { PROMO_PRICES } from '@/lib/promoConfig';
 import { PRODUCT_CHANGELOGS } from '@/lib/productChangelogs';
-import { PRODUCT_EXTRA_VIDEOS, PRODUCT_EXTRA_IMAGES } from '@/lib/productMediaConfig';
+import { PRODUCT_EXTRA_VIDEOS, PRODUCT_EXTRA_IMAGES, PRODUCT_YOUTUBE_VIDEOS } from '@/lib/productMediaConfig';
 import { ChangelogAccordion } from '@/components/shop/ChangelogAccordion';
 import { ProductMediaGallery } from '@/components/shop/ProductMediaGallery';
 import type { Metadata } from 'next';
@@ -241,105 +241,25 @@ export default async function ProductPage({ params }: Props) {
 
         </div>
 
-        {/* ── Product Showcase ── */}
-        <div className="mt-24">
-          <h2 className="text-2xl font-black text-white tracking-tight mb-2">Présentation du produit</h2>
-          <p className="text-sm text-[oklch(0.45_0.005_0)] mb-12">Découvrez les fonctionnalités et les différentes options de personnalisation.</p>
-
-          <div className="space-y-16">
-
-            {/* Showcase 1 — image left */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div className="aspect-video bg-[oklch(0.09_0_0)] rounded-2xl border border-[oklch(0.18_0_0)] overflow-hidden relative group">
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[oklch(0.14_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
-                    <Film size={22} className="text-[oklch(0.3_0.005_0)]" />
-                  </div>
-                  <span className="text-xs text-[oklch(0.3_0.005_0)] font-medium">Aperçu / GIF / Image</span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(139,26,26,0.04)] to-transparent pointer-events-none" />
-              </div>
-              <div>
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Fonctionnalité 01</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Titre de la fonctionnalité</h3>
-                <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Décrivez ici une fonctionnalité clé ou une option de personnalisation de votre produit. Expliquez en quoi elle est utile, comment l'utiliser et ce qu'elle apporte concrètement à l'utilisateur final.
-                </p>
-                <ul className="mt-5 space-y-2">
-                  {['Point fort A', 'Point fort B', 'Point fort C'].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm text-[oklch(0.65_0.005_0)]">
-                      <Check size={13} className="text-[#8b1a1a] shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        {/* ── Tutoriel vidéo ── */}
+        {PRODUCT_YOUTUBE_VIDEOS[product.slug] && (
+          <div className="mt-24">
+            <h2 className="text-2xl font-black text-white tracking-tight mb-2">Tutoriel</h2>
+            <p className="text-sm text-[oklch(0.45_0.005_0)] mb-8">Regardez le tutoriel complet pour prendre en main ce produit.</p>
+            <div
+              className="w-full rounded-2xl overflow-hidden border border-[oklch(0.18_0_0)]"
+              style={{ aspectRatio: '16/9' }}
+            >
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${PRODUCT_YOUTUBE_VIDEOS[product.slug]}`}
+                title="Tutoriel"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
             </div>
-
-            {/* Separator */}
-            <div className="h-px bg-gradient-to-r from-transparent via-[oklch(0.2_0_0)] to-transparent" />
-
-            {/* Showcase 2 — image right */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div className="order-1 lg:order-2 aspect-video bg-[oklch(0.09_0_0)] rounded-2xl border border-[oklch(0.18_0_0)] overflow-hidden relative group">
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[oklch(0.14_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
-                    <Film size={22} className="text-[oklch(0.3_0.005_0)]" />
-                  </div>
-                  <span className="text-xs text-[oklch(0.3_0.005_0)] font-medium">Aperçu / GIF / Image</span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-bl from-[rgba(139,26,26,0.04)] to-transparent pointer-events-none" />
-              </div>
-              <div className="order-2 lg:order-1">
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Fonctionnalité 02</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Titre de la fonctionnalité</h3>
-                <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Décrivez ici une deuxième fonctionnalité ou un aspect visuel important du produit. Mettez en avant les modifications possibles, les paramètres disponibles ou les styles inclus.
-                </p>
-                <ul className="mt-5 space-y-2">
-                  {['Point fort A', 'Point fort B', 'Point fort C'].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm text-[oklch(0.65_0.005_0)]">
-                      <Check size={13} className="text-[#8b1a1a] shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* Separator */}
-            <div className="h-px bg-gradient-to-r from-transparent via-[oklch(0.2_0_0)] to-transparent" />
-
-            {/* Showcase 3 — image left */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <div className="aspect-video bg-[oklch(0.09_0_0)] rounded-2xl border border-[oklch(0.18_0_0)] overflow-hidden relative group">
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-[oklch(0.14_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
-                    <Film size={22} className="text-[oklch(0.3_0.005_0)]" />
-                  </div>
-                  <span className="text-xs text-[oklch(0.3_0.005_0)] font-medium">Aperçu / GIF / Image</span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-[rgba(139,26,26,0.04)] to-transparent pointer-events-none" />
-              </div>
-              <div>
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Fonctionnalité 03</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Titre de la fonctionnalité</h3>
-                <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Décrivez ici la troisième fonctionnalité du produit. Parlez des cas d'usage, de la compatibilité ou des paramètres avancés accessibles directement depuis Premiere Pro ou After Effects.
-                </p>
-                <ul className="mt-5 space-y-2">
-                  {['Point fort A', 'Point fort B', 'Point fort C'].map((item) => (
-                    <li key={item} className="flex items-center gap-2.5 text-sm text-[oklch(0.65_0.005_0)]">
-                      <Check size={13} className="text-[#8b1a1a] shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
           </div>
-        </div>
+        )}
 
         {/* ── Problèmes potentiels ── */}
         <div className="mt-24">
@@ -350,12 +270,17 @@ export default async function ProductPage({ params }: Props) {
 
             {/* Issue 1 — slider left */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <BeforeAfterSlider beforeLabel="Problème" afterLabel="Solution" />
+              <BeforeAfterSlider
+                beforeSrc="/images/justnumber/pb1-1.png"
+                afterSrc="/images/justnumber/pb1-2.png"
+                beforeLabel="Activé"
+                afterLabel="Pas activé"
+              />
               <div>
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Problème 01</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Titre du problème</h3>
+                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Glow</span>
+                <h3 className="text-xl font-black text-white tracking-tight mb-3">Glow settings</h3>
                 <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Décrivez ici le problème rencontré et les étapes pour le résoudre. Par exemple : "Le fichier ne s'importe pas" → vérifier la version de Premiere Pro et réinstaller le .mogrt depuis le panneau Essential Graphics.
+                  Le Glow peut varier selon les paramètres de votre séquence. Si vous cochez l&apos;option &quot;Composite en couleur linéaire&quot; (accessible via Séquence &gt; Général &gt; Composite en couleur linéaire), l&apos;effet ne s&apos;affichera pas de la même manière que si la case reste décochée. Choisissez le style qui vous convient le mieux ! Gardez toutefois en tête que, lorsque cette case est activée, des défauts peuvent apparaître sur les contours d&apos;un Glow particulièrement intense.
                 </p>
               </div>
             </div>
@@ -366,31 +291,22 @@ export default async function ProductPage({ params }: Props) {
             {/* Issue 2 — slider right */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
               <div className="order-1 lg:order-2">
-                <BeforeAfterSlider beforeLabel="Problème" afterLabel="Solution" />
+                <BeforeAfterSlider
+                  beforeSrc="/images/justnumber/pb2-1.png"
+                  afterSrc="/images/justnumber/pb2-2.png"
+                  beforeLabel="Problème"
+                  afterLabel="Solution"
+                />
               </div>
               <div className="order-2 lg:order-1">
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Problème 02</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Titre du problème</h3>
+                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Couleur</span>
+                <h3 className="text-xl font-black text-white tracking-tight mb-3">Bug Couleur Originale</h3>
                 <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Décrivez ici le deuxième problème courant et sa solution. Expliquez les étapes à suivre de manière claire pour permettre à l'utilisateur de le résoudre rapidement.
+                  Le Glow peut parfois modifier la couleur originale du texte selon ses paramètres. Le paramètre à changer est : &quot;Seuil Glow&quot;, c&apos;est le curseur qui détermine le niveau de luminosité à partir duquel un objet commence à briller : plus le seuil est élevé, plus il faut que l&apos;image soit lumineuse pour déclencher l&apos;effet de Glow et inversement. Cependant si vous baissez le seuil pour avoir un Glow plus lumineux, cela peut modifier les couleurs originales.
                 </p>
               </div>
             </div>
 
-            {/* Separator */}
-            <div className="h-px bg-gradient-to-r from-transparent via-[oklch(0.2_0_0)] to-transparent" />
-
-            {/* Issue 3 — slider left */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              <BeforeAfterSlider beforeLabel="Problème" afterLabel="Solution" />
-              <div>
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Problème 03</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Titre du problème</h3>
-                <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Décrivez ici un troisième problème possible avec sa solution détaillée. Pensez à mentionner les versions concernées, les systèmes d'exploitation ou les configurations particulières.
-                </p>
-              </div>
-            </div>
 
           </div>
         </div>

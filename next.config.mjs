@@ -9,7 +9,7 @@ const csp = [
   "img-src 'self' data: blob: *.supabase.co *.supabase.in",
   "font-src 'self'",
   "connect-src 'self' *.supabase.co wss://*.supabase.co api.stripe.com",
-  "frame-src js.stripe.com https://challenges.cloudflare.com",
+  "frame-src js.stripe.com https://challenges.cloudflare.com https://www.youtube-nocookie.com https://www.youtube.com",
   "media-src 'self' blob: *.supabase.co",
   "object-src 'none'",
   "base-uri 'self'",
