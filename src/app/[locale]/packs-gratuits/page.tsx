@@ -34,7 +34,24 @@ export default async function FreePacksPage() {
     .select('*')
     .eq('is_published', true)
     .eq('is_free', true)
+    .neq('slug', '11-backgrounds-animes')
     .order('sort_order', { ascending: true });
+
+  /* ── Like count for the hardcoded "11 Backgrounds Animés" pack ── */
+  const { data: bgProduct } = await supabase
+    .from('products')
+    .select('id')
+    .eq('slug', '11-backgrounds-animes')
+    .maybeSingle();
+
+  let bgLikeCount = 0;
+  if (bgProduct) {
+    const { count } = await supabase
+      .from('product_likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('product_id', bgProduct.id);
+    bgLikeCount = count ?? 0;
+  }
 
   return (
     <div className="relative min-h-screen pt-24 pb-20 overflow-hidden">
@@ -79,6 +96,8 @@ export default async function FreePacksPage() {
             locale={locale}
             isAuthenticated={!!user}
             userName={userName}
+            productId={bgProduct?.id}
+            initialLikeCount={bgLikeCount}
           />
 
           {/* ── Supabase free packs ── */}
