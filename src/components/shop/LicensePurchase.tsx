@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Loader2, Download, ShoppingBag } from 'lucide-react';
+import { Loader2, Download } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from '@/i18n/navigation';
 import { toast } from 'sonner';
@@ -41,6 +41,11 @@ export function LicensePurchase({
       minimumFractionDigits: 0,
     }).format(cents / 100);
 
+  const savingsCents = originalPriceCents ? originalPriceCents - priceCents : 0;
+  const savingsPct = originalPriceCents
+    ? Math.round((savingsCents / originalPriceCents) * 100)
+    : 0;
+
   const handleBuy = async () => {
     setLoading(true);
     try {
@@ -52,30 +57,17 @@ export function LicensePurchase({
         return;
       }
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.push('/auth/connexion');
-        return;
-      }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { router.push('/auth/connexion'); return; }
 
-      if (isFree) {
-        window.location.href = `/${locale}/boutique/${productSlug}`;
-        return;
-      }
+      if (isFree) { window.location.href = `/${locale}/boutique/${productSlug}`; return; }
 
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId, licenseType: 'personal', locale }),
       });
-
-      if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error ?? 'Checkout failed');
-      }
-
+      if (!res.ok) { const { error } = await res.json(); throw new Error(error ?? 'Checkout failed'); }
       const { url } = await res.json();
       window.location.href = url;
     } catch (err) {
@@ -85,174 +77,261 @@ export function LicensePurchase({
     }
   };
 
-  /* Already purchased → download only */
+  /* ── Already purchased ── */
   if (alreadyPurchased) {
     return (
-      <div className="flex flex-col justify-end">
-        <button
-          onClick={handleBuy}
-          disabled={loading}
-          className="group relative w-full overflow-hidden rounded-xl bg-[oklch(0.13_0_0)] border border-[oklch(0.25_0_0)] text-white font-semibold py-4 text-base transition-all duration-300 hover:border-[oklch(0.35_0_0)] hover:shadow-[0_0_30px_rgba(139,26,26,0.2)] cursor-pointer"
+      <div className="rounded-2xl p-6" style={{ background: 'oklch(0.095 0 0)', border: '1px solid oklch(0.16 0 0)' }}>
+        <button onClick={handleBuy} disabled={loading}
+          className="w-full rounded-xl border border-[oklch(0.25_0_0)] text-white font-semibold py-4 text-sm uppercase tracking-widest transition-all hover:border-[oklch(0.35_0_0)] cursor-pointer flex items-center justify-center gap-2"
+          style={{ background: 'oklch(0.11 0 0)' }}
         >
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            {loading ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <Download size={18} />
-            )}
-            {tProduct('alreadyPurchased')}
-          </span>
+          {loading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+          {tProduct('alreadyPurchased')}
         </button>
       </div>
     );
   }
 
-  /* Free pack → simple CTA */
+  /* ── Free pack ── */
   if (isFree) {
     return (
-      <div className="flex flex-col justify-end">
-        <button
-          onClick={handleBuy}
-          disabled={loading}
-          className="group relative w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#8b1a1a] to-[#a52525] text-white font-semibold py-4 text-base transition-all duration-300 hover:shadow-[0_0_40px_rgba(139,26,26,0.4)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+      <div className="rounded-2xl p-6" style={{ background: 'oklch(0.095 0 0)', border: '1px solid oklch(0.16 0 0)' }}>
+        <button onClick={handleBuy} disabled={loading}
+          className="w-full rounded-xl text-white font-bold py-4 text-sm uppercase tracking-widest transition-all hover:opacity-90 cursor-pointer flex items-center justify-center gap-2"
+          style={{ background: 'linear-gradient(135deg, #8b1a1a, #c03030)' }}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-[#a52525] to-[#c03030] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          <span className="relative z-10 flex items-center justify-center gap-2">
-            {loading ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <ShoppingBag size={18} />
-            )}
-            {tProduct('claimFree')}
-          </span>
+          {loading ? <Loader2 size={16} className="animate-spin" /> : null}
+          {tProduct('claimFree')}
         </button>
       </div>
     );
   }
 
-  /* ── Paid product — single licence, price + CTA ── */
-  return (
-    <div className="flex flex-col justify-between gap-6">
-      {/* Price */}
-      <div>
-        <p
-          className="text-[10px] font-bold uppercase tracking-widest mb-3"
-          style={{ color: 'oklch(0.35 0.005 0)' }}
-        >
-          Prix
-        </p>
-        <div className="flex items-baseline gap-2">
-          <span className="text-5xl font-black text-white">{fmt(priceCents)}</span>
-          {originalPriceCents && (
-            <span className="text-xl line-through" style={{ color: 'oklch(0.4 0.005 0)' }}>
-              {fmt(originalPriceCents)}
-            </span>
-          )}
-        </div>
-        <p
-          className="text-[10px] mt-1 uppercase tracking-wider"
-          style={{ color: 'oklch(0.4 0.005 0)' }}
-        >
-          TTC
-        </p>
-      </div>
+  /* ── Paid product — premium redesign ── */
+  const features = [
+    tProduct('mogrtFile'),
+    tProduct('compatiblePr'),
+    tProduct('freeUpdates'),
+  ];
 
-      {/* CTA */}
-      <div>
-        <style>{`
-          .je-buy-btn {
-            cursor: pointer;
-            font-size: 1rem;
-            border-radius: 16px;
-            border: none;
-            padding: 2px;
-            background: radial-gradient(circle 80px at 80% -10%, #a02020, #0f0505);
-            position: relative;
-            width: 100%;
-            transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
-          }
-          .je-buy-btn:disabled { opacity: 0.5; pointer-events: none; }
-          .je-buy-btn:hover {
-            transform: scale(0.98);
-            background: radial-gradient(circle 80px at 80% -10%, #b82828, #0f0505);
-            box-shadow: 0 0 40px rgba(139,26,26,0.18), 0 0 80px rgba(139,26,26,0.06);
-          }
-          .je-buy-btn::after {
-            content: "";
-            position: absolute;
-            width: 65%;
-            height: 60%;
-            border-radius: 120px;
-            top: 0;
-            right: 0;
-            box-shadow: 0 0 20px rgba(192,57,43,0.18);
-            z-index: -1;
-            transition: box-shadow 0.35s ease;
-          }
-          .je-buy-btn:hover::after {
-            box-shadow: 0 0 30px rgba(192,57,43,0.25);
-          }
-          .je-buy-blob {
-            position: absolute;
-            width: 80px;
-            height: 100%;
-            border-radius: 16px;
-            bottom: 0;
-            left: 0;
-            background: radial-gradient(circle 60px at 0% 100%, #8b1a1a, #4a0e0e50, transparent);
-            box-shadow: -10px 10px 30px rgba(139,26,26,0.18);
-            transition: box-shadow 0.35s ease, opacity 0.35s ease;
-          }
-          .je-buy-btn:hover .je-buy-blob {
-            box-shadow: -8px 8px 35px rgba(139,26,26,0.3);
-            opacity: 0.85;
-          }
-          .je-buy-inner {
-            padding: 14px 25px;
-            border-radius: 14px;
-            color: #fff;
-            font-weight: 700;
-            font-size: 1rem;
-            z-index: 3;
-            position: relative;
-            background: radial-gradient(circle 80px at 80% -50%, #5c1212, #0d0303);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            transition: background 0.35s ease;
-          }
-          .je-buy-btn:hover .je-buy-inner {
-            background: radial-gradient(circle 80px at 80% -50%, #701818, #100606);
-          }
-          .je-buy-inner::before {
-            content: "";
-            width: 100%;
-            height: 100%;
-            left: 0;
-            top: 0;
-            border-radius: 14px;
-            background: radial-gradient(circle 60px at 20% 110%, rgba(139,26,26,0.2), transparent 60%);
-            position: absolute;
-            transition: opacity 0.35s ease;
-          }
-          .je-buy-btn:hover .je-buy-inner::before {
-            opacity: 0.5;
-          }
-        `}</style>
-        <button onClick={handleBuy} disabled={loading} className="je-buy-btn">
-          <span className="je-buy-blob" />
-          <span className="je-buy-inner">
-            {loading ? <Loader2 size={18} className="animate-spin" /> : tLicense('buy')}
-          </span>
-        </button>
-        <p
-          className="text-xs text-center mt-3"
-          style={{ color: 'oklch(0.3 0.005 0)' }}
-        >
-          Paiement sécurisé · Téléchargement immédiat
-        </p>
+  return (
+    <>
+      <style>{`
+        /* ── Card top accent line ── */
+        .je-card-accent {
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, #8b1a1a 30%, #e04040 50%, #8b1a1a 70%, transparent 100%);
+        }
+
+        /* ── Animated glow border button ── */
+        .je-btn-shell {
+          position: relative;
+          border-radius: 14px;
+          padding: 1.5px;
+          overflow: hidden;
+          width: 100%;
+        }
+        .je-btn-shell::before {
+          content: '';
+          position: absolute;
+          width: 200%;
+          height: 200%;
+          top: -50%;
+          left: -50%;
+          background: conic-gradient(
+            from 0deg,
+            #1a0000 0deg,
+            #6a0f0f 60deg,
+            #cc2020 110deg,
+            #ff3535 150deg,
+            #cc2020 190deg,
+            #6a0f0f 240deg,
+            #1a0000 300deg,
+            #1a0000 360deg
+          );
+          animation: je-border-spin 2.8s linear infinite;
+          border-radius: inherit;
+        }
+        @keyframes je-border-spin {
+          to { transform: rotate(360deg); }
+        }
+        .je-btn-face {
+          position: relative;
+          z-index: 1;
+          width: 100%;
+          border-radius: 12px;
+          padding: 17px 28px;
+          font-size: 1.05rem;
+          font-weight: 900;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #ffffff;
+          cursor: pointer;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          transition: background 0.3s ease, opacity 0.2s ease;
+          background: linear-gradient(135deg, #4a0808 0%, #aa1818 40%, #cc2020 65%, #7a0e0e 100%);
+        }
+        .je-btn-face:hover {
+          background: linear-gradient(135deg, #580a0a 0%, #be2020 40%, #e02828 65%, #8c1010 100%);
+        }
+        .je-btn-face:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        /* ── Savings tag ── */
+        .je-savings-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 4px 10px;
+          border-radius: 999px;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          background: rgba(139,26,26,0.15);
+          border: 1px solid rgba(200,50,50,0.2);
+          color: #d95050;
+        }
+
+        /* ── Promo badge ── */
+        .je-promo-badge {
+          font-size: 10px;
+          font-weight: 800;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: #c84040;
+          padding: 3px 9px;
+          border-radius: 4px;
+          border: 1px solid rgba(200,60,60,0.25);
+          background: rgba(139,26,26,0.12);
+        }
+
+        /* ── Check item ── */
+        .je-check-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 13px;
+          color: oklch(0.60 0.005 0);
+          line-height: 1.4;
+        }
+        .je-check-mark {
+          flex-shrink: 0;
+          width: 18px;
+          height: 18px;
+          border-radius: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(139,26,26,0.1);
+          border: 1px solid rgba(139,26,26,0.22);
+          font-size: 10px;
+          color: #c84040;
+          font-weight: 900;
+        }
+
+        /* ── Divider ── */
+        .je-divider {
+          height: 1px;
+          background: oklch(0.13 0 0);
+          width: 100%;
+        }
+      `}</style>
+
+      <div
+        className="rounded-2xl overflow-hidden"
+        style={{
+          background: 'oklch(0.07 0 0)',
+          border: '1px solid oklch(0.13 0 0)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.5), 0 0 0 0.5px oklch(0.16 0 0)',
+        }}
+      >
+        {/* Top accent */}
+        <div className="je-card-accent" />
+
+        <div className="p-7 flex flex-col gap-6">
+
+          {/* ── Price row ── */}
+          <div>
+            {originalPriceCents && (
+              <div className="flex items-center gap-2.5 mb-4">
+                <span className="je-promo-badge">Offre de lancement</span>
+                <span className="je-savings-tag">-{savingsPct}%</span>
+              </div>
+            )}
+
+            <div className="flex items-end justify-between">
+              {/* Left: price */}
+              <div>
+                <p className="text-[9px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: 'oklch(0.28 0.005 0)' }}>
+                  Prix
+                </p>
+                <div className="flex items-baseline gap-3 leading-none">
+                  <span
+                    className="font-black text-white"
+                    style={{ fontSize: 'clamp(2.6rem, 8vw, 3.6rem)', letterSpacing: '-0.02em', lineHeight: 1 }}
+                  >
+                    {fmt(priceCents)}
+                  </span>
+                  {originalPriceCents && (
+                    <span className="text-xl font-semibold line-through" style={{ color: 'oklch(0.27 0.005 0)' }}>
+                      {fmt(originalPriceCents)}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[9px] mt-1.5 uppercase tracking-[0.18em]" style={{ color: 'oklch(0.28 0.005 0)' }}>
+                  TTC
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+          <div className="je-divider" />
+
+          {/* ── Features ── */}
+          <div className="flex flex-col gap-3">
+            <p className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: 'oklch(0.28 0.005 0)' }}>
+              {tProduct('includes')}
+            </p>
+            {features.map((label) => (
+              <div key={label} className="je-check-item">
+                <span className="je-check-mark">✓</span>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="je-divider" />
+
+          {/* ── CTA ── */}
+          <div className="flex flex-col gap-3">
+            <div className="je-btn-shell">
+              <button
+                onClick={handleBuy}
+                disabled={loading}
+                className="je-btn-face"
+              >
+                {loading
+                  ? <Loader2 size={18} className="animate-spin" />
+                  : tLicense('buy')
+                }
+              </button>
+            </div>
+
+            <p
+              className="text-center text-[11px] tracking-wide"
+              style={{ color: 'oklch(0.28 0.005 0)', letterSpacing: '0.04em' }}
+            >
+              Paiement sécurisé &nbsp;·&nbsp; Téléchargement immédiat
+            </p>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </>
   );
 }

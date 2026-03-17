@@ -110,10 +110,31 @@ export function Navbar() {
                 )}
                 <Link
                   href="/compte"
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-[oklch(0.65_0.005_0)] hover:text-white rounded-md hover:bg-[oklch(0.13_0_0)] transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-[oklch(0.13_0_0)] transition-colors group"
                 >
-                  <User size={15} />
-                  {t('account')}
+                  {/* Avatar mini */}
+                  <div className="navbar-avatar-ring w-7 h-7 rounded-full p-[1.5px] shrink-0">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-[oklch(0.08_0_0)]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={profile?.avatar_url ?? '/images/avatars/avatar-1.png'}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {/* Name + label */}
+                  <div className="flex flex-col leading-tight">
+                    <span className="text-[13px] font-semibold text-white group-hover:text-white transition-colors">
+                      {profile?.full_name ?? t('account')}
+                    </span>
+                    <span className="text-[10px] text-[oklch(0.45_0.005_0)] group-hover:text-[oklch(0.55_0.005_0)] transition-colors">
+                      Espace personnel
+                    </span>
+                  </div>
                 </Link>
                 <button
                   onClick={handleLogout}

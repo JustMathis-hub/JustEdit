@@ -3,7 +3,7 @@ import { ParticlesBg } from '@/components/ui/ParticlesBg';
 import { getTranslations } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { LicensePurchase } from '@/components/shop/LicensePurchase';
-import { Check, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
 import { PROMO_PRICES } from '@/lib/promoConfig';
 import { PRODUCT_CHANGELOGS } from '@/lib/productChangelogs';
@@ -184,42 +184,8 @@ export default async function ProductPage({ params }: Props) {
             style={{ background: 'linear-gradient(90deg, transparent, oklch(0.18 0 0) 30%, oklch(0.18 0 0) 70%, transparent)' }}
           />
 
-          {/* ── Bottom grid: includes + price/CTA ── */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-
-            {/* Ce pack contient */}
-            <div
-              className="rounded-2xl p-6"
-              style={{
-                background: 'oklch(0.095 0 0)',
-                border: '1px solid oklch(0.16 0 0)',
-              }}
-            >
-              <p
-                className="text-[10px] font-bold uppercase tracking-widest mb-5"
-                style={{ color: 'oklch(0.35 0.005 0)' }}
-              >
-                {t('includes')}
-              </p>
-              <ul className="space-y-3">
-                {[t('mogrtFile'), t('compatiblePr'), t('freeUpdates')].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm" style={{ color: 'oklch(0.72 0.005 0)' }}>
-                    <span
-                      className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{
-                        background: 'rgba(139,26,26,0.15)',
-                        border: '1px solid rgba(139,26,26,0.3)',
-                      }}
-                    >
-                      <Check size={11} className="text-[#c04040]" />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Price + CTA */}
+          {/* ── Purchase card ── */}
+          <div className="mb-10">
             <LicensePurchase
               productId={product.id}
               productSlug={product.slug}
