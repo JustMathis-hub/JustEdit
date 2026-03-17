@@ -5,6 +5,7 @@ import { Film, Download, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FreeDownloadModal } from './FreeDownloadModal';
+import { HeartLike } from './HeartLike';
 
 interface FreePackCardProps {
   title: string;
@@ -21,6 +22,10 @@ interface FreePackCardProps {
   userName?: string;
   /** Redirect href used when user is not authenticated */
   loginHref?: string;
+  /** Product UUID from DB — required to show the like button */
+  productId?: string;
+  /** Initial like count fetched server-side */
+  initialLikeCount?: number;
 }
 
 export function FreePackCard({
@@ -35,6 +40,8 @@ export function FreePackCard({
   isAuthenticated = false,
   userName = '',
   loginHref,
+  productId,
+  initialLikeCount = 0,
 }: FreePackCardProps) {
   const [hovered, setHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -74,10 +81,14 @@ export function FreePackCard({
         {/* ── Clickable area → product page ── */}
         {packHref ? (
           <Link href={packHref} className="block no-underline" style={{ color: 'inherit' }}>
-            <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description} />
+            <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description}
+              heartOverlay={productId ? <HeartLike productId={productId} initialLikeCount={initialLikeCount} /> : undefined}
+            />
           </Link>
         ) : (
-          <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description} />
+          <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description}
+            heartOverlay={productId ? <HeartLike productId={productId} initialLikeCount={initialLikeCount} /> : undefined}
+          />
         )}
 
         {/* ── Footer: price + CTA button (outside Link to avoid nesting) ── */}
@@ -155,11 +166,13 @@ function CardBody({
   tags,
   title,
   description,
+  heartOverlay,
 }: {
   videoUrl?: string;
   tags: string[];
   title: string;
   description: string;
+  heartOverlay?: React.ReactNode;
 }) {
   return (
     <>
@@ -209,6 +222,11 @@ function CardBody({
           className="absolute bottom-0 left-0 right-0 h-16 pointer-events-none"
           style={{ background: 'linear-gradient(to top, oklch(0.09 0 0), transparent)' }}
         />
+        {heartOverlay && (
+          <div className="absolute bottom-2.5 right-2.5 z-[2]">
+            {heartOverlay}
+          </div>
+        )}
       </div>
 
       {/* Tags + title + desc */}

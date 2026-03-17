@@ -33,7 +33,7 @@ export async function FeaturedProducts() {
     return null;
   }
 
-  // Fetch like counts
+  // Fetch like counts for paid products
   const productIds = (products ?? []).map((p) => p.id);
   const likeCountMap: Record<string, number> = {};
   if (productIds.length > 0) {
@@ -47,6 +47,22 @@ export async function FeaturedProducts() {
         likeCountMap[row.product_id] = (likeCountMap[row.product_id] ?? 0) + 1;
       }
     }
+  }
+
+  // Fetch like count for the hardcoded free pack
+  const { data: bgProduct } = await supabase
+    .from('products')
+    .select('id')
+    .eq('slug', '11-backgrounds-animes')
+    .maybeSingle();
+
+  let bgLikeCount = 0;
+  if (bgProduct) {
+    const { count } = await supabase
+      .from('product_likes')
+      .select('*', { count: 'exact', head: true })
+      .eq('product_id', bgProduct.id);
+    bgLikeCount = count ?? 0;
   }
 
   return (
@@ -127,6 +143,8 @@ export async function FeaturedProducts() {
               locale={locale}
               isAuthenticated={isAuthenticated}
               userName={userName}
+              productId={bgProduct?.id}
+              initialLikeCount={bgLikeCount}
             />
           </div>
 
