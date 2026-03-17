@@ -68,7 +68,7 @@ export default async function AccountPage() {
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 space-y-10">
 
         {/* ── Profile banner ── */}
-        <div className="je-profile-card rounded-2xl p-5 sm:p-6 border border-[oklch(0.18_0.01_0)] bg-[oklch(0.10_0_0)]">
+        <div data-reveal className="je-profile-card rounded-2xl p-5 sm:p-6 border border-[oklch(0.18_0.01_0)] bg-[oklch(0.10_0_0)]">
           <ProfileEditor
             profile={profile}
             email={user.email ?? ''}
@@ -79,7 +79,7 @@ export default async function AccountPage() {
 
         {/* ── Free packs ── */}
         {freeClaims && freeClaims.length > 0 && (
-          <section>
+          <section data-reveal>
             <div className="flex items-center gap-3 mb-5">
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-[rgba(139,26,26,0.18)] border border-[rgba(139,26,26,0.35)] shadow-[0_0_12px_rgba(139,26,26,0.2)]">
                 <h2 className="text-[11px] font-black text-[#e07070] uppercase tracking-[0.18em]">
@@ -108,7 +108,7 @@ export default async function AccountPage() {
         )}
 
         {/* ── Purchases ── */}
-        <section>
+        <section data-reveal>
           <div className="flex items-center gap-3 mb-5">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-[rgba(139,26,26,0.18)] border border-[rgba(139,26,26,0.35)] shadow-[0_0_12px_rgba(139,26,26,0.2)]">
               <h2 className="text-[11px] font-black text-[#e07070] uppercase tracking-[0.18em]">

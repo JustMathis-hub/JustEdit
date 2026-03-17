@@ -123,41 +123,14 @@ export function LicensePurchase({
           background: linear-gradient(90deg, transparent 0%, #8b1a1a 30%, #e04040 50%, #8b1a1a 70%, transparent 100%);
         }
 
-        /* ── Animated glow border button ── */
+        /* ── Gradient fade button ── */
         .je-btn-shell {
           position: relative;
           border-radius: 14px;
-          padding: 1.5px;
-          overflow: hidden;
           width: 100%;
-        }
-        .je-btn-shell::before {
-          content: '';
-          position: absolute;
-          width: 200%;
-          height: 200%;
-          top: -50%;
-          left: -50%;
-          background: conic-gradient(
-            from 0deg,
-            #1a0000 0deg,
-            #6a0f0f 60deg,
-            #cc2020 110deg,
-            #ff3535 150deg,
-            #cc2020 190deg,
-            #6a0f0f 240deg,
-            #1a0000 300deg,
-            #1a0000 360deg
-          );
-          animation: je-border-spin 2.8s linear infinite;
-          border-radius: inherit;
-        }
-        @keyframes je-border-spin {
-          to { transform: rotate(360deg); }
         }
         .je-btn-face {
           position: relative;
-          z-index: 1;
           width: 100%;
           border-radius: 12px;
           padding: 17px 28px;
@@ -172,12 +145,27 @@ export function LicensePurchase({
           align-items: center;
           justify-content: center;
           gap: 10px;
-          transition: background 0.3s ease, opacity 0.2s ease;
           background: linear-gradient(135deg, #4a0808 0%, #aa1818 40%, #cc2020 65%, #7a0e0e 100%);
+          box-shadow: 0 0 0 1.5px rgba(204,32,32,0.35), 0 4px 24px rgba(139,26,26,0.35);
+          transition: background 0.4s ease, box-shadow 0.3s ease, opacity 0.15s ease;
+          overflow: hidden;
         }
-        .je-btn-face:hover {
-          background: linear-gradient(135deg, #580a0a 0%, #be2020 40%, #e02828 65%, #8c1010 100%);
+        .je-btn-face::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #7a1212 0%, #dd2828 40%, #ff4040 65%, #aa1818 100%);
+          opacity: 0;
+          transition: opacity 0.35s ease;
         }
+        .je-btn-face:hover::after { opacity: 1; }
+        .je-btn-face:active::after {
+          background: linear-gradient(135deg, #300505 0%, #881414 40%, #aa1e1e 65%, #5a0a0a 100%);
+          opacity: 1;
+          transition: opacity 0.08s ease;
+        }
+        .je-btn-face > * { position: relative; z-index: 1; }
         .je-btn-face:disabled { opacity: 0.45; cursor: not-allowed; }
 
         /* ── Savings tag ── */

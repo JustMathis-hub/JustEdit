@@ -47,7 +47,7 @@ export default async function ShopPage() {
   return (
     <div className="min-h-screen pt-24 pb-20">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
+      <div data-reveal className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
         <div className="relative">
           <div
             className="absolute -top-10 left-0 w-64 h-64 opacity-10"
@@ -64,7 +64,7 @@ export default async function ShopPage() {
       </div>
 
       {/* Paid products */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div data-reveal className="max-w-7xl mx-auto px-4 sm:px-6">
         {!products || products.length === 0 ? (
           <div className="text-center py-20 text-[oklch(0.4_0.005_0)]">
             {t('noProducts')}
