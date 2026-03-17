@@ -220,7 +220,23 @@ export function ProductMediaGallery({
               transform: current === i ? 'scale(1)' : 'scale(0.97)',
             }}
           >
-            {slide.type === 'image' && slide.src ? (
+            {slide.type === 'video' && slide.src ? (
+              <>
+                <video
+                  src={slide.src}
+                  muted
+                  playsInline
+                  preload="auto"
+                  className="w-full h-full object-cover"
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = Number.MAX_SAFE_INTEGER; }}
+                />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-black/50 flex items-center justify-center">
+                    <Play size={7} className="text-white/80 ml-0.5" />
+                  </div>
+                </div>
+              </>
+            ) : slide.type === 'image' && slide.src ? (
               <Image
                 src={slide.src}
                 alt={slide.label ?? ''}
@@ -230,10 +246,7 @@ export function ProductMediaGallery({
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                {slide.type === 'video'
-                  ? <Play size={9} className="text-white/60" />
-                  : <ImageIcon size={9} className="text-white/30" />
-                }
+                <ImageIcon size={9} className="text-white/30" />
               </div>
             )}
           </button>

@@ -39,12 +39,16 @@ export function BeforeAfterSlider({
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => { if (dragging.current) updatePosition(e.clientX); };
-    const onTouch = (e: TouchEvent) => { if (dragging.current) updatePosition(e.touches[0].clientX); };
+    const onTouch = (e: TouchEvent) => {
+      if (!dragging.current) return;
+      e.preventDefault();
+      updatePosition(e.touches[0].clientX);
+    };
     const onUp = () => { dragging.current = false; };
 
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
-    window.addEventListener('touchmove', onTouch);
+    window.addEventListener('touchmove', onTouch, { passive: false });
     window.addEventListener('touchend', onUp);
     return () => {
       window.removeEventListener('mousemove', onMove);
@@ -71,6 +75,7 @@ export function BeforeAfterSlider({
     <div
       ref={containerRef}
       className="relative aspect-video rounded-2xl overflow-hidden border border-[oklch(0.18_0_0)] bg-[oklch(0.09_0_0)] cursor-col-resize select-none"
+      style={{ touchAction: 'none' }}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
     >
