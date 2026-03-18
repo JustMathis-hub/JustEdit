@@ -305,7 +305,7 @@ export function LicensePurchase({
               >
                 {loading
                   ? <Loader2 size={18} className="animate-spin" />
-                  : tLicense('buy')
+                  : <span>{tLicense('buy')}</span>
                 }
               </button>
             </div>
