@@ -7,7 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
 import { PROMO_PRICES } from '@/lib/promoConfig';
 import { PRODUCT_CHANGELOGS } from '@/lib/productChangelogs';
-import { PRODUCT_EXTRA_VIDEOS, PRODUCT_EXTRA_IMAGES, PRODUCT_YOUTUBE_VIDEOS } from '@/lib/productMediaConfig';
+import { PRODUCT_EXTRA_VIDEOS, PRODUCT_EXTRA_IMAGES, PRODUCT_YOUTUBE_VIDEOS, PRODUCT_THUMBNAILS } from '@/lib/productMediaConfig';
 import { ChangelogAccordion } from '@/components/shop/ChangelogAccordion';
 import { ProductMediaGallery } from '@/components/shop/ProductMediaGallery';
 import type { Metadata } from 'next';
@@ -125,6 +125,7 @@ export default async function ProductPage({ params }: Props) {
             videoUrl={product.preview_video_url ?? undefined}
             extraVideos={PRODUCT_EXTRA_VIDEOS[product.slug] ?? []}
             images={PRODUCT_EXTRA_IMAGES[product.slug] ?? []}
+            thumbnails={PRODUCT_THUMBNAILS[product.slug] ?? []}
             title={name}
           />
         </div>

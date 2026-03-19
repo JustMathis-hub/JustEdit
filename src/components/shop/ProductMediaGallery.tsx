@@ -7,6 +7,7 @@ import Image from 'next/image';
 interface Slide {
   type: 'video' | 'image' | 'placeholder';
   src?: string;
+  poster?: string;
   label?: string;
   gradient: string;
 }
@@ -15,6 +16,7 @@ interface ProductMediaGalleryProps {
   videoUrl?: string;
   extraVideos?: string[];
   images?: string[];
+  thumbnails?: string[];
   title: string;
 }
 
@@ -29,10 +31,12 @@ export function ProductMediaGallery({
   videoUrl,
   extraVideos = [],
   images = [],
+  thumbnails = [],
   title,
 }: ProductMediaGalleryProps) {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [thumbLoaded, setThumbLoaded] = useState<{ [key: number]: boolean }>({});
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const allVideos = [
@@ -45,12 +49,14 @@ export function ProductMediaGallery({
     ...allVideos.map((src, i) => ({
       type: 'video' as const,
       src,
+      poster: thumbnails[i],
       label: i === 0 ? 'Aperçu vidéo' : `Aperçu ${i + 1}`,
       gradient: SLIDE_GRADIENTS[i % SLIDE_GRADIENTS.length],
     })),
     ...images.map((src, i) => ({
       type: 'image' as const,
       src,
+      poster: thumbnails[allVideos.length + i],
       label: `Image ${String(i + 1).padStart(2, '0')}`,
       gradient: SLIDE_GRADIENTS[(allVideos.length + i) % SLIDE_GRADIENTS.length],
     })),
@@ -222,15 +228,33 @@ export function ProductMediaGallery({
           >
             {slide.type === 'video' && slide.src ? (
               <>
+                {/* Poster image (fiable sur mobile) ou gradient en fallback */}
+                {slide.poster ? (
+                  <Image
+                    src={slide.poster}
+                    alt={slide.label ?? ''}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                    style={{ opacity: thumbLoaded[i] ? 0 : 1, transition: 'opacity 0.3s ease' }}
+                  />
+                ) : (
+                  !thumbLoaded[i] && (
+                    <div className="absolute inset-0" style={{ background: slide.gradient }} />
+                  )
+                )}
+                {/* Frame vidéo (desktop) */}
                 <video
                   src={slide.src}
                   muted
                   playsInline
-                  preload="auto"
-                  className="w-full h-full object-cover"
-                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = Number.MAX_SAFE_INTEGER; }}
+                  preload="metadata"
+                  className="w-full h-full object-cover absolute inset-0"
+                  style={{ opacity: thumbLoaded[i] ? 1 : 0, transition: 'opacity 0.3s ease' }}
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = 1; }}
+                  onSeeked={() => setThumbLoaded(prev => ({ ...prev, [i]: true }))}
                 />
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center z-10">
                   <div className="w-4 h-4 rounded-full bg-black/50 flex items-center justify-center">
                     <Play size={7} className="text-white/80 ml-0.5" />
                   </div>
