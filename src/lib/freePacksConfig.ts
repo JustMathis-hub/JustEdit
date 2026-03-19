@@ -6,6 +6,7 @@ export interface FreePack {
   description_en: string;
   tags: string[];
   videoUrl?: string;
+  videoThumbnail?: string; // Thumbnail image for the video slide (mobile fallback)
   thumbnailUrl?: string;
   images?: string[]; // Preview screenshots
   includes_fr: string[];
@@ -36,6 +37,7 @@ export const FREE_PACKS: FreePack[] = [
       'Free updates',
     ],
     videoUrl: '/videos/video-11backgrounds-free.mp4',
+    videoThumbnail: '/images/thumbnails/11-backgrounds-animes/thumb-1.jpg',
     images: [
       '/images/packs/bg-1.png',
       '/images/packs/bg-2.png',

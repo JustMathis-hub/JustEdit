@@ -6,7 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Download, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export function DownloadButton({ purchaseId }: { purchaseId: string }) {
+interface DownloadButtonProps {
+  purchaseId: string;
+  variant?: 'default' | 'card';
+}
+
+export function DownloadButton({ purchaseId, variant = 'default' }: DownloadButtonProps) {
   const t = useTranslations('account');
   const [loading, setLoading] = useState(false);
 
@@ -23,6 +28,26 @@ export function DownloadButton({ purchaseId }: { purchaseId: string }) {
       setLoading(false);
     }
   };
+
+  if (variant === 'card') {
+    return (
+      <button
+        onClick={handleDownload}
+        disabled={loading}
+        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-black text-sm text-white transition-all duration-200 disabled:opacity-60"
+        style={{
+          background: 'linear-gradient(135deg, rgba(139,26,26,0.9) 0%, rgba(80,10,10,0.95) 100%)',
+          border: '1px solid rgba(200,60,60,0.35)',
+          boxShadow: '0 0 20px rgba(139,26,26,0.25)',
+        }}
+        onMouseEnter={(e) => { if (!loading) e.currentTarget.style.boxShadow = '0 0 30px rgba(139,26,26,0.5)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 20px rgba(139,26,26,0.25)'; }}
+      >
+        {loading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+        {loading ? t('downloading') : t('download')}
+      </button>
+    );
+  }
 
   return (
     <Button

@@ -211,8 +211,8 @@ export default async function ProductPage({ params }: Props) {
         {/* ── Tutoriel vidéo ── */}
         {PRODUCT_YOUTUBE_VIDEOS[product.slug] && (
           <div data-reveal className="mt-24">
-            <h2 className="text-2xl font-black text-white tracking-tight mb-2">Tutoriel</h2>
-            <p className="text-sm text-[oklch(0.45_0.005_0)] mb-8">Regardez le tutoriel complet pour prendre en main ce produit.</p>
+            <h2 className="text-2xl font-black text-white tracking-tight mb-2">{t('tutorialTitle')}</h2>
+            <p className="text-sm text-[oklch(0.45_0.005_0)] mb-8">{t('tutorialSubtitle')}</p>
             <div
               className="w-full rounded-2xl overflow-hidden border border-[oklch(0.18_0_0)]"
               style={{ aspectRatio: '16/9' }}
@@ -228,10 +228,10 @@ export default async function ProductPage({ params }: Props) {
           </div>
         )}
 
-        {/* ── Problèmes potentiels ── */}
+        {/* ── Common issues ── */}
         <div data-reveal className="mt-24">
-          <h2 className="text-2xl font-black text-white tracking-tight mb-2">Problèmes potentiels</h2>
-          <p className="text-sm text-[oklch(0.45_0.005_0)] mb-12">Solutions aux problèmes les plus courants rencontrés avec ce produit.</p>
+          <h2 className="text-2xl font-black text-white tracking-tight mb-2">{t('issuesTitle')}</h2>
+          <p className="text-sm text-[oklch(0.45_0.005_0)] mb-12">{t('issuesSubtitle')}</p>
 
           <div className="space-y-16">
 
@@ -240,14 +240,17 @@ export default async function ProductPage({ params }: Props) {
               <BeforeAfterSlider
                 beforeSrc="/images/justnumber/pb1-1.png"
                 afterSrc="/images/justnumber/pb1-2.png"
-                beforeLabel="Activé"
-                afterLabel="Pas activé"
+                beforeLabel={locale === 'fr' ? 'Activé' : 'Enabled'}
+                afterLabel={locale === 'fr' ? 'Pas activé' : 'Disabled'}
               />
               <div>
                 <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Glow</span>
                 <h3 className="text-xl font-black text-white tracking-tight mb-3">Glow settings</h3>
                 <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Le Glow peut varier selon les paramètres de votre séquence. Si vous cochez l&apos;option &quot;Composite en couleur linéaire&quot; (accessible via Séquence &gt; Général &gt; Composite en couleur linéaire), l&apos;effet ne s&apos;affichera pas de la même manière que si la case reste décochée. Choisissez le style qui vous convient le mieux ! Gardez toutefois en tête que, lorsque cette case est activée, des défauts peuvent apparaître sur les contours d&apos;un Glow particulièrement intense.
+                  {locale === 'fr'
+                    ? <>Le Glow peut varier selon les paramètres de votre séquence. Si vous cochez l&apos;option &quot;Composite en couleur linéaire&quot; (accessible via Réglages de la séquence &gt; Général &gt; Composite en couleur linéaire), l&apos;effet ne s&apos;affichera pas de la même manière que si la case reste décochée. Choisissez le style qui vous convient le mieux ! Gardez toutefois en tête que, lorsque cette case est activée, des défauts peuvent apparaître sur les contours d&apos;un Glow particulièrement intense.</>
+                    : <>The Glow may vary depending on your sequence settings. If you check the &quot;Composite in Linear Color&quot; option (accessible via Sequence Settings &gt; General &gt; Composite in Linear Color), the effect will not appear the same as when the box is unchecked. Choose the style that suits you best! However, keep in mind that when this option is enabled, artifacts may appear on the edges of a particularly intense Glow.</>
+                  }
                 </p>
               </div>
             </div>
@@ -261,15 +264,18 @@ export default async function ProductPage({ params }: Props) {
                 <BeforeAfterSlider
                   beforeSrc="/images/justnumber/pb2-1.png"
                   afterSrc="/images/justnumber/pb2-2.png"
-                  beforeLabel="Problème"
+                  beforeLabel={locale === 'fr' ? 'Problème' : 'Issue'}
                   afterLabel="Solution"
                 />
               </div>
               <div className="order-2 lg:order-1">
-                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">Couleur</span>
-                <h3 className="text-xl font-black text-white tracking-tight mb-3">Bug Couleur Originale</h3>
+                <span className="inline-block text-[10px] font-bold text-[#8b1a1a] uppercase tracking-widest mb-3 px-2 py-1 bg-[rgba(139,26,26,0.08)] border border-[rgba(139,26,26,0.2)] rounded-md">{locale === 'fr' ? 'Couleur' : 'Color'}</span>
+                <h3 className="text-xl font-black text-white tracking-tight mb-3">{locale === 'fr' ? 'Bug Couleur Originale' : 'Original Color Bug'}</h3>
                 <p className="text-sm text-[oklch(0.5_0.005_0)] leading-relaxed">
-                  Le Glow peut parfois modifier la couleur originale du texte selon ses paramètres. Le paramètre à changer est : &quot;Seuil Glow&quot;, c&apos;est le curseur qui détermine le niveau de luminosité à partir duquel un objet commence à briller : plus le seuil est élevé, plus il faut que l&apos;image soit lumineuse pour déclencher l&apos;effet de Glow et inversement. Cependant si vous baissez le seuil pour avoir un Glow plus lumineux, cela peut modifier les couleurs originales.
+                  {locale === 'fr'
+                    ? <>Le Glow peut parfois modifier la couleur originale du texte selon ses paramètres. Le paramètre à changer est : &quot;Glow Threshold&quot;, c&apos;est le curseur qui détermine le niveau de luminosité à partir duquel un objet commence à briller : plus le seuil (Threshold) est élevé, plus il faut que l&apos;image soit lumineuse pour déclencher l&apos;effet de Glow et inversement. Cependant si vous baissez le seuil (Threshold) pour avoir un Glow plus lumineux, cela peut modifier les couleurs originales.</>
+                    : <>The Glow can sometimes alter the original text color depending on its settings. The parameter to change is: &quot;Glow Threshold&quot; — this is the slider that determines the brightness level at which an object starts to glow: the higher the threshold (Threshold), the brighter the image needs to be to trigger the Glow effect, and vice versa. However, if you lower the threshold (Threshold) to get a more luminous Glow, it may alter the original colors.</>
+                  }
                 </p>
               </div>
             </div>

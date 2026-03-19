@@ -7,12 +7,14 @@ import Image from 'next/image';
 interface Slide {
   type: 'video' | 'image' | 'placeholder';
   src?: string;
+  poster?: string;
   label?: string;
   gradient: string;
 }
 
 interface FreePackMediaGalleryProps {
   videoUrl?: string;
+  videoThumbnail?: string;
   images?: string[];
   title: string;
 }
@@ -24,9 +26,10 @@ const SLIDE_GRADIENTS = [
   'linear-gradient(135deg, #080810 0%, #14142e 55%, #202048 100%)',
 ];
 
-export function FreePackMediaGallery({ videoUrl, images = [], title }: FreePackMediaGalleryProps) {
+export function FreePackMediaGallery({ videoUrl, videoThumbnail, images = [], title }: FreePackMediaGalleryProps) {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [thumbLoaded, setThumbLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   /* Build slides: video first, then real images, then placeholders up to 4 total */
@@ -34,6 +37,7 @@ export function FreePackMediaGallery({ videoUrl, images = [], title }: FreePackM
     {
       type: videoUrl ? 'video' : 'placeholder',
       src: videoUrl,
+      poster: videoThumbnail,
       label: 'Aperçu vidéo',
       gradient: SLIDE_GRADIENTS[0],
     },
@@ -206,7 +210,35 @@ export function FreePackMediaGallery({ videoUrl, images = [], title }: FreePackM
               transform: current === i ? 'scale(1)' : 'scale(0.97)',
             }}
           >
-            {slide.type === 'image' && slide.src ? (
+            {slide.type === 'video' && slide.src ? (
+              <>
+                {slide.poster ? (
+                  <Image
+                    src={slide.poster}
+                    alt={slide.label ?? ''}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                    style={{ opacity: thumbLoaded ? 0 : 1, transition: 'opacity 0.3s ease' }}
+                  />
+                ) : (
+                  !thumbLoaded && <div className="absolute inset-0" style={{ background: slide.gradient }} />
+                )}
+                <video
+                  src={slide.src}
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-cover absolute inset-0"
+                  style={{ opacity: thumbLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}
+                  onLoadedMetadata={(e) => { e.currentTarget.currentTime = 1; }}
+                  onSeeked={() => setThumbLoaded(true)}
+                />
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                  <Play size={9} className="text-white/60" />
+                </div>
+              </>
+            ) : slide.type === 'image' && slide.src ? (
               <Image
                 src={slide.src}
                 alt={slide.label ?? ''}
@@ -216,10 +248,7 @@ export function FreePackMediaGallery({ videoUrl, images = [], title }: FreePackM
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                {slide.type === 'video'
-                  ? <Play size={9} className="text-white/60" />
-                  : <ImageIcon size={9} className="text-white/30" />
-                }
+                <ImageIcon size={9} className="text-white/30" />
               </div>
             )}
           </button>

@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Zap, Package } from 'lucide-react';
+import { ArrowRight, Zap } from 'lucide-react';
 
 export function HeroSection() {
   const t = useTranslations('home.hero');
@@ -201,7 +201,6 @@ export function HeroSection() {
                 `}</style>
                 <button type="button" className="je-free-btn">
                   <span className="je-free-inner">
-                    <Package size={13} />
                     {t('ctaFree')}
                   </span>
                 </button>

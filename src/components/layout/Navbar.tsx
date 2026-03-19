@@ -145,7 +145,7 @@ export function Navbar() {
                       {profile?.full_name ?? t('account')}
                     </span>
                     <span className="text-[10px] text-[oklch(0.45_0.005_0)] group-hover:text-[oklch(0.55_0.005_0)] transition-colors">
-                      Espace personnel
+                      {t('personalSpace')}
                     </span>
                   </div>
                 </Link>

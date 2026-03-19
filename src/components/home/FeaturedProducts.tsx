@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/shop/ProductCard';
 import { FreePackCard } from '@/components/shop/FreePackCard';
+import { getFreePackBySlug } from '@/lib/freePacksConfig';
 import { ArrowRight } from 'lucide-react';
 import type { Product } from '@/types';
 
@@ -132,20 +133,21 @@ export async function FeaturedProducts() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+            {(() => { const bg = getFreePackBySlug('11-backgrounds-animes')!; return (
             <FreePackCard
-              title="11 Backgrounds Animés"
-              description="Une collection de 11 fonds animés prêts à l'emploi pour habiller vos montages. Modernes, épurés, compatibles Premiere Pro."
-              itemCount={11}
+              title={locale === 'fr' ? bg.name_fr : bg.name_en}
+              description={locale === 'fr' ? bg.description_fr : bg.description_en}
+              itemCount={bg.itemCount}
               itemLabel="backgrounds"
-              tags={['Premiere Pro', '.mogrt', 'Backgrounds']}
-              videoUrl="/videos/video-11backgrounds-free.mp4"
-              slug="11-backgrounds-animes"
+              tags={bg.tags}
+              videoUrl={bg.videoUrl}
+              slug={bg.slug}
               locale={locale}
               isAuthenticated={isAuthenticated}
               userName={userName}
               productId={bgProduct?.id}
               initialLikeCount={bgLikeCount}
-            />
+            />); })()}
           </div>
 
         </div>

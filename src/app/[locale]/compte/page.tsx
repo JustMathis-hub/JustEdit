@@ -3,13 +3,14 @@ export const dynamic = 'force-dynamic';
 import { redirect } from 'next/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
-import { formatPrice, formatDate } from '@/lib/utils';
+import Image from 'next/image';
 import { DownloadButton } from '@/components/compte/DownloadButton';
 import { ProfileEditor } from '@/components/compte/ProfileEditor';
-import { Package, Calendar, ArrowRight } from 'lucide-react';
+import { Package, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ClaimedFreePackCard } from '@/components/shop/ClaimedFreePackCard';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
+import { PRODUCT_THUMBNAILS } from '@/lib/productMediaConfig';
 import type { Purchase, Product } from '@/types';
 
 export default async function AccountPage() {
@@ -83,7 +84,7 @@ export default async function AccountPage() {
             <div className="flex items-center gap-3 mb-5">
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-[rgba(139,26,26,0.18)] border border-[rgba(139,26,26,0.35)] shadow-[0_0_12px_rgba(139,26,26,0.2)]">
                 <h2 className="text-[11px] font-black text-[#e07070] uppercase tracking-[0.18em]">
-                  Packs gratuits
+                  {t('freePacks')}
                 </h2>
               </span>
             </div>
@@ -100,6 +101,7 @@ export default async function AccountPage() {
                     locale={locale}
                     downloadUrl={pack.downloadUrl ?? claim.download_url}
                     videoUrl={pack.videoUrl}
+                    thumbnailUrl={pack.videoThumbnail}
                   />
                 );
               })}
@@ -133,42 +135,72 @@ export default async function AccountPage() {
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {(purchases as (Purchase & { product: Product })[]).map((purchase) => {
                 const productName = locale === 'fr'
                   ? purchase.product?.name_fr
                   : purchase.product?.name_en;
+                const productSlug = purchase.product?.slug;
+                const productHref = `/${locale}/boutique/${productSlug}`;
 
                 return (
                   <div
                     key={purchase.id}
-                    className="group bg-[oklch(0.10_0_0)] border border-[oklch(0.17_0_0)] hover:border-[oklch(0.22_0_0)] rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 transition-colors duration-200"
+                    className="relative rounded-2xl overflow-hidden flex flex-col"
+                    style={{ background: 'oklch(0.095 0 0)', border: '1px solid oklch(0.16 0 0)' }}
                   >
-                    <div className="w-16 h-10 rounded-lg bg-[oklch(0.08_0_0)] border border-[oklch(0.18_0_0)] shrink-0 overflow-hidden">
-                      {purchase.product?.thumbnail_url ? (
-                        <img src={purchase.product.thumbnail_url} alt={productName} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package size={14} className="text-[oklch(0.3_0.005_0)]" />
+                    {/* Thumbnail */}
+                    <Link href={productHref}>
+                      <div
+                        className="relative overflow-hidden group cursor-pointer"
+                        style={{ aspectRatio: '16/9', background: '#0a0a0f' }}
+                      >
+                        {purchase.product?.thumbnail_url ? (
+                          <Image
+                            src={purchase.product.thumbnail_url}
+                            alt={productName ?? ''}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, 320px"
+                          />
+                        ) : PRODUCT_THUMBNAILS[productSlug ?? '']?.[0] ? (
+                          <Image
+                            src={PRODUCT_THUMBNAILS[productSlug ?? ''][0]}
+                            alt={productName ?? ''}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, 320px"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center"
+                            style={{ background: 'linear-gradient(135deg, #0d1117 0%, #1a1a2e 60%, #16213e 100%)' }}>
+                            <Package size={28} className="text-[oklch(0.3_0.005_0)]" />
+                          </div>
+                        )}
+                        {/* Badge Obtenu */}
+                        <div
+                          className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full"
+                          style={{
+                            background: 'rgba(16,185,129,0.15)',
+                            border: '1px solid rgba(16,185,129,0.3)',
+                            backdropFilter: 'blur(8px)',
+                          }}
+                        >
+                          <CheckCircle2 size={10} className="text-emerald-400" />
+                          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{t('obtained')}</span>
                         </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-white text-sm truncate">{productName}</p>
-                      <div className="flex items-center gap-3 mt-1 flex-wrap">
-                        <span className="text-xs text-[oklch(0.45_0.005_0)] flex items-center gap-1">
-                          <Calendar size={11} />
-                          {formatDate(purchase.created_at, locale)}
-                        </span>
-                        <span className="text-xs font-semibold text-[oklch(0.6_0.005_0)]">
-                          {formatPrice(purchase.amount_paid_cents, locale)}
-                        </span>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(139,26,26,0.12)] text-[#e07070] border border-[rgba(139,26,26,0.2)]">
-                          {t(`status.${purchase.status}`)}
-                        </span>
                       </div>
+                    </Link>
+
+                    {/* Info + Download */}
+                    <div className="p-4 flex flex-col gap-3">
+                      <Link href={productHref}>
+                        <p className="text-sm font-black text-white hover:text-[oklch(0.75_0.005_0)] transition-colors leading-tight cursor-pointer">
+                          {productName}
+                        </p>
+                      </Link>
+                      <DownloadButton purchaseId={purchase.id} variant="card" />
                     </div>
-                    <DownloadButton purchaseId={purchase.id} />
                   </div>
                 );
               })}
