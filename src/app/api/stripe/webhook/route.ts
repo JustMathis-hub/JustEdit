@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { sendPurchaseConfirmationEmail } from '@/lib/email';
 import type Stripe from 'stripe';
 
 export const runtime = 'nodejs';
@@ -44,25 +45,60 @@ export async function POST(request: Request) {
           return NextResponse.json({ received: true, skipped: 'not_paid' });
         }
 
-        // Insert purchase
-        const { error } = await supabase.from('purchases').upsert(
-          {
-            user_id,
-            product_id,
-            stripe_session_id: session.id,
-            stripe_payment_intent: session.payment_intent as string,
-            amount_paid_cents: session.amount_total ?? 0,
-            currency: session.currency ?? 'eur',
-            status: 'completed',
-            completed_at: new Date().toISOString(),
-          },
-          { onConflict: 'stripe_session_id' }
-        );
+        // Fetch product name for the confirmation email
+        const { data: productData } = await supabase
+          .from('products')
+          .select('name_fr, name_en, thumbnail_url')
+          .eq('id', product_id)
+          .single();
+
+        // Insert purchase and get its ID back
+        const { data: insertedPurchase, error } = await supabase
+          .from('purchases')
+          .upsert(
+            {
+              user_id,
+              product_id,
+              stripe_session_id: session.id,
+              stripe_payment_intent: session.payment_intent as string,
+              amount_paid_cents: session.amount_total ?? 0,
+              currency: session.currency ?? 'eur',
+              status: 'completed',
+              completed_at: new Date().toISOString(),
+            },
+            { onConflict: 'stripe_session_id' }
+          )
+          .select('id')
+          .single();
 
         if (error) {
           console.error('[webhook] Insert purchase error:', error);
         } else {
           console.log(`[webhook] Purchase recorded: user=${user_id} product=${product_id}`);
+
+          // Resolve customer email: prefer Stripe session, fallback to Supabase auth
+          let customerEmail = session.customer_details?.email ?? null;
+          let customerName = session.customer_details?.name ?? null;
+
+          if (!customerEmail) {
+            const { data: authUser } = await supabase.auth.admin.getUserById(user_id);
+            customerEmail = authUser.user?.email ?? null;
+            customerName = customerName ?? authUser.user?.user_metadata?.full_name ?? null;
+          }
+
+          if (customerEmail) {
+            // Send purchase confirmation email (non-blocking — never delays webhook response)
+            sendPurchaseConfirmationEmail({
+              to: customerEmail,
+              customerName,
+              productName: productData?.name_fr ?? productData?.name_en ?? 'Produit JustEdit',
+              thumbnailUrl: productData?.thumbnail_url ?? null,
+              amountPaidCents: session.amount_total ?? 0,
+              currency: session.currency ?? 'eur',
+              purchaseId: insertedPurchase?.id ?? session.id,
+              orderDate: new Date().toISOString(),
+            }).catch((err) => console.error('[webhook] Email send error:', err));
+          }
         }
         break;
       }
