@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Download, CheckCircle2, Play } from 'lucide-react';
 
 interface ClaimedFreePackCardProps {
@@ -22,6 +23,7 @@ export function ClaimedFreePackCard({
   thumbnailUrl,
 }: ClaimedFreePackCardProps) {
   const router = useRouter();
+  const t = useTranslations('account');
   const packHref = `/${locale}/packs-gratuits/${slug}`;
 
   return (
@@ -50,15 +52,17 @@ export function ClaimedFreePackCard({
           <>
             <video
               src={videoUrl}
-              autoPlay
               muted
               loop
               playsInline
+              preload="none"
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              onMouseEnter={(e) => { (e.currentTarget as HTMLVideoElement).play(); }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLVideoElement).pause(); }}
             />
             <div
-              className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-              style={{ background: 'rgba(0,0,0,0.35)' }}
+              className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-200"
+              style={{ background: 'rgba(0,0,0,0.25)' }}
             >
               <Play size={28} className="text-white drop-shadow-lg" />
             </div>
@@ -70,7 +74,7 @@ export function ClaimedFreePackCard({
           />
         )}
 
-        {/* "Obtenu" badge */}
+        {/* Badge */}
         <div
           className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full"
           style={{
@@ -80,7 +84,7 @@ export function ClaimedFreePackCard({
           }}
         >
           <CheckCircle2 size={10} className="text-emerald-400" />
-          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Obtenu</span>
+          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{t('obtained')}</span>
         </div>
       </div>
 
@@ -110,7 +114,7 @@ export function ClaimedFreePackCard({
             }}
           >
             <Download size={14} />
-            Télécharger
+            {t('download')}
           </a>
         ) : (
           <div
@@ -121,7 +125,7 @@ export function ClaimedFreePackCard({
               color: 'oklch(0.4 0.005 0)',
             }}
           >
-            Bientôt disponible
+            {t('comingSoon')}
           </div>
         )}
       </div>

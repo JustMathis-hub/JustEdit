@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Pencil, X, Check, Loader2 } from 'lucide-react';
 import { AVATARS, getAvatarSrc } from '@/lib/avatarConfig';
@@ -16,6 +17,7 @@ interface ProfileEditorProps {
 
 export function ProfileEditor({ profile, email, memberSince, purchaseCount }: ProfileEditorProps) {
   const router = useRouter();
+  const t = useTranslations('account');
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(profile?.full_name ?? '');
   const [selectedAvatar, setSelectedAvatar] = useState(
@@ -35,13 +37,13 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
         body: JSON.stringify({ full_name: name, avatar_url: selectedAvatar }),
       });
       const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || 'Erreur');
-      toast.success('Profil mis à jour');
+      if (!res.ok || data.error) throw new Error(data.error || t('updateError'));
+      toast.success(t('updateSuccess'));
       setIsEditing(false);
       window.dispatchEvent(new CustomEvent('profile-updated'));
       router.refresh();
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : 'Erreur lors de la mise à jour');
+      toast.error(err instanceof Error ? err.message : t('updateError'));
     } finally {
       setSaving(false);
     }
@@ -52,6 +54,9 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
     setSelectedAvatar(profile?.avatar_url ?? getAvatarSrc(null));
     setIsEditing(false);
   }
+
+  const statClass = "text-[11px] px-3 py-1.5 rounded-full bg-[oklch(0.13_0_0)] border border-[oklch(0.20_0_0)] text-[oklch(0.50_0.005_0)] whitespace-nowrap";
+  const statClassMobile = "text-[11px] px-2.5 py-1 rounded-full bg-[oklch(0.13_0_0)] border border-[oklch(0.20_0_0)] text-[oklch(0.50_0.005_0)]";
 
   return (
     <div className="w-full">
@@ -84,10 +89,8 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
 
         {/* Stats + edit button — right side */}
         <div className="hidden sm:flex items-center gap-3 shrink-0">
-          <span className="text-[11px] px-3 py-1.5 rounded-full bg-[oklch(0.13_0_0)] border border-[oklch(0.20_0_0)] text-[oklch(0.50_0.005_0)] whitespace-nowrap">
-            Membre depuis {memberSince}
-          </span>
-          <span className="text-[11px] px-3 py-1.5 rounded-full bg-[oklch(0.13_0_0)] border border-[oklch(0.20_0_0)] text-[oklch(0.50_0.005_0)] whitespace-nowrap">
+          <span className={statClass}>{t('memberSince', { date: memberSince })}</span>
+          <span className={statClass}>
             {purchaseCount} pack{purchaseCount !== 1 ? 's' : ''}
           </span>
           {!isEditing && (
@@ -96,7 +99,7 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
               className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-lg border border-[oklch(0.22_0_0)] bg-[oklch(0.13_0_0)] text-[oklch(0.55_0.005_0)] hover:border-[rgba(139,26,26,0.5)] hover:text-white transition-all duration-200 whitespace-nowrap"
             >
               <Pencil size={11} />
-              Modifier
+              {t('editButton')}
             </button>
           )}
           {isEditing && (
@@ -104,7 +107,7 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
               onClick={handleCancel}
               className="flex items-center gap-1.5 text-[12px] px-3 py-1.5 rounded-lg border border-[oklch(0.22_0_0)] text-[oklch(0.45_0.005_0)] hover:text-white transition-colors"
             >
-              <X size={11} /> Annuler
+              <X size={11} /> {t('cancelButton')}
             </button>
           )}
         </div>
@@ -112,10 +115,8 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
 
       {/* Mobile stats + button */}
       <div className="flex sm:hidden items-center gap-2 mt-3 flex-wrap">
-        <span className="text-[11px] px-2.5 py-1 rounded-full bg-[oklch(0.13_0_0)] border border-[oklch(0.20_0_0)] text-[oklch(0.50_0.005_0)]">
-          Membre depuis {memberSince}
-        </span>
-        <span className="text-[11px] px-2.5 py-1 rounded-full bg-[oklch(0.13_0_0)] border border-[oklch(0.20_0_0)] text-[oklch(0.50_0.005_0)]">
+        <span className={statClassMobile}>{t('memberSince', { date: memberSince })}</span>
+        <span className={statClassMobile}>
           {purchaseCount} pack{purchaseCount !== 1 ? 's' : ''}
         </span>
         {!isEditing ? (
@@ -123,11 +124,11 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
             onClick={() => setIsEditing(true)}
             className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg border border-[oklch(0.22_0_0)] bg-[oklch(0.13_0_0)] text-[oklch(0.55_0.005_0)] hover:border-[rgba(139,26,26,0.5)] hover:text-white transition-all"
           >
-            <Pencil size={10} /> Modifier
+            <Pencil size={10} /> {t('editButton')}
           </button>
         ) : (
           <button onClick={handleCancel} className="flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-lg border border-[oklch(0.22_0_0)] text-[oklch(0.45_0.005_0)] hover:text-white transition-colors">
-            <X size={10} /> Annuler
+            <X size={10} /> {t('cancelButton')}
           </button>
         )}
       </div>
@@ -140,7 +141,7 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
             {/* Avatar grid */}
             <div className="shrink-0">
               <p className="text-[10px] uppercase tracking-[0.14em] text-[oklch(0.38_0.005_0)] mb-2.5">
-                Avatar
+                {t('avatar')}
               </p>
               <div className="grid grid-cols-6 sm:grid-cols-3 gap-2">
                 {AVATARS.map((av) => (
@@ -182,13 +183,13 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
             <div className="flex-1 flex flex-col gap-3">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.14em] text-[oklch(0.38_0.005_0)] mb-2">
-                  Nom affiché
+                  {t('displayName')}
                 </p>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Ton nom..."
+                  placeholder={t('namePlaceholder')}
                   maxLength={40}
                   className="w-full px-3 py-2.5 rounded-lg bg-[oklch(0.08_0_0)] border border-[oklch(0.22_0_0)] text-white text-sm placeholder:text-[oklch(0.35_0.005_0)] focus:outline-none focus:border-[rgba(139,26,26,0.6)] transition-colors"
                 />
@@ -199,7 +200,7 @@ export function ProfileEditor({ profile, email, memberSince, purchaseCount }: Pr
                 className="flex items-center justify-center gap-2 py-2.5 px-5 rounded-lg bg-[#8b1a1a] hover:bg-[#a52020] text-white text-sm font-semibold transition-colors disabled:opacity-60 self-start"
               >
                 {saving ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-                {saving ? 'Sauvegarde...' : 'Sauvegarder'}
+                {saving ? t('saving') : t('saveButton')}
               </button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 import { ChevronDown, Tag } from 'lucide-react';
 import type { ChangelogEntry } from '@/lib/productChangelogs';
 
@@ -10,8 +11,21 @@ interface Props {
 
 export function ChangelogAccordion({ entries }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const t = useTranslations('product');
+  const locale = useLocale();
 
   if (!entries || entries.length === 0) return null;
+
+  const formatDate = (iso: string) => {
+    try {
+      return new Date(iso).toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', {
+        month: 'long',
+        year: 'numeric',
+      });
+    } catch {
+      return iso;
+    }
+  };
 
   return (
     <div className="mt-10">
@@ -19,13 +33,14 @@ export function ChangelogAccordion({ entries }: Props) {
       <div className="flex items-center gap-2 mb-4">
         <Tag size={14} className="text-[#8b1a1a]" />
         <p className="text-xs font-semibold text-[oklch(0.4_0.005_0)] uppercase tracking-widest">
-          Notes de version
+          {t('changelogTitle')}
         </p>
       </div>
 
       <div className="space-y-2">
         {entries.map((entry, i) => {
           const isOpen = openIndex === i;
+          const items = (locale === 'en' && entry.items_en) ? entry.items_en : entry.items;
           return (
             <div
               key={entry.version}
@@ -55,7 +70,7 @@ export function ChangelogAccordion({ entries }: Props) {
                   </span>
                   <span className="text-sm font-bold text-white">{entry.label}</span>
                   {entry.date && (
-                    <span className="text-xs text-[oklch(0.35_0.005_0)]">{entry.date}</span>
+                    <span className="text-xs text-[oklch(0.35_0.005_0)]">{formatDate(entry.date)}</span>
                   )}
                 </div>
                 <ChevronDown
@@ -72,7 +87,7 @@ export function ChangelogAccordion({ entries }: Props) {
               >
                 <div className="px-5 pb-4 border-t border-[oklch(0.15_0_0)] pt-3">
                   <ul className="space-y-2">
-                    {entry.items.map((item, j) => (
+                    {items.map((item, j) => (
                       <li key={j} className="flex items-start gap-2.5 text-sm text-[oklch(0.6_0.005_0)]">
                         <span
                           className="mt-[5px] w-1.5 h-1.5 rounded-full shrink-0"

@@ -83,7 +83,7 @@ export default async function AccountPage() {
             <div className="flex items-center gap-3 mb-5">
               <span className="inline-flex items-center px-3 py-1 rounded-full bg-[rgba(139,26,26,0.18)] border border-[rgba(139,26,26,0.35)] shadow-[0_0_12px_rgba(139,26,26,0.2)]">
                 <h2 className="text-[11px] font-black text-[#e07070] uppercase tracking-[0.18em]">
-                  Packs gratuits
+                  {t('freePacks')}
                 </h2>
               </span>
             </div>
@@ -100,6 +100,7 @@ export default async function AccountPage() {
                     locale={locale}
                     downloadUrl={pack.downloadUrl ?? claim.download_url}
                     videoUrl={pack.videoUrl}
+                    thumbnailUrl={pack.videoThumbnail}
                   />
                 );
               })}
@@ -164,11 +165,13 @@ export default async function AccountPage() {
                         ) : purchase.product?.preview_video_url ? (
                           <video
                             src={purchase.product.preview_video_url}
-                            autoPlay
                             muted
                             loop
                             playsInline
+                            preload="none"
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onMouseEnter={(e) => { (e.currentTarget as HTMLVideoElement).play(); }}
+                            onMouseLeave={(e) => { (e.currentTarget as HTMLVideoElement).pause(); }}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center"
@@ -186,7 +189,7 @@ export default async function AccountPage() {
                           }}
                         >
                           <CheckCircle2 size={10} className="text-emerald-400" />
-                          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Obtenu</span>
+                          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{t('obtained')}</span>
                         </div>
                       </div>
                     </Link>

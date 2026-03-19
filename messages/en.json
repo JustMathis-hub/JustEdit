@@ -89,6 +89,7 @@
     "tutorialSubtitle": "Watch the full tutorial to get started with this product.",
     "issuesTitle": "Common issues",
     "issuesSubtitle": "Solutions to the most common issues encountered with this product.",
+    "changelogTitle": "Version notes",
     "faq": {
       "title": "Frequently asked questions",
       "q1": "How do I install a MOGRT?",
@@ -189,7 +190,21 @@
     },
     "download": "Download",
     "downloading": "Preparing...",
-    "downloadError": "Download failed. Please try again."
+    "downloadError": "Download failed. Please try again.",
+    "freePacks": "Free packs",
+    "obtained": "Obtained",
+    "memberSince": "Member since {date}",
+    "packCount": "{count, plural, one {# pack} other {# packs}}",
+    "editButton": "Edit",
+    "cancelButton": "Cancel",
+    "displayName": "Display name",
+    "namePlaceholder": "Your name...",
+    "saving": "Saving...",
+    "saveButton": "Save",
+    "updateSuccess": "Profile updated",
+    "updateError": "Update failed",
+    "avatar": "Avatar",
+    "comingSoon": "Coming soon"
   },
   "checkout": {
     "success": {
