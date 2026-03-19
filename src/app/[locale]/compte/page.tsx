@@ -10,6 +10,7 @@ import { Package, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ClaimedFreePackCard } from '@/components/shop/ClaimedFreePackCard';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
+import { PRODUCT_THUMBNAILS } from '@/lib/productMediaConfig';
 import type { Purchase, Product } from '@/types';
 
 export default async function AccountPage() {
@@ -162,16 +163,13 @@ export default async function AccountPage() {
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
                             sizes="(max-width: 640px) 100vw, 320px"
                           />
-                        ) : purchase.product?.preview_video_url ? (
-                          <video
-                            src={purchase.product.preview_video_url}
-                            muted
-                            loop
-                            playsInline
-                            preload="none"
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            onMouseEnter={(e) => { (e.currentTarget as HTMLVideoElement).play(); }}
-                            onMouseLeave={(e) => { (e.currentTarget as HTMLVideoElement).pause(); }}
+                        ) : PRODUCT_THUMBNAILS[productSlug ?? '']?.[0] ? (
+                          <Image
+                            src={PRODUCT_THUMBNAILS[productSlug ?? ''][0]}
+                            alt={productName ?? ''}
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, 320px"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center"
