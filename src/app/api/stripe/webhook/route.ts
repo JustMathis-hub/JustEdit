@@ -35,12 +35,13 @@ export async function POST(request: Request) {
         const { user_id, product_id } = session.metadata ?? {};
 
         if (!user_id || !product_id) {
-          console.error('[webhook] Missing metadata', session.id);
-          break;
+          console.error('[webhook] Missing metadata for session:', session.id);
+          return NextResponse.json({ error: 'Missing metadata' }, { status: 400 });
         }
 
         if (session.payment_status !== 'paid') {
-          break;
+          console.warn(`[webhook] Session ${session.id} not paid (status: ${session.payment_status})`);
+          return NextResponse.json({ received: true, skipped: 'not_paid' });
         }
 
         // Insert purchase

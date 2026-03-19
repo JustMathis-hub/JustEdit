@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       .eq('user_id', user.id)
       .eq('product_id', productId)
       .eq('status', 'completed')
-      .single();
+      .maybeSingle();
 
     if (existing) {
       return NextResponse.json({ error: 'Already purchased' }, { status: 409 });

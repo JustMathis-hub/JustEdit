@@ -182,7 +182,7 @@ export default async function CGVPage() {
           <section>
             <h2 className="text-lg font-bold text-white mb-3">5. Livraison — Accès aux fichiers</h2>
             <p>
-              Le téléchargement des fichiers est disponible <strong className="text-white">immédiatement</strong> après confirmation du paiement, depuis l'espace membre de l'Acheteur, accessibleindéfiniment.
+              Le téléchargement des fichiers est disponible <strong className="text-white">immédiatement</strong> après confirmation du paiement, depuis l'espace membre de l'Acheteur, accessible indéfiniment.
             </p>
             <p className="mt-3">
               Les liens de téléchargement sont générés à la demande et sont valables 15 minutes par génération, pour des raisons de sécurité. L'Acheteur peut relancer un téléchargement autant de fois que nécessaire.

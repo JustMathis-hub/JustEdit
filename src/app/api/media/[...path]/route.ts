@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile, stat } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve, normalize } from 'path';
 
 const MIME: Record<string, string> = {
   '.mp4': 'video/mp4',
@@ -17,7 +17,19 @@ export async function GET(
   { params }: { params: Promise<{ path: string[] }> },
 ) {
   const { path } = await params;
-  const filePath = join(process.cwd(), 'public', ...path);
+
+  // Reject path segments containing traversal patterns
+  if (path.some(segment => segment.includes('..') || segment.includes('\0'))) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
+
+  const publicDir = resolve(process.cwd(), 'public');
+  const filePath = normalize(join(publicDir, ...path));
+
+  // Ensure resolved path stays within public directory
+  if (!filePath.startsWith(publicDir)) {
+    return NextResponse.json({ error: 'Invalid path' }, { status: 400 });
+  }
 
   try {
     const info = await stat(filePath);

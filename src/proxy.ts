@@ -1,5 +1,6 @@
 import createMiddleware from 'next-intl/middleware';
 import { type NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 import { routing } from './i18n/routing';
 
 const intlMiddleware = createMiddleware(routing);
@@ -7,27 +8,65 @@ const intlMiddleware = createMiddleware(routing);
 const protectedPaths = ['/compte', '/account'];
 const adminPaths = ['/admin'];
 
+function getLocaleFromPath(pathname: string): string {
+  return pathname.startsWith('/en') ? 'en' : 'fr';
+}
+
+function createSupabaseMiddlewareClient(request: NextRequest) {
+  let response = NextResponse.next({ request: { headers: request.headers } });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value);
+            response.cookies.set(name, value, options);
+          });
+        },
+      },
+    }
+  );
+  return { supabase, response };
+}
+
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const locale = getLocaleFromPath(pathname);
 
-  // Admin routes — vérification simple via cookie de session Supabase
+  // Admin routes — verify user is authenticated AND has admin role
   if (adminPaths.some((p) => pathname.startsWith(p))) {
-    const accessToken = request.cookies.get('sb-access-token')?.value
-      ?? request.cookies.getAll().find(c => c.name.includes('auth-token'))?.value;
-    if (!accessToken) {
-      return NextResponse.redirect(new URL('/fr/auth/connexion', request.url));
+    const { supabase } = createSupabaseMiddlewareClient(request);
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.redirect(new URL(`/${locale}/auth/connexion`, request.url));
+    }
+
+    // Check admin role
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.redirect(new URL(`/${locale}`, request.url));
     }
   }
 
-  // Routes protégées membres
-  const isProtected = protectedPaths.some((p) =>
-    pathname.includes(p)
-  );
+  // Routes protégées membres — verify actual auth token
+  const isProtected = protectedPaths.some((p) => pathname.includes(p));
 
   if (isProtected) {
-    const accessToken = request.cookies.getAll().find(c => c.name.includes('auth-token'))?.value;
-    if (!accessToken) {
-      const locale = pathname.startsWith('/en') ? 'en' : 'fr';
+    const { supabase } = createSupabaseMiddlewareClient(request);
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
       return NextResponse.redirect(
         new URL(`/${locale}/auth/connexion`, request.url)
       );

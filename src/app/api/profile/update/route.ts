@@ -1,9 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { profileRatelimit, getIp } from '@/lib/ratelimit';
+
+const MAX_NAME = 100;
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    if (profileRatelimit) {
+      const ip = getIp(req);
+      const { success } = await profileRatelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+      }
+    }
+
     const { full_name, avatar_url } = await req.json();
+
+    // Input validation
+    if (full_name !== undefined && full_name !== null) {
+      if (typeof full_name !== 'string' || full_name.trim().length > MAX_NAME) {
+        return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
+      }
+    }
 
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();

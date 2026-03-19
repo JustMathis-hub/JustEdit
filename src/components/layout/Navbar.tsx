@@ -197,6 +197,9 @@ export function Navbar() {
             <button
               className="p-2 text-[oklch(0.65_0.005_0)] hover:text-white"
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             >
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -206,7 +209,7 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[oklch(0.09_0_0)] border-t border-[oklch(0.18_0_0)]">
+        <div id="mobile-menu" role="navigation" aria-label="Mobile navigation" className="md:hidden bg-[oklch(0.09_0_0)] border-t border-[oklch(0.18_0_0)]">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <Link
@@ -238,7 +241,7 @@ export function Navbar() {
                       <span className="text-[13px] font-semibold text-white">
                         {profile?.full_name ?? t('account')}
                       </span>
-                      <span className="text-[10px] text-[oklch(0.45_0.005_0)]">Espace personnel</span>
+                      <span className="text-[10px] text-[oklch(0.45_0.005_0)]">{t('personalSpace')}</span>
                     </div>
                   </Link>
                   <button onClick={handleLogout} className="p-2 text-[oklch(0.45_0.005_0)] hover:text-white">

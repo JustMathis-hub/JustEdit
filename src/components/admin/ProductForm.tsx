@@ -93,7 +93,7 @@ export function ProductForm({ product }: Props) {
         name_en: formData.name_en,
         description_fr: formData.description_fr,
         description_en: formData.description_en,
-        price_cents: formData.is_free ? 0 : Math.round(parseFloat(formData.price_euros) * 100),
+        price_cents: formData.is_free ? 0 : Math.round(Number((parseFloat(formData.price_euros) * 100).toFixed(2))),
         is_free: formData.is_free,
         is_published: formData.is_published,
         category: formData.category,

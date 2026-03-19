@@ -19,12 +19,36 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, locale } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://justedit.fr';
   const supabase = await createClient();
-  const { data } = await supabase.from('products').select('name_fr, name_en, description_fr, description_en').eq('slug', slug).single();
+  const { data } = await supabase.from('products').select('name_fr, name_en, description_fr, description_en, thumbnail_url, price_cents').eq('slug', slug).single();
   if (!data) return {};
+  const title = locale === 'fr' ? data.name_fr : data.name_en;
+  const description = (locale === 'fr' ? data.description_fr : data.description_en).slice(0, 160);
+  const canonicalUrl = `${siteUrl}/${locale}/boutique/${slug}`;
   return {
-    title: locale === 'fr' ? data.name_fr : data.name_en,
-    description: locale === 'fr' ? data.description_fr.slice(0, 160) : data.description_en.slice(0, 160),
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        fr: `${siteUrl}/fr/boutique/${slug}`,
+        en: `${siteUrl}/en/boutique/${slug}`,
+      },
+    },
+    openGraph: {
+      title: `${title} | JustEdit`,
+      description,
+      url: canonicalUrl,
+      type: 'website',
+      images: data.thumbnail_url ? [{ url: data.thumbnail_url, alt: title }] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | JustEdit`,
+      description,
+      images: data.thumbnail_url ? [data.thumbnail_url] : [],
+    },
   };
 }
 

@@ -20,16 +20,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'home.hero' });
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://justedit.fr';
+
   return {
     title: {
       default: 'JustEdit',
       template: '%s | JustEdit',
     },
     description: t('subheadline'),
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://justedit.fr'),
+    metadataBase: new URL(siteUrl),
+    alternates: {
+      languages: {
+        fr: `${siteUrl}/fr`,
+        en: `${siteUrl}/en`,
+      },
+    },
     openGraph: {
       siteName: 'JustEdit',
       locale: locale === 'fr' ? 'fr_FR' : 'en_GB',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
     },
   };
 }

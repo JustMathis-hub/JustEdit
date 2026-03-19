@@ -19,6 +19,18 @@ export const contactRatelimit = createRatelimiter(3, '1 h');
 // 10 requests per 10 minutes per IP — checkout
 export const checkoutRatelimit = createRatelimiter(10, '10 m');
 
+// 20 downloads per 10 minutes per IP
+export const downloadRatelimit = createRatelimiter(20, '10 m');
+
+// 10 free claims per hour per IP
+export const freeClaimRatelimit = createRatelimiter(10, '1 h');
+
+// 5 auth attempts per 15 minutes per IP (login, register, password reset)
+export const authRatelimit = createRatelimiter(5, '15 m');
+
+// 10 profile updates per hour per IP
+export const profileRatelimit = createRatelimiter(10, '1 h');
+
 export function getIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
   const real = request.headers.get('x-real-ip');

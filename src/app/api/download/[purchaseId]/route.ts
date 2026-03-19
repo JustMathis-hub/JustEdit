@@ -1,11 +1,21 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { downloadRatelimit, getIp } from '@/lib/ratelimit';
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ purchaseId: string }> }
 ) {
+  // Rate limiting
+  if (downloadRatelimit) {
+    const ip = getIp(_request);
+    const { success } = await downloadRatelimit.limit(ip);
+    if (!success) {
+      return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
+    }
+  }
+
   const { purchaseId } = await params;
 
   // Verify auth
