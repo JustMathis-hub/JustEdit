@@ -168,6 +168,7 @@ export function ProductMediaGallery({
         {/* ── Arrows ── */}
         <button
           onClick={prev}
+          aria-label="Previous slide"
           className="group absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
           style={{
             background: 'rgba(0,0,0,0.45)',
@@ -182,6 +183,7 @@ export function ProductMediaGallery({
 
         <button
           onClick={next}
+          aria-label="Next slide"
           className="group absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer"
           style={{
             background: 'rgba(0,0,0,0.45)',

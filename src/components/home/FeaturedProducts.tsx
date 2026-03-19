@@ -133,7 +133,7 @@ export async function FeaturedProducts() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-            {(() => { const bg = getFreePackBySlug('11-backgrounds-animes')!; return (
+            {(() => { const bg = getFreePackBySlug('11-backgrounds-animes'); if (!bg) return null; return (
             <FreePackCard
               title={locale === 'fr' ? bg.name_fr : bg.name_en}
               description={locale === 'fr' ? bg.description_fr : bg.description_en}

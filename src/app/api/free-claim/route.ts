@@ -1,9 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
+import { freeClaimRatelimit, getIp } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting
+    if (freeClaimRatelimit) {
+      const ip = getIp(req);
+      const { success } = await freeClaimRatelimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: 'Trop de requêtes. Réessayez plus tard.' }, { status: 429 });
+      }
+    }
+
     const { slug } = await req.json();
 
     if (!slug || typeof slug !== 'string') {
