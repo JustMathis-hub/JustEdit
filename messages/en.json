@@ -6,7 +6,8 @@
     "login": "Login",
     "account": "My Account",
     "logout": "Logout",
-    "admin": "Admin"
+    "admin": "Admin",
+    "personalSpace": "Personal space"
   },
   "home": {
     "hero": {
@@ -237,7 +238,9 @@
     "contains": "This pack includes",
     "price": "Price",
     "entirelyFree": "entirely free",
-    "freeAccount": "Free account · Instant access · No card required"
+    "freeAccount": "Free account · Instant access · No card required",
+    "directDownload": "Direct download",
+    "videoPreview": "Video preview"
   },
   "faq": {
     "title": "Frequently Asked Questions",

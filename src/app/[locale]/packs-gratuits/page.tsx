@@ -4,6 +4,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { ProductCard } from '@/components/shop/ProductCard';
 import { FreePackCard } from '@/components/shop/FreePackCard';
+import { getFreePackBySlug } from '@/lib/freePacksConfig';
 import type { Product } from '@/types';
 import type { Metadata } from 'next';
 
@@ -84,21 +85,22 @@ export default async function FreePacksPage() {
         {/* Products grid */}
         <div data-reveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-          {/* ── Hardcoded free pack — 11 Backgrounds ── */}
+          {/* ── Free pack — 11 Backgrounds ── */}
+          {(() => { const bg = getFreePackBySlug('11-backgrounds-animes')!; return (
           <FreePackCard
-            title="11 Backgrounds Animés"
-            description="Une collection de 11 fonds animés prêts à l'emploi pour habiller vos montages. Modernes, épurés, compatibles Premiere Pro."
-            itemCount={11}
+            title={locale === 'fr' ? bg.name_fr : bg.name_en}
+            description={locale === 'fr' ? bg.description_fr : bg.description_en}
+            itemCount={bg.itemCount}
             itemLabel="backgrounds"
-            tags={['Premiere Pro', '.mogrt', 'Backgrounds']}
-            videoUrl="/videos/video-11backgrounds-free.mp4"
-            slug="11-backgrounds-animes"
+            tags={bg.tags}
+            videoUrl={bg.videoUrl}
+            slug={bg.slug}
             locale={locale}
             isAuthenticated={!!user}
             userName={userName}
             productId={bgProduct?.id}
             initialLikeCount={bgLikeCount}
-          />
+          />); })()}
 
           {/* ── Supabase free packs ── */}
           {freePacks && (freePacks as Product[]).map((product) => (

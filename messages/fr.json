@@ -6,7 +6,8 @@
     "login": "Connexion",
     "account": "Mon Compte",
     "logout": "Déconnexion",
-    "admin": "Admin"
+    "admin": "Admin",
+    "personalSpace": "Espace personnel"
   },
   "home": {
     "hero": {
@@ -246,7 +247,9 @@
     "contains": "Ce pack contient",
     "price": "Prix",
     "entirelyFree": "entièrement gratuit",
-    "freeAccount": "Compte gratuit · Accès immédiat · Aucune carte requise"
+    "freeAccount": "Compte gratuit · Accès immédiat · Aucune carte requise",
+    "directDownload": "Téléchargement direct",
+    "videoPreview": "Aperçu vidéo"
   },
   "faq": {
     "title": "Questions fréquentes",

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Film, Download, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -46,6 +47,8 @@ export function FreePackCard({
   const [hovered, setHovered] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
+  const t = useTranslations('freePacks');
+  const tProduct = useTranslations('product');
 
   const packHref = slug ? `/${locale}/packs-gratuits/${slug}` : undefined;
   const authRedirect = loginHref ?? `/${locale}/auth/connexion${packHref ? `?redirect=${packHref}` : ''}`;
@@ -82,11 +85,13 @@ export function FreePackCard({
         {packHref ? (
           <Link href={packHref} className="block no-underline" style={{ color: 'inherit' }}>
             <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description}
+              freeBadgeLabel={t('freeBadge')} videoPreviewLabel={t('videoPreview')}
               heartOverlay={productId ? <HeartLike productId={productId} initialLikeCount={initialLikeCount} /> : undefined}
             />
           </Link>
         ) : (
           <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description}
+            freeBadgeLabel={t('freeBadge')} videoPreviewLabel={t('videoPreview')}
             heartOverlay={productId ? <HeartLike productId={productId} initialLikeCount={initialLikeCount} /> : undefined}
           />
         )}
@@ -97,11 +102,11 @@ export function FreePackCard({
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-white">0 €</span>
-              <span className="text-xs font-semibold text-[oklch(0.4_0.005_0)] uppercase tracking-wider">Gratuit</span>
+              <span className="text-xs font-semibold text-[oklch(0.4_0.005_0)] uppercase tracking-wider">{t('freeBadge')}</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-[oklch(0.4_0.005_0)]">
               <Download size={12} />
-              <span>Téléchargement direct</span>
+              <span>{t('directDownload')}</span>
             </div>
           </div>
 
@@ -139,7 +144,7 @@ export function FreePackCard({
           <button type="button" className="je-obtenir-btn" onClick={handleObtenir}>
             <span className="je-obtenir-inner">
               <Download size={16} />
-              Obtenir gratuitement
+              {tProduct('claimFree')}
             </span>
           </button>
         </div>
@@ -166,12 +171,16 @@ function CardBody({
   tags,
   title,
   description,
+  freeBadgeLabel,
+  videoPreviewLabel,
   heartOverlay,
 }: {
   videoUrl?: string;
   tags: string[];
   title: string;
   description: string;
+  freeBadgeLabel: string;
+  videoPreviewLabel: string;
   heartOverlay?: React.ReactNode;
 }) {
   return (
@@ -186,7 +195,7 @@ function CardBody({
         }}
       >
         <Sparkles size={11} className="text-white" />
-        <span className="text-[11px] font-black text-white uppercase tracking-widest">Gratuit</span>
+        <span className="text-[11px] font-black text-white uppercase tracking-widest">{freeBadgeLabel}</span>
       </div>
 
       {/* Video / Thumbnail */}
@@ -214,7 +223,7 @@ function CardBody({
               <div className="w-11 h-11 rounded-xl bg-[oklch(0.14_0_0)] border border-[oklch(0.22_0_0)] flex items-center justify-center">
                 <Film size={20} className="text-[oklch(0.35_0.005_0)]" />
               </div>
-              <span className="text-xs text-[oklch(0.3_0.005_0)] font-medium">Aperçu vidéo</span>
+              <span className="text-xs text-[oklch(0.3_0.005_0)] font-medium">{videoPreviewLabel}</span>
             </div>
           </div>
         )}
