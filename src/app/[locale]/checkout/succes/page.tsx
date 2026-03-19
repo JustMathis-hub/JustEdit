@@ -18,13 +18,17 @@ export default async function SuccessPage({ searchParams }: Props) {
   let purchase = null;
 
   if (session_id) {
-    const { data } = await supabase
-      .from('purchases')
-      .select('id, product:products(name_fr, name_en)')
-      .eq('stripe_session_id', session_id)
-      .eq('status', 'completed')
-      .single();
-    purchase = data;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data } = await supabase
+        .from('purchases')
+        .select('id, product:products(name_fr, name_en)')
+        .eq('stripe_session_id', session_id)
+        .eq('status', 'completed')
+        .eq('user_id', user.id)
+        .single();
+      purchase = data;
+    }
   }
 
   return (

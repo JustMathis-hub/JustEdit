@@ -11,7 +11,7 @@
   "home": {
     "hero": {
       "headline": "Edit faster.",
-      "subheadline": "Edit faster. Charge more. Sleep better.",
+      "subheadline": "Cut faster. Charge more. Sleep better.",
       "cta": "Browse the shop",
       "ctaFree": "Free packs",
       "buyNow": "Buy now",
@@ -36,7 +36,7 @@
     },
     "cta": {
       "title": "Ready to save time?",
-      "subtitle": "Join hundreds of editors using JustEdit.",
+      "subtitle": "Join editors who deliver ahead of schedule.",
       "button": "Browse the shop"
     },
     "videoTagline": "Faster, more profitable",
@@ -77,13 +77,18 @@
     "format": "Format",
     "buyNow": "Buy now — {price}",
     "download": "Download",
-    "alreadyPurchased": "Already purchased — Download",
+    "alreadyPurchased": "Download",
     "free": "Free",
     "claimFree": "Get for free",
     "addedToCart": "Added!",
     "mogrtFile": ".mogrt file",
     "compatiblePr": "Compatible Premiere Pro 2024+",
     "freeUpdates": "Free updates",
+    "price": "Price",
+    "tutorialTitle": "Tutorial",
+    "tutorialSubtitle": "Watch the full tutorial to get started with this product.",
+    "issuesTitle": "Common issues",
+    "issuesSubtitle": "Solutions to the most common issues encountered with this product.",
     "faq": {
       "title": "Frequently asked questions",
       "q1": "How do I install a MOGRT?",
@@ -102,7 +107,10 @@
     "vat": "Incl. tax",
     "buy": "Buy",
     "personalFeatures": ["Personal use", "1 user", "Free updates"],
-    "commercialFeatures": ["Commercial & client use", "Agencies & companies", "Multi-user"]
+    "commercialFeatures": ["Commercial & client use", "Agencies & companies", "Multi-user"],
+    "promoLabel": "Launch offer",
+    "price": "Price",
+    "securePayment": "Secure payment · Instant download"
   },
   "auth": {
     "login": {
@@ -201,10 +209,20 @@
   },
   "freePacks": {
     "title": "Free Packs",
-    "subtitle": "Resources offered by JustEdit",
+    "subtitle": "Free resources from JustEdit — enjoy!",
     "download": "Download for free",
     "loginRequired": "Log in to download",
-    "noPacks": "No free packs available at the moment."
+    "noPacks": "No free packs available at the moment.",
+    "backLink": "Free packs",
+    "freeBadge": "Free",
+    "alreadyClaimed": "You already own this pack",
+    "alreadyClaimedBefore": "Find it in your ",
+    "alreadyClaimedLink": "personal account",
+    "alreadyClaimedAfter": " to re-download it.",
+    "contains": "This pack includes",
+    "price": "Price",
+    "entirelyFree": "entirely free",
+    "freeAccount": "Free account · Instant access · No card required"
   },
   "faq": {
     "title": "Frequently Asked Questions",

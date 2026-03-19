@@ -81,9 +81,17 @@ export function LicensePurchase({
   if (alreadyPurchased) {
     return (
       <div className="rounded-2xl p-6" style={{ background: 'oklch(0.095 0 0)', border: '1px solid oklch(0.16 0 0)' }}>
-        <button onClick={handleBuy} disabled={loading}
-          className="w-full rounded-xl border border-[oklch(0.25_0_0)] text-white font-semibold py-4 text-sm uppercase tracking-widest transition-all hover:border-[oklch(0.35_0_0)] cursor-pointer flex items-center justify-center gap-2"
-          style={{ background: 'oklch(0.11 0 0)' }}
+        <button
+          onClick={handleBuy}
+          disabled={loading}
+          className="w-full rounded-xl text-white font-black py-4 text-sm uppercase tracking-widest cursor-pointer flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50"
+          style={{
+            background: 'linear-gradient(135deg, rgba(139,26,26,0.9) 0%, rgba(80,10,10,0.95) 100%)',
+            border: '1px solid rgba(200,60,60,0.35)',
+            boxShadow: '0 0 20px rgba(139,26,26,0.25)',
+          }}
+          onMouseEnter={(e) => { if (!loading) e.currentTarget.style.boxShadow = '0 0 30px rgba(139,26,26,0.5)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 0 20px rgba(139,26,26,0.25)'; }}
         >
           {loading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
           {tProduct('alreadyPurchased')}
@@ -246,7 +254,7 @@ export function LicensePurchase({
           <div>
             {originalPriceCents && (
               <div className="flex items-center gap-2.5 mb-4">
-                <span className="je-promo-badge">Offre de lancement</span>
+                <span className="je-promo-badge">{tLicense('promoLabel')}</span>
                 <span className="je-savings-tag">-{savingsPct}%</span>
               </div>
             )}
@@ -255,7 +263,7 @@ export function LicensePurchase({
               {/* Left: price */}
               <div>
                 <p className="text-[9px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: 'oklch(0.28 0.005 0)' }}>
-                  Prix
+                  {tLicense('price')}
                 </p>
                 <div className="flex items-baseline gap-3 leading-none">
                   <span
@@ -271,7 +279,7 @@ export function LicensePurchase({
                   )}
                 </div>
                 <p className="text-[9px] mt-1.5 uppercase tracking-[0.18em]" style={{ color: 'oklch(0.28 0.005 0)' }}>
-                  TTC
+                  {tLicense('vat')}
                 </p>
               </div>
 
@@ -314,7 +322,7 @@ export function LicensePurchase({
               className="text-center text-[11px] tracking-wide"
               style={{ color: 'oklch(0.28 0.005 0)', letterSpacing: '0.04em' }}
             >
-              Paiement sécurisé &nbsp;·&nbsp; Téléchargement immédiat
+              {tLicense('securePayment')}
             </p>
           </div>
 

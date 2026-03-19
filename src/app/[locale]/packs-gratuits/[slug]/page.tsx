@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ParticlesBg } from '@/components/ui/ParticlesBg';
 import { createClient } from '@/lib/supabase/server';
+import { getTranslations } from 'next-intl/server';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
 import { FreeClaimButton } from '@/components/shop/FreeClaimButton';
 import { FreePackMediaGallery } from '@/components/shop/FreePackMediaGallery';
@@ -24,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function FreePackPage({ params }: Props) {
   const { slug, locale } = await params;
+  const t = await getTranslations('freePacks');
 
   const pack = getFreePackBySlug(slug);
   if (!pack) notFound();
@@ -90,7 +92,7 @@ export default async function FreePackPage({ params }: Props) {
             className="inline-flex items-center gap-1.5 text-sm transition-colors no-underline text-[oklch(0.38_0.005_0)] hover:text-[oklch(0.6_0.005_0)]"
           >
             <ArrowLeft size={14} />
-            Packs gratuits
+            {t('backLink')}
           </Link>
         </div>
 
@@ -100,6 +102,7 @@ export default async function FreePackPage({ params }: Props) {
         <div className="w-full max-w-4xl mx-auto mb-14">
           <FreePackMediaGallery
             videoUrl={pack.videoUrl}
+            videoThumbnail={pack.videoThumbnail}
             images={pack.images}
             title={name}
           />
@@ -121,7 +124,7 @@ export default async function FreePackPage({ params }: Props) {
               }}
             >
               <Sparkles size={11} className="text-white" />
-              <span className="text-[11px] font-black text-white uppercase tracking-widest">Gratuit</span>
+              <span className="text-[11px] font-black text-white uppercase tracking-widest">{t('freeBadge')}</span>
             </div>
             <span
               className="text-xs font-bold uppercase tracking-widest"
@@ -169,9 +172,9 @@ export default async function FreePackPage({ params }: Props) {
             >
               <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
               <div>
-                <p className="text-sm font-bold text-emerald-400">Vous possédez déjà ce pack</p>
+                <p className="text-sm font-bold text-emerald-400">{t('alreadyClaimed')}</p>
                 <p className="text-xs mt-0.5" style={{ color: 'oklch(0.45 0.005 0)' }}>
-                  Retrouvez-le dans votre <a href={`/${locale}/compte`} className="underline hover:text-white transition-colors">espace personnel</a> pour le retélécharger.
+                  {t('alreadyClaimedBefore')}<a href={`/${locale}/compte`} className="underline hover:text-white transition-colors">{t('alreadyClaimedLink')}</a>{t('alreadyClaimedAfter')}
                 </p>
               </div>
             </div>
@@ -198,7 +201,7 @@ export default async function FreePackPage({ params }: Props) {
                 className="text-[10px] font-bold uppercase tracking-widest mb-5"
                 style={{ color: 'oklch(0.35 0.005 0)' }}
               >
-                Ce pack contient
+                {t('contains')}
               </p>
               <ul className="space-y-3">
                 {includes.map((item) => (
@@ -225,7 +228,7 @@ export default async function FreePackPage({ params }: Props) {
                   className="text-[10px] font-bold uppercase tracking-widest mb-3"
                   style={{ color: 'oklch(0.35 0.005 0)' }}
                 >
-                  Prix
+                  {t('price')}
                 </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-black text-white">0 €</span>
@@ -233,7 +236,7 @@ export default async function FreePackPage({ params }: Props) {
                     className="text-xs font-semibold uppercase tracking-wider"
                     style={{ color: 'oklch(0.38 0.005 0)' }}
                   >
-                    entièrement gratuit
+                    {t('entirelyFree')}
                   </span>
                 </div>
               </div>
@@ -250,7 +253,7 @@ export default async function FreePackPage({ params }: Props) {
                   className="text-xs text-center mt-3"
                   style={{ color: 'oklch(0.3 0.005 0)' }}
                 >
-                  Compte gratuit · Accès immédiat · Aucune carte requise
+                  {t('freeAccount')}
                 </p>
               </div>
             </div>

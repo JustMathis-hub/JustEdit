@@ -86,13 +86,18 @@
     "format": "Format",
     "buyNow": "Acheter maintenant — {price}",
     "download": "Télécharger",
-    "alreadyPurchased": "Déjà acheté — Télécharger",
+    "alreadyPurchased": "Télécharger",
     "free": "Gratuit",
     "claimFree": "Obtenir gratuitement",
     "addedToCart": "Ajouté !",
     "mogrtFile": "Fichier .mogrt",
     "compatiblePr": "Compatible Premiere Pro 2024+",
     "freeUpdates": "Mises à jour gratuites",
+    "price": "Prix",
+    "tutorialTitle": "Tutoriel",
+    "tutorialSubtitle": "Regardez le tutoriel complet pour prendre en main ce produit.",
+    "issuesTitle": "Problèmes potentiels",
+    "issuesSubtitle": "Solutions aux problèmes les plus courants rencontrés avec ce produit.",
     "faq": {
       "title": "Questions fréquentes",
       "q1": "Comment installer un MOGRT ?",
@@ -111,7 +116,10 @@
     "vat": "TTC",
     "buy": "Acheter",
     "personalFeatures": ["Usage personnel", "1 utilisateur", "Mises à jour gratuites"],
-    "commercialFeatures": ["Usage commercial & clients", "Agences & entreprises", "Multi-utilisateurs"]
+    "commercialFeatures": ["Usage commercial & clients", "Agences & entreprises", "Multi-utilisateurs"],
+    "promoLabel": "Offre de lancement",
+    "price": "Prix",
+    "securePayment": "Paiement sécurisé · Téléchargement immédiat"
   },
   "auth": {
     "login": {
@@ -213,7 +221,17 @@
     "subtitle": "Des ressources offertes par JustEdit ! La gratuité ça fait plaisir hehe",
     "download": "Télécharger gratuitement",
     "loginRequired": "Connecte-toi pour télécharger",
-    "noPacks": "Aucun pack gratuit disponible pour le moment."
+    "noPacks": "Aucun pack gratuit disponible pour le moment.",
+    "backLink": "Packs gratuits",
+    "freeBadge": "Gratuit",
+    "alreadyClaimed": "Vous possédez déjà ce pack",
+    "alreadyClaimedBefore": "Retrouvez-le dans votre ",
+    "alreadyClaimedLink": "espace personnel",
+    "alreadyClaimedAfter": " pour le retélécharger.",
+    "contains": "Ce pack contient",
+    "price": "Prix",
+    "entirelyFree": "entièrement gratuit",
+    "freeAccount": "Compte gratuit · Accès immédiat · Aucune carte requise"
   },
   "faq": {
     "title": "Questions fréquentes",
