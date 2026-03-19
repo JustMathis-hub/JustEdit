@@ -5,7 +5,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
 import { ProfileEditor } from '@/components/compte/ProfileEditor';
 import { PurchasedProductCard } from '@/components/compte/PurchasedProductCard';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Package } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ClaimedFreePackCard } from '@/components/shop/ClaimedFreePackCard';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
