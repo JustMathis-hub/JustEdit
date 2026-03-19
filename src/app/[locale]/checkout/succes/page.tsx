@@ -1,9 +1,13 @@
 import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { stripe } from '@/lib/stripe';
 import { DownloadButton } from '@/components/compte/DownloadButton';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, ArrowRight } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 interface Props {
   searchParams: Promise<{ session_id?: string }>;
@@ -20,6 +24,37 @@ export default async function SuccessPage({ searchParams }: Props) {
   if (session_id) {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
+      // Verify payment directly via Stripe (don't rely on webhook timing)
+      try {
+        const session = await stripe.checkout.sessions.retrieve(session_id);
+        const { user_id, product_id } = session.metadata ?? {};
+
+        if (
+          session.payment_status === 'paid' &&
+          user_id === user.id &&
+          product_id
+        ) {
+          // Upsert the purchase immediately (webhook will also upsert — idempotent)
+          const adminClient = createAdminClient();
+          await adminClient.from('purchases').upsert(
+            {
+              user_id,
+              product_id,
+              stripe_session_id: session.id,
+              stripe_payment_intent: session.payment_intent as string,
+              amount_paid_cents: session.amount_total ?? 0,
+              currency: session.currency ?? 'eur',
+              status: 'completed',
+              completed_at: new Date().toISOString(),
+            },
+            { onConflict: 'stripe_session_id' }
+          );
+        }
+      } catch (err) {
+        console.error('[succes] Stripe session fetch error:', err);
+      }
+
+      // Now fetch the purchase (guaranteed to exist if payment was valid)
       const { data } = await supabase
         .from('purchases')
         .select('id, product:products(name_fr, name_en)')
