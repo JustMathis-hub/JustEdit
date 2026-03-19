@@ -141,6 +141,7 @@ export async function FeaturedProducts() {
               itemLabel="backgrounds"
               tags={bg.tags}
               videoUrl={bg.videoUrl}
+              thumbnailUrl={bg.videoThumbnail}
               slug={bg.slug}
               locale={locale}
               isAuthenticated={isAuthenticated}

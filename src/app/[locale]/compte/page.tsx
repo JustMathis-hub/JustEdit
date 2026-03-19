@@ -3,10 +3,9 @@ export const dynamic = 'force-dynamic';
 import { redirect } from 'next/navigation';
 import { getTranslations, getLocale } from 'next-intl/server';
 import { createClient } from '@/lib/supabase/server';
-import Image from 'next/image';
-import { DownloadButton } from '@/components/compte/DownloadButton';
 import { ProfileEditor } from '@/components/compte/ProfileEditor';
-import { Package, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { PurchasedProductCard } from '@/components/compte/PurchasedProductCard';
+import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ClaimedFreePackCard } from '@/components/shop/ClaimedFreePackCard';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
@@ -140,68 +139,20 @@ export default async function AccountPage() {
                 const productName = locale === 'fr'
                   ? purchase.product?.name_fr
                   : purchase.product?.name_en;
-                const productSlug = purchase.product?.slug;
+                const productSlug = purchase.product?.slug ?? '';
                 const productHref = `/${locale}/boutique/${productSlug}`;
+                const thumbnail = purchase.product?.thumbnail_url
+                  ?? PRODUCT_THUMBNAILS[productSlug]?.[0];
 
                 return (
-                  <div
+                  <PurchasedProductCard
                     key={purchase.id}
-                    className="relative rounded-2xl overflow-hidden flex flex-col"
-                    style={{ background: 'oklch(0.095 0 0)', border: '1px solid oklch(0.16 0 0)' }}
-                  >
-                    {/* Thumbnail */}
-                    <Link href={productHref}>
-                      <div
-                        className="relative overflow-hidden group cursor-pointer"
-                        style={{ aspectRatio: '16/9', background: '#0a0a0f' }}
-                      >
-                        {purchase.product?.thumbnail_url ? (
-                          <Image
-                            src={purchase.product.thumbnail_url}
-                            alt={productName ?? ''}
-                            fill
-                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                            sizes="(max-width: 640px) 100vw, 320px"
-                          />
-                        ) : PRODUCT_THUMBNAILS[productSlug ?? '']?.[0] ? (
-                          <Image
-                            src={PRODUCT_THUMBNAILS[productSlug ?? ''][0]}
-                            alt={productName ?? ''}
-                            fill
-                            className="object-cover transition-transform duration-300 group-hover:scale-105"
-                            sizes="(max-width: 640px) 100vw, 320px"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center"
-                            style={{ background: 'linear-gradient(135deg, #0d1117 0%, #1a1a2e 60%, #16213e 100%)' }}>
-                            <Package size={28} className="text-[oklch(0.3_0.005_0)]" />
-                          </div>
-                        )}
-                        {/* Badge Obtenu */}
-                        <div
-                          className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-                          style={{
-                            background: 'rgba(16,185,129,0.15)',
-                            border: '1px solid rgba(16,185,129,0.3)',
-                            backdropFilter: 'blur(8px)',
-                          }}
-                        >
-                          <CheckCircle2 size={10} className="text-emerald-400" />
-                          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">{t('obtained')}</span>
-                        </div>
-                      </div>
-                    </Link>
-
-                    {/* Info + Download */}
-                    <div className="p-4 flex flex-col gap-3">
-                      <Link href={productHref}>
-                        <p className="text-sm font-black text-white hover:text-[oklch(0.75_0.005_0)] transition-colors leading-tight cursor-pointer">
-                          {productName}
-                        </p>
-                      </Link>
-                      <DownloadButton purchaseId={purchase.id} variant="card" />
-                    </div>
-                  </div>
+                    purchaseId={purchase.id}
+                    productName={productName ?? ''}
+                    productHref={productHref}
+                    thumbnailUrl={thumbnail}
+                    videoUrl={purchase.product?.preview_video_url ?? undefined}
+                  />
                 );
               })}
             </div>

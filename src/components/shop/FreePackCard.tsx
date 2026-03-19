@@ -15,6 +15,7 @@ interface FreePackCardProps {
   itemLabel: string;
   tags?: string[];
   videoUrl?: string;
+  thumbnailUrl?: string;
   slug?: string;
   locale?: string;
   /** Passed from server — whether the current visitor is logged in */
@@ -36,6 +37,7 @@ export function FreePackCard({
   itemLabel,
   tags = [],
   videoUrl,
+  thumbnailUrl,
   slug,
   locale = 'fr',
   isAuthenticated = false,
@@ -84,13 +86,13 @@ export function FreePackCard({
         {/* ── Clickable area → product page ── */}
         {packHref ? (
           <Link href={packHref} className="block no-underline" style={{ color: 'inherit' }}>
-            <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description}
+            <CardBody videoUrl={videoUrl} thumbnailUrl={thumbnailUrl} tags={tags} title={title} description={description}
               freeBadgeLabel={t('freeBadge')} videoPreviewLabel={t('videoPreview')}
               heartOverlay={productId ? <HeartLike productId={productId} initialLikeCount={initialLikeCount} /> : undefined}
             />
           </Link>
         ) : (
-          <CardBody videoUrl={videoUrl} tags={tags} title={title} description={description}
+          <CardBody videoUrl={videoUrl} thumbnailUrl={thumbnailUrl} tags={tags} title={title} description={description}
             freeBadgeLabel={t('freeBadge')} videoPreviewLabel={t('videoPreview')}
             heartOverlay={productId ? <HeartLike productId={productId} initialLikeCount={initialLikeCount} /> : undefined}
           />
@@ -168,6 +170,7 @@ export function FreePackCard({
 ───────────────────────────────────────────── */
 function CardBody({
   videoUrl,
+  thumbnailUrl,
   tags,
   title,
   description,
@@ -176,6 +179,7 @@ function CardBody({
   heartOverlay,
 }: {
   videoUrl?: string;
+  thumbnailUrl?: string;
   tags: string[];
   title: string;
   description: string;
@@ -199,9 +203,28 @@ function CardBody({
       </div>
 
       {/* Video / Thumbnail */}
-      <div className="relative w-full aspect-video bg-[oklch(0.07_0_0)] overflow-hidden">
+      <div className="relative w-full aspect-video bg-[oklch(0.07_0_0)] overflow-hidden group/video">
         {videoUrl ? (
-          <video src={videoUrl} autoPlay muted loop playsInline className="w-full h-full object-cover" />
+          <>
+            {/* Poster image — shown until hover */}
+            {thumbnailUrl && (
+              <img
+                src={thumbnailUrl}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover/video:opacity-0"
+              />
+            )}
+            <video
+              src={videoUrl}
+              muted
+              loop
+              playsInline
+              preload="none"
+              className="w-full h-full object-cover"
+              onMouseEnter={(e) => { (e.currentTarget as HTMLVideoElement).play().catch(() => {}); }}
+              onMouseLeave={(e) => { const v = e.currentTarget as HTMLVideoElement; v.pause(); v.currentTime = 0; }}
+            />
+          </>
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
             <div

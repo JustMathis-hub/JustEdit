@@ -1,9 +1,10 @@
 'use client';
 
+import { useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Download, CheckCircle2, Play } from 'lucide-react';
+import { Download, CheckCircle2 } from 'lucide-react';
 
 interface ClaimedFreePackCardProps {
   title: string;
@@ -24,7 +25,13 @@ export function ClaimedFreePackCard({
 }: ClaimedFreePackCardProps) {
   const router = useRouter();
   const t = useTranslations('account');
+  const videoRef = useRef<HTMLVideoElement>(null);
   const packHref = `/${locale}/packs-gratuits/${slug}`;
+
+  const handleMouseEnter = () => { videoRef.current?.play().catch(() => {}); };
+  const handleMouseLeave = () => {
+    if (videoRef.current) { videoRef.current.pause(); videoRef.current.currentTime = 0; }
+  };
 
   return (
     <div
@@ -39,40 +46,37 @@ export function ClaimedFreePackCard({
         className="relative cursor-pointer overflow-hidden group"
         style={{ aspectRatio: '16/9', background: '#0a0a0f' }}
         onClick={() => router.push(packHref)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        {thumbnailUrl ? (
+        {/* Poster image — visible until video plays */}
+        {thumbnailUrl && (
           <Image
             src={thumbnailUrl}
             alt={title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-opacity duration-300 group-hover:opacity-0"
             sizes="(max-width: 640px) 100vw, 320px"
           />
-        ) : videoUrl ? (
-          <>
-            <video
-              src={videoUrl}
-              muted
-              loop
-              playsInline
-              preload="none"
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              onMouseEnter={(e) => { (e.currentTarget as HTMLVideoElement).play(); }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLVideoElement).pause(); }}
-            />
-            <div
-              className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-200"
-              style={{ background: 'rgba(0,0,0,0.25)' }}
-            >
-              <Play size={28} className="text-white drop-shadow-lg" />
-            </div>
-          </>
-        ) : (
+        )}
+
+        {/* Video — lazy, plays on hover */}
+        {videoUrl ? (
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            muted
+            loop
+            playsInline
+            preload="none"
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+          />
+        ) : !thumbnailUrl ? (
           <div
-            className="w-full h-full"
+            className="absolute inset-0"
             style={{ background: 'linear-gradient(135deg, #0d1117 0%, #1a1a2e 60%, #16213e 100%)' }}
           />
-        )}
+        ) : null}
 
         {/* Badge */}
         <div
