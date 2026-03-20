@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
+import type { Session } from '@supabase/supabase-js';
 
 function ResetPasswordContent() {
   const t = useTranslations('auth.resetPassword');
@@ -16,6 +17,7 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
+  const sessionRef = useRef<Session | null>(null);
   const [sessionReady, setSessionReady] = useState(false);
   const [sessionError, setSessionError] = useState('');
   const [password, setPassword] = useState('');
@@ -27,17 +29,23 @@ function ResetPasswordContent() {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (error) {
+      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
+        if (error || !data.session) {
           setSessionError(t('invalidLink'));
         } else {
+          // Store session for later use, then sign out to prevent auto-login
+          sessionRef.current = data.session;
+          await supabase.auth.signOut();
           setSessionReady(true);
           window.history.replaceState({}, '', window.location.pathname);
         }
       });
     } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      // Check for existing session (e.g. arrived via /api/auth/confirm)
+      supabase.auth.getSession().then(async ({ data: { session } }) => {
         if (session) {
+          sessionRef.current = session;
+          await supabase.auth.signOut();
           setSessionReady(true);
         } else {
           setSessionError(t('invalidLink'));
@@ -56,15 +64,29 @@ function ResetPasswordContent() {
       return;
     }
 
+    if (!sessionRef.current) {
+      setError(t('error'));
+      return;
+    }
+
     setLoading(true);
 
+    // Restore the session temporarily to update the password
+    await supabase.auth.setSession({
+      access_token: sessionRef.current.access_token,
+      refresh_token: sessionRef.current.refresh_token,
+    });
+
     const { error } = await supabase.auth.updateUser({ password });
+
+    // Always sign out after — user must log in with new password
+    await supabase.auth.signOut();
 
     if (error) {
       setError(t('error'));
     } else {
       setSuccess(true);
-      setTimeout(() => router.push('/compte'), 2000);
+      setTimeout(() => router.push('/auth/connexion'), 2000);
     }
     setLoading(false);
   };
