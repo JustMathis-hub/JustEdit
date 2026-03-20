@@ -18,7 +18,8 @@ export default async function SuccessPage({ searchParams }: Props) {
   const { session_id } = await searchParams;
 
   const supabase = await createClient();
-  let purchase: { id: string; product: { name_fr: string; name_en: string } | null } | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let purchase: any = null;
   let amountPaid = 0;
 
   if (session_id) {
@@ -61,7 +62,7 @@ export default async function SuccessPage({ searchParams }: Props) {
         .eq('status', 'completed')
         .eq('user_id', user.id)
         .single();
-      purchase = data as typeof purchase;
+      purchase = data;
     }
   }
 
