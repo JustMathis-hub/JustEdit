@@ -21,13 +21,16 @@ export default async function SuccessPage({ searchParams }: Props) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let purchase: any = null;
   let amountPaid = 0;
+  let metaProductId: string | undefined;
 
   if (session_id) {
     const { data: { user } } = await supabase.auth.getUser();
+
     if (user) {
       try {
         const session = await stripe.checkout.sessions.retrieve(session_id);
         const { user_id, product_id } = session.metadata ?? {};
+        metaProductId = product_id;
 
         if (
           session.payment_status === 'paid' &&
@@ -46,7 +49,6 @@ export default async function SuccessPage({ searchParams }: Props) {
               amount_paid_cents: Math.round(amountPaid),
               currency: session.currency ?? 'eur',
               status: 'completed',
-              completed_at: new Date().toISOString(),
             },
             { onConflict: 'stripe_session_id' }
           );
@@ -55,20 +57,46 @@ export default async function SuccessPage({ searchParams }: Props) {
         console.error('[succes] Stripe session fetch error:', err);
       }
 
-      const { data } = await supabase
+      const adminClient = createAdminClient();
+
+      // Try by session_id first
+      const { data: bySession } = await adminClient
         .from('purchases')
-        .select('id, product:products(name_fr, name_en)')
+        .select('id, product_id')
         .eq('stripe_session_id', session_id)
         .eq('status', 'completed')
         .eq('user_id', user.id)
-        .single();
-      purchase = data;
+        .maybeSingle();
+
+      if (bySession) {
+        purchase = bySession;
+      } else if (metaProductId) {
+        // Fallback: find existing purchase by user + product (admin re-test case)
+        const { data: byProduct } = await adminClient
+          .from('purchases')
+          .select('id, product_id')
+          .eq('user_id', user.id)
+          .eq('product_id', metaProductId)
+          .eq('status', 'completed')
+          .maybeSingle();
+        purchase = byProduct;
+      }
     }
   }
 
-  const productName = purchase?.product
-    ? (locale === 'fr' ? purchase.product.name_fr : purchase.product.name_en)
-    : null;
+
+  let productName: string | null = null;
+  if (purchase?.product_id) {
+    const adminClient = createAdminClient();
+    const { data: prod } = await adminClient
+      .from('products')
+      .select('name_fr, name_en')
+      .eq('id', purchase.product_id)
+      .single();
+    if (prod) {
+      productName = locale === 'fr' ? prod.name_fr : prod.name_en;
+    }
+  }
 
   const formattedPrice = amountPaid > 0
     ? `${(amountPaid / 100).toFixed(2).replace('.', ',')} €`

@@ -9,6 +9,8 @@ import { CookieBanner } from '@/components/layout/CookieBanner';
 import { PromoBannerProvider, PromoBanner } from '@/components/layout/PromoBanner';
 import { ScrollRevealInit } from '@/components/layout/ScrollRevealInit';
 import { Toaster } from '@/components/ui/sonner';
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import '../globals.css';
 
 interface Props {
@@ -84,6 +86,8 @@ export default async function LocaleLayout({ children, params }: Props) {
             />
           </PromoBannerProvider>
         </NextIntlClientProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

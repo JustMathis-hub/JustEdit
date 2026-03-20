@@ -69,6 +69,7 @@ export default async function ProductPage({ params }: Props) {
   // Check if user already owns this
   const { data: { user } } = await supabase.auth.getUser();
   let purchase = null;
+  let isAdmin = false;
   if (user) {
     const { data } = await supabase
       .from('purchases')
@@ -78,6 +79,13 @@ export default async function ProductPage({ params }: Props) {
       .eq('status', 'completed')
       .single();
     purchase = data;
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+    isAdmin = profile?.role === 'admin';
   }
 
   const name = locale === 'fr' ? product.name_fr : product.name_en;
@@ -220,6 +228,7 @@ export default async function ProductPage({ params }: Props) {
               locale={locale}
               alreadyPurchased={!!purchase}
               purchaseId={purchase?.id}
+              isAdmin={isAdmin}
             />
           </div>
 

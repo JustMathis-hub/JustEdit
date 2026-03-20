@@ -136,12 +136,25 @@ Ouvre `localhost:3000` avec un apercu en temps reel du template.
 3. Commandes :
 ```bash
 C:\Users\mathi\Desktop\App\Stripe\stripe.exe login
-C:\Users\mathi\Desktop\App\Stripe\stripe.exe listen --forward-to http://localhost:3001/api/stripe/webhook
+C:\Users\mathi\Desktop\App\Stripe\stripe.exe listen --forward-to http://localhost:3000/api/stripe/webhook
 ```
 4. Copier le `whsec_...` affiche et le mettre dans `.env.local` comme `STRIPE_WEBHOOK_SECRET`
 5. Redemarrer `npm run dev`
 6. Faire un achat test avec carte `4242 4242 4242 4242`
-7. **IMPORTANT** : le port local est souvent `3001` car le port 3000 est pris
+7. **IMPORTANT** : le port local est **3000** (verifie dans le terminal du preview server)
+
+### Page succes (`/checkout/succes`) — logique d'upsert
+- **IMPORTANT** : la table `purchases` n'a PAS de colonne `completed_at` — ne jamais l'inclure dans l'upsert
+- La table a une contrainte unique sur `(user_id, product_id)` EN PLUS de `stripe_session_id`
+- Si l'upsert echoue (ex : admin qui re-teste), la page fait un fallback : cherche par `user_id + product_id`
+- Le upsert utilise `onConflict: 'stripe_session_id'` mais peut echouer sur la contrainte `(user_id, product_id)`
+- Flux : upsert → query par session_id (maybeSingle) → fallback query par user_id+product_id
+
+### Mode admin pour tester les achats
+- Les comptes avec `profiles.role = 'admin'` peuvent acheter meme s'ils possedent deja le produit
+- La page produit (`LicensePurchase`) affiche "VOUS POSSEDEZ CE PRODUIT — ACHAT ADMIN POSSIBLE" + bouton Acheter
+- L'API checkout (`/api/stripe/checkout`) bypasse la verification "deja achete" pour les admins
+- Pour supprimer un achat test : Supabase → Table Editor → `purchases` → supprimer la ligne → Ctrl+Shift+R sur /compte
 
 ### i18n (next-intl)
 - Locales : `fr` (defaut) et `en`
@@ -432,12 +445,18 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' '
 
 ## Taches en attente / TODO prochaine session
 
-- [ ] **Tester le flux d'achat complet** avec Stripe CLI en local (email + download + page succes)
 - [ ] **Redesign boutique** (voir section "Plan boutique" ci-dessous) — non code.
 - [ ] **HeroSection background** — forme artistique SVG (voir section "Experimentations design") — non finalise.
-- [ ] **Integrer Sentry** pour monitoring/logging en production (actuellement logs basiques seulement)
 - [ ] **Ajouter CAPTCHA** (hCaptcha ou reCAPTCHA v3) sur inscription/login si risque de brute force
 - [ ] **Verifier BIMI** — le logo devrait apparaitre dans Gmail apres propagation DNS (24-48h depuis le 20 mars 2026)
+
+## Fait — Session mars 2026 (lancement)
+
+- [x] **Fix reset password** : redirect vers landing + auto-login avant changement de mdp — corrige via `/api/auth/confirm` + `signOut` apres `exchangeCodeForSession`
+- [x] **Page succes checkout** : redesign DA JustEdit avec bouton telechargement + fallback upsert
+- [x] **Mode admin achats** : les admins peuvent re-acheter un produit deja possede pour tester le flux complet
+- [x] **Index SQL Supabase** : `idx_purchases_user_id`, `idx_purchases_stripe_session_id`, `idx_free_claims_user_id`, `idx_product_likes_user_id`, `idx_products_sort_order`
+- [x] **Vercel Analytics** : active sur le dashboard Vercel (gratuit, remplace Axiom qui necessite Pro)
 
 ---
 
