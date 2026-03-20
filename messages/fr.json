@@ -157,7 +157,10 @@
       "error": "Une erreur est survenue. Réessaie.",
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "successTitle": "Mot de passe mis à jour !",
-      "successDesc": "Tu vas être redirigé vers ton compte."
+      "successDesc": "Tu vas être redirigé vers ton compte.",
+      "invalidLink": "Ce lien est invalide ou a expiré.",
+      "requestNewLink": "Demander un nouveau lien",
+      "verifying": "Vérification en cours..."
     },
     "register": {
       "title": "Créer un compte",
