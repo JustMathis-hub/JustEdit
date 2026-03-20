@@ -16,6 +16,7 @@ interface Props {
   locale: string;
   alreadyPurchased: boolean;
   purchaseId?: string;
+  isAdmin?: boolean;
 }
 
 export function LicensePurchase({
@@ -27,6 +28,7 @@ export function LicensePurchase({
   locale,
   alreadyPurchased,
   purchaseId,
+  isAdmin = false,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -49,7 +51,7 @@ export function LicensePurchase({
   const handleBuy = async () => {
     setLoading(true);
     try {
-      if (alreadyPurchased && purchaseId) {
+      if (alreadyPurchased && purchaseId && !isAdmin) {
         const res = await fetch(`/api/download/${purchaseId}`);
         if (!res.ok) throw new Error('Download failed');
         const { url } = await res.json();
@@ -77,8 +79,8 @@ export function LicensePurchase({
     }
   };
 
-  /* ── Already purchased ── */
-  if (alreadyPurchased) {
+  /* ── Already purchased (non-admin only) ── */
+  if (alreadyPurchased && !isAdmin) {
     return (
       <div className="rounded-2xl p-6" style={{ background: 'oklch(0.095 0 0)', border: '1px solid oklch(0.16 0 0)' }}>
         <button
@@ -247,6 +249,16 @@ export function LicensePurchase({
       >
         {/* Top accent */}
         <div className="je-card-accent" />
+
+        {/* Admin badge */}
+        {isAdmin && alreadyPurchased && (
+          <div className="px-7 pt-4">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg w-fit" style={{ background: 'rgba(139,26,26,0.15)', border: '1px solid rgba(139,26,26,0.3)', color: '#e07070' }}>
+              <Download size={11} />
+              Vous possédez ce produit — achat admin possible
+            </div>
+          </div>
+        )}
 
         <div className="p-7 flex flex-col gap-6">
 

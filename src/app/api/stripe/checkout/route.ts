@@ -47,17 +47,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Product is free' }, { status: 400 });
     }
 
-    // Check not already purchased
-    const { data: existing } = await supabase
-      .from('purchases')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('product_id', productId)
-      .eq('status', 'completed')
-      .maybeSingle();
+    // Check not already purchased (bypass for admins)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+    const isAdmin = profile?.role === 'admin';
 
-    if (existing) {
-      return NextResponse.json({ error: 'Already purchased' }, { status: 409 });
+    if (!isAdmin) {
+      const { data: existing } = await supabase
+        .from('purchases')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('product_id', productId)
+        .eq('status', 'completed')
+        .maybeSingle();
+
+      if (existing) {
+        return NextResponse.json({ error: 'Already purchased' }, { status: 409 });
+      }
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
