@@ -23,7 +23,7 @@ src/
 │   │   ├── auth/           # Connexion, inscription, mot-de-passe-oublie, reset-password, callback
 │   │   └── checkout/       # Succes / Annule
 │   ├── admin/              # Panel admin (produits, commandes, utilisateurs)
-│   ├── api/                # Routes API (Stripe webhook, contact, profile update, etc.)
+│   ├── api/                # Routes API (Stripe webhook, contact, profile update, auth/confirm)
 │   └── layout.tsx          # Root layout
 ├── components/
 │   ├── layout/             # Navbar, Footer, PromoBanner, CookieBanner
@@ -71,8 +71,11 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
 ### Authentification
 - Supabase Auth (email/password)
-- Reset password : formulaire `/auth/mot-de-passe-oublie` → email Supabase → callback `/auth/callback?type=recovery` → page `/auth/reset-password`
-- **IMPORTANT** : le `redirectTo` dans `mot-de-passe-oublie/page.tsx` pointe directement vers `/${locale}/auth/reset-password` (URL propre, sans query params). Le `callback` n'est PAS utilise pour le reset password. La page `reset-password` echange elle-meme le code via `exchangeCodeForSession` cote client (via `useSearchParams`). Raison : le wildcard Supabase `https://justedit.store/**` ne matche pas les URLs avec query params, causant un fallback vers le Site URL (home page).
+- Reset password — **deux mecanismes complementaires** :
+  1. **Route API `/api/auth/confirm`** (principale) : le template email Supabase utilise `href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=recovery"`. La route verifie le token via `supabase.auth.verifyOtp({ token_hash, type })`, cree la session cote serveur, et redirige vers `/${locale}/auth/reset-password`.
+  2. **Fallback client-side** : la page `reset-password` gere aussi `?code=xxx` (PKCE) via `exchangeCodeForSession` cote client (`useSearchParams` + `Suspense`), et detecte une session existante via `getSession()`.
+- **IMPORTANT** : le `redirectTo` dans `mot-de-passe-oublie/page.tsx` pointe vers `/${locale}/auth/reset-password` (URL propre, sans query params). Le wildcard Supabase `https://justedit.store/**` ne matche PAS les URLs avec query params — ne jamais ajouter `?type=...` ou `?next=...` dans le `redirectTo`.
+- **IMPORTANT** : le template email reset-password dans Supabase Dashboard utilise `{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=recovery` (PAS `{{ .ConfirmationURL }}`). Ne pas revenir a `{{ .ConfirmationURL }}` sinon la redirection vers reset-password casse.
 - Role admin : `profiles.role = 'admin'` → acces `/admin`
 - Supabase URL Configuration → Redirect URLs : `https://justedit.store/**` (wildcard pour tous les sous-chemins)
 
@@ -100,8 +103,8 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 #### Templates Supabase (account-confirmation + reset-password)
 - Ce sont des fichiers HTML bruts (pas React Email) car Supabase utilise son propre moteur de templates
 - Variables Supabase disponibles : `{{ .ConfirmationURL }}`, `{{ .Token }}`, `{{ .TokenHash }}`, `{{ .SiteURL }}`, `{{ .Email }}`, `{{ .Data }}`, `{{ .RedirectTo }}`
-- Le bouton utilise `href="{{ .ConfirmationURL }}"` pour le lien de confirmation/reset
-- Design : fond noir #080808, container #0f0f0f, header avec logo image (`https://justedit.store/Logo.png`), bouton rouge #8b1a1a
+- Le bouton de confirmation compte utilise `href="{{ .ConfirmationURL }}"`, le bouton de reset password utilise `href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=recovery"`
+- Design : fond transparent (pas de background sur body/wrapper), container #0f0f0f, header avec logo texte (pas image), bouton rouge #8b1a1a
 - Pour modifier : editer les fichiers HTML dans `src/emails/` puis copier-coller le contenu dans Supabase Dashboard → Authentication → Email Templates
 
 #### Previsualisation des templates React Email
@@ -420,7 +423,7 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' '
 8. **Rate limiting** : necessite `UPSTASH_REDIS_REST_URL` et `UPSTASH_REDIS_REST_TOKEN` dans `.env.local`. Sans ces vars, le rate limiting est desactive silencieusement.
 9. **Security headers** : configures dans `next.config.ts` via la propriete `headers()`. Ne pas supprimer.
 10. **Path traversal** : la route `/api/media/[...path]` valide chaque segment de chemin. Ne pas simplifier cette validation.
-11. **Password reset flow** : `mot-de-passe-oublie` → `redirectTo` avec `?type=recovery` → callback detecte `type=recovery` → redirige vers `/auth/reset-password`. Ne pas utiliser `?next=...` (Supabase strip les query params complexes).
+11. **Password reset flow** : le template email Supabase utilise `{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=recovery` (PAS `{{ .ConfirmationURL }}`). La route `/api/auth/confirm` verifie le token et redirige vers `/auth/reset-password`. Ne jamais mettre de query params dans le `redirectTo` de `resetPasswordForEmail` (Supabase wildcard `/**` ne les matche pas).
 12. **Stripe webhook secret** : en local, utiliser le `whsec_...` genere par Stripe CLI (`stripe listen`). En prod, utiliser celui configure dans le dashboard Stripe.
 13. **Port local** : `npm run dev` utilise souvent le port **3001** car le port 3000 est pris. Verifier dans le terminal.
 14. **Emails Supabase** : les templates HTML sont dans `src/emails/*.html` mais doivent etre copies manuellement dans Supabase Dashboard → Auth → Email Templates.

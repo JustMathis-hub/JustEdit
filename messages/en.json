@@ -148,7 +148,7 @@
       "error": "Something went wrong. Please try again.",
       "passwordMismatch": "Passwords do not match.",
       "successTitle": "Password updated!",
-      "successDesc": "You will be redirected to your account.",
+      "successDesc": "You will be redirected to the login page.",
       "invalidLink": "This link is invalid or has expired.",
       "requestNewLink": "Request a new link",
       "verifying": "Verifying..."
