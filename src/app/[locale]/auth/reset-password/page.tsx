@@ -17,7 +17,11 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const supabase = createClient();
 
+  // For token_hash flow: store the hash to verify at submit time (never creates a session at load).
+  // For PKCE/fallback flow: store the session after local sign-out.
+  const tokenHashRef = useRef<string | null>(null);
   const sessionRef = useRef<Session | null>(null);
+
   const [sessionReady, setSessionReady] = useState(false);
   const [sessionError, setSessionError] = useState('');
   const [password, setPassword] = useState('');
@@ -31,19 +35,12 @@ function ResetPasswordContent() {
     const code = searchParams.get('code');
 
     if (tokenHash) {
-      // Verify the recovery token client-side only — no server session cookie is
-      // ever created, so the navbar never shows the user as logged in.
-      supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' }).then(async ({ data, error }) => {
-        if (error || !data.session) {
-          setSessionError(t('invalidLink'));
-        } else {
-          sessionRef.current = data.session;
-          // Clear from browser storage immediately (tokens remain valid server-side).
-          await supabase.auth.signOut({ scope: 'local' });
-          setSessionReady(true);
-          window.history.replaceState({}, '', window.location.pathname);
-        }
-      });
+      // Store the token_hash — do NOT call verifyOtp here.
+      // Verification happens at submit so no session is ever created at load,
+      // meaning the navbar never shows the user as logged in.
+      tokenHashRef.current = tokenHash;
+      setSessionReady(true);
+      window.history.replaceState({}, '', window.location.pathname);
     } else if (code) {
       // PKCE fallback
       supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
@@ -57,7 +54,7 @@ function ResetPasswordContent() {
         }
       });
     } else {
-      // Fallback: check for an existing session (legacy / unexpected flow)
+      // Fallback: check for an existing session
       supabase.auth.getSession().then(async ({ data: { session } }) => {
         if (session) {
           sessionRef.current = session;
@@ -80,31 +77,51 @@ function ResetPasswordContent() {
       return;
     }
 
-    if (!sessionRef.current) {
-      setError(t('error'));
-      return;
-    }
-
     setLoading(true);
 
-    // Restore the session temporarily (tokens are still valid server-side
-    // since we only did a local sign out earlier).
-    await supabase.auth.setSession({
-      access_token: sessionRef.current.access_token,
-      refresh_token: sessionRef.current.refresh_token,
-    });
+    if (tokenHashRef.current) {
+      // Verify the OTP just-in-time and update the password in one go.
+      // The session is created and used immediately, then destroyed.
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        token_hash: tokenHashRef.current,
+        type: 'recovery',
+      });
 
-    const { error } = await supabase.auth.updateUser({ password });
+      if (verifyError || !data.session) {
+        setError(t('invalidLink'));
+        setLoading(false);
+        return;
+      }
 
-    // Always sign out after — user must log in with new password
-    await supabase.auth.signOut();
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      await supabase.auth.signOut();
 
-    if (error) {
-      setError(t('error'));
+      if (updateError) {
+        setError(t('error'));
+      } else {
+        setSuccess(true);
+        setTimeout(() => router.push('/auth/connexion'), 2000);
+      }
+    } else if (sessionRef.current) {
+      // PKCE/fallback: restore session, update, sign out
+      await supabase.auth.setSession({
+        access_token: sessionRef.current.access_token,
+        refresh_token: sessionRef.current.refresh_token,
+      });
+
+      const { error: updateError } = await supabase.auth.updateUser({ password });
+      await supabase.auth.signOut();
+
+      if (updateError) {
+        setError(t('error'));
+      } else {
+        setSuccess(true);
+        setTimeout(() => router.push('/auth/connexion'), 2000);
+      }
     } else {
-      setSuccess(true);
-      setTimeout(() => router.push('/auth/connexion'), 2000);
+      setError(t('error'));
     }
+
     setLoading(false);
   };
 
