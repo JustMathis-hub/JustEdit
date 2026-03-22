@@ -28,7 +28,6 @@ function ResetPasswordContent() {
     if (tokenHash) {
       tokenHashRef.current = tokenHash;
       setSessionReady(true);
-      window.history.replaceState({}, '', window.location.pathname);
     } else {
       setSessionError(t('invalidLink'));
     }
