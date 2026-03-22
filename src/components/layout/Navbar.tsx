@@ -36,9 +36,14 @@ export function Navbar() {
     };
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) setProfile(null);
+      if (session?.user) {
+        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+        setProfile(data);
+      } else {
+        setProfile(null);
+      }
     });
 
     return () => subscription.unsubscribe();
