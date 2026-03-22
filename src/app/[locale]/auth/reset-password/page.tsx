@@ -27,22 +27,41 @@ function ResetPasswordContent() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
+    const tokenHash = searchParams.get('token_hash');
     const code = searchParams.get('code');
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+
+    if (tokenHash) {
+      // Verify the recovery token client-side only — no server session cookie is
+      // ever created, so the navbar never shows the user as logged in.
+      supabase.auth.verifyOtp({ token_hash: tokenHash, type: 'recovery' }).then(async ({ data, error }) => {
         if (error || !data.session) {
           setSessionError(t('invalidLink'));
         } else {
           sessionRef.current = data.session;
+          // Clear from browser storage immediately (tokens remain valid server-side).
+          await supabase.auth.signOut({ scope: 'local' });
+          setSessionReady(true);
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+      });
+    } else if (code) {
+      // PKCE fallback
+      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
+        if (error || !data.session) {
+          setSessionError(t('invalidLink'));
+        } else {
+          sessionRef.current = data.session;
+          await supabase.auth.signOut({ scope: 'local' });
           setSessionReady(true);
           window.history.replaceState({}, '', window.location.pathname);
         }
       });
     } else {
-      // Check for existing session (e.g. arrived via /api/auth/confirm)
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      // Fallback: check for an existing session (legacy / unexpected flow)
+      supabase.auth.getSession().then(async ({ data: { session } }) => {
         if (session) {
           sessionRef.current = session;
+          await supabase.auth.signOut({ scope: 'local' });
           setSessionReady(true);
         } else {
           setSessionError(t('invalidLink'));
@@ -67,6 +86,13 @@ function ResetPasswordContent() {
     }
 
     setLoading(true);
+
+    // Restore the session temporarily (tokens are still valid server-side
+    // since we only did a local sign out earlier).
+    await supabase.auth.setSession({
+      access_token: sessionRef.current.access_token,
+      refresh_token: sessionRef.current.refresh_token,
+    });
 
     const { error } = await supabase.auth.updateUser({ password });
 
