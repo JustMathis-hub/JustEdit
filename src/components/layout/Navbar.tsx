@@ -36,12 +36,15 @@ export function Navbar() {
     };
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-        setProfile(data);
-      } else {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+          setProfile(data);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
         setProfile(null);
       }
     });
