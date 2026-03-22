@@ -29,23 +29,20 @@ function ResetPasswordContent() {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
         if (error || !data.session) {
           setSessionError(t('invalidLink'));
         } else {
-          // Store session for later use, then sign out to prevent auto-login
           sessionRef.current = data.session;
-          await supabase.auth.signOut();
           setSessionReady(true);
           window.history.replaceState({}, '', window.location.pathname);
         }
       });
     } else {
       // Check for existing session (e.g. arrived via /api/auth/confirm)
-      supabase.auth.getSession().then(async ({ data: { session } }) => {
+      supabase.auth.getSession().then(({ data: { session } }) => {
         if (session) {
           sessionRef.current = session;
-          await supabase.auth.signOut();
           setSessionReady(true);
         } else {
           setSessionError(t('invalidLink'));
@@ -70,12 +67,6 @@ function ResetPasswordContent() {
     }
 
     setLoading(true);
-
-    // Restore the session temporarily to update the password
-    await supabase.auth.setSession({
-      access_token: sessionRef.current.access_token,
-      refresh_token: sessionRef.current.refresh_token,
-    });
 
     const { error } = await supabase.auth.updateUser({ password });
 
