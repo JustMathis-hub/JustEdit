@@ -4,24 +4,17 @@ import { useState, useEffect, useRef, Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2, CheckCircle } from 'lucide-react';
 import Image from 'next/image';
-import type { Session } from '@supabase/supabase-js';
 
 function ResetPasswordContent() {
   const t = useTranslations('auth.resetPassword');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClient();
 
-  // For token_hash flow: store the hash to verify at submit time (never creates a session at load).
-  // For PKCE/fallback flow: store the session after local sign-out.
   const tokenHashRef = useRef<string | null>(null);
-  const sessionRef = useRef<Session | null>(null);
-
   const [sessionReady, setSessionReady] = useState(false);
   const [sessionError, setSessionError] = useState('');
   const [password, setPassword] = useState('');
@@ -32,38 +25,12 @@ function ResetPasswordContent() {
 
   useEffect(() => {
     const tokenHash = searchParams.get('token_hash');
-    const code = searchParams.get('code');
-
     if (tokenHash) {
-      // Store the token_hash — do NOT call verifyOtp here.
-      // Verification happens at submit so no session is ever created at load,
-      // meaning the navbar never shows the user as logged in.
       tokenHashRef.current = tokenHash;
       setSessionReady(true);
       window.history.replaceState({}, '', window.location.pathname);
-    } else if (code) {
-      // PKCE fallback
-      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
-        if (error || !data.session) {
-          setSessionError(t('invalidLink'));
-        } else {
-          sessionRef.current = data.session;
-          await supabase.auth.signOut({ scope: 'local' });
-          setSessionReady(true);
-          window.history.replaceState({}, '', window.location.pathname);
-        }
-      });
     } else {
-      // Fallback: check for an existing session
-      supabase.auth.getSession().then(async ({ data: { session } }) => {
-        if (session) {
-          sessionRef.current = session;
-          await supabase.auth.signOut({ scope: 'local' });
-          setSessionReady(true);
-        } else {
-          setSessionError(t('invalidLink'));
-        }
-      });
+      setSessionError(t('invalidLink'));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -78,51 +45,24 @@ function ResetPasswordContent() {
     }
 
     setLoading(true);
-
-    if (tokenHashRef.current) {
-      // Verify the OTP just-in-time and update the password in one go.
-      // The session is created and used immediately, then destroyed.
-      const { data, error: verifyError } = await supabase.auth.verifyOtp({
-        token_hash: tokenHashRef.current,
-        type: 'recovery',
+    try {
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token_hash: tokenHashRef.current, password }),
       });
 
-      if (verifyError || !data.session) {
-        setError(t('invalidLink'));
-        setLoading(false);
-        return;
-      }
+      const data = await res.json();
 
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-      await supabase.auth.signOut();
-
-      if (updateError) {
-        setError(t('error'));
+      if (!res.ok) {
+        setError(data.error === 'invalid_token' ? t('invalidLink') : t('error'));
       } else {
         setSuccess(true);
         setTimeout(() => router.push('/auth/connexion'), 2000);
       }
-    } else if (sessionRef.current) {
-      // PKCE/fallback: restore session, update, sign out
-      await supabase.auth.setSession({
-        access_token: sessionRef.current.access_token,
-        refresh_token: sessionRef.current.refresh_token,
-      });
-
-      const { error: updateError } = await supabase.auth.updateUser({ password });
-      await supabase.auth.signOut();
-
-      if (updateError) {
-        setError(t('error'));
-      } else {
-        setSuccess(true);
-        setTimeout(() => router.push('/auth/connexion'), 2000);
-      }
-    } else {
-      setError(t('error'));
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (success) {
