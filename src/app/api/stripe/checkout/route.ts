@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const { productId, licenseType, locale: reqLocale } = await request.json();
+    const { productId, licenseType, locale: reqLocale, affiliateCode } = await request.json();
     const locale = reqLocale === 'en' ? 'en' : 'fr';
 
     if (!productId) {
@@ -78,6 +78,23 @@ export async function POST(request: Request) {
       ? COMMERCIAL_PRICE_CENTS
       : (PROMO_PRICES[product.slug] ?? product.price_cents);
 
+    // Resolve affiliate (if referred)
+    let affiliateId = '';
+    let resolvedAffiliateCode = '';
+    if (affiliateCode && typeof affiliateCode === 'string') {
+      const { data: affiliate } = await supabase
+        .from('affiliates')
+        .select('id, code, user_id')
+        .eq('code', affiliateCode)
+        .eq('status', 'active')
+        .single();
+      // Prevent self-referral
+      if (affiliate && affiliate.user_id !== user.id) {
+        affiliateId = affiliate.id;
+        resolvedAffiliateCode = affiliate.code;
+      }
+    }
+
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -100,6 +117,8 @@ export async function POST(request: Request) {
         user_id: user.id,
         product_id: product.id,
         license_type: isCommercial ? 'commercial' : 'personal',
+        affiliate_id: affiliateId,
+        affiliate_code: resolvedAffiliateCode,
       },
       success_url: `${siteUrl}/${locale}/checkout/succes?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/${locale}/boutique/${product.slug}`,

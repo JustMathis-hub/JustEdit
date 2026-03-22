@@ -31,6 +31,9 @@ export const authRatelimit = createRatelimiter(5, '15 m');
 // 10 profile updates per hour per IP
 export const profileRatelimit = createRatelimiter(10, '1 h');
 
+// 30 affiliate click tracks per minute per IP (prevent bot abuse)
+export const affiliateClickRatelimit = createRatelimiter(30, '1 m');
+
 export function getIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for');
   const real = request.headers.get('x-real-ip');

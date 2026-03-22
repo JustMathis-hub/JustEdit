@@ -76,6 +76,46 @@ export async function POST(request: Request) {
         } else {
           console.log(`[webhook] Purchase recorded: user=${user_id} product=${product_id}`);
 
+          // ── Affiliate commission tracking ──
+          const affiliateId = session.metadata?.affiliate_id;
+          if (affiliateId && insertedPurchase?.id) {
+            try {
+              const { data: affiliate } = await supabase
+                .from('affiliates')
+                .select('id, commission_rate, status, user_id')
+                .eq('id', affiliateId)
+                .eq('status', 'active')
+                .single();
+
+              if (affiliate && affiliate.user_id !== user_id) {
+                const saleAmount = session.amount_total ?? 0;
+                const commissionCents = Math.round(saleAmount * affiliate.commission_rate / 100);
+
+                await supabase.from('affiliate_commissions').upsert(
+                  {
+                    affiliate_id: affiliate.id,
+                    purchase_id: insertedPurchase.id,
+                    product_id,
+                    sale_amount_cents: saleAmount,
+                    commission_cents: commissionCents,
+                    commission_rate: affiliate.commission_rate,
+                    status: 'pending',
+                  },
+                  { onConflict: 'purchase_id' }
+                );
+
+                await supabase.rpc('increment_affiliate_earnings', {
+                  p_affiliate_id: affiliate.id,
+                  p_amount: commissionCents,
+                });
+
+                console.log(`[webhook] Commission recorded: affiliate=${affiliate.id} amount=${commissionCents}c`);
+              }
+            } catch (affErr) {
+              console.error('[webhook] Affiliate commission error:', affErr);
+            }
+          }
+
           // Resolve customer email: prefer Stripe session, fallback to Supabase auth
           let customerEmail = session.customer_details?.email ?? null;
           let customerName = session.customer_details?.name ?? null;

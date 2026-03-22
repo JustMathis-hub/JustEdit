@@ -6,6 +6,7 @@ import { Loader2, Download } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from '@/i18n/navigation';
 import { toast } from 'sonner';
+import { getAffiliateCode } from '@/lib/affiliateTracking';
 
 interface Props {
   productId: string;
@@ -64,10 +65,11 @@ export function LicensePurchase({
 
       if (isFree) { window.location.href = `/${locale}/boutique/${productSlug}`; return; }
 
+      const affiliateCode = getAffiliateCode();
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, licenseType: 'personal', locale }),
+        body: JSON.stringify({ productId, licenseType: 'personal', locale, affiliateCode }),
       });
       if (!res.ok) { const { error } = await res.json(); throw new Error(error ?? 'Checkout failed'); }
       const { url } = await res.json();
