@@ -29,20 +29,24 @@ function ResetPasswordContent() {
   useEffect(() => {
     const code = searchParams.get('code');
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
         if (error || !data.session) {
           setSessionError(t('invalidLink'));
         } else {
           sessionRef.current = data.session;
+          // Local-only sign out: clears the browser session without revoking
+          // tokens server-side, so setSession() still works on submit.
+          await supabase.auth.signOut({ scope: 'local' });
           setSessionReady(true);
           window.history.replaceState({}, '', window.location.pathname);
         }
       });
     } else {
       // Check for existing session (e.g. arrived via /api/auth/confirm)
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      supabase.auth.getSession().then(async ({ data: { session } }) => {
         if (session) {
           sessionRef.current = session;
+          await supabase.auth.signOut({ scope: 'local' });
           setSessionReady(true);
         } else {
           setSessionError(t('invalidLink'));
@@ -67,6 +71,13 @@ function ResetPasswordContent() {
     }
 
     setLoading(true);
+
+    // Restore the session temporarily (tokens are still valid server-side
+    // since we only did a local sign out earlier).
+    await supabase.auth.setSession({
+      access_token: sessionRef.current.access_token,
+      refresh_token: sessionRef.current.refresh_token,
+    });
 
     const { error } = await supabase.auth.updateUser({ password });
 
