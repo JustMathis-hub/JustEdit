@@ -11,7 +11,6 @@ import { ClaimedFreePackCard } from '@/components/shop/ClaimedFreePackCard';
 import { getFreePackBySlug } from '@/lib/freePacksConfig';
 import { PRODUCT_THUMBNAILS } from '@/lib/productMediaConfig';
 import type { Purchase, Product } from '@/types';
-import { AffiliateSection } from '@/components/compte/AffiliateSection';
 
 export default async function AccountPage() {
   const t = await getTranslations('account');
@@ -36,13 +35,6 @@ export default async function AccountPage() {
     .eq('user_id', user.id)
     .eq('status', 'completed')
     .order('created_at', { ascending: false });
-
-  // Affiliate status
-  const { data: affiliate } = await supabase
-    .from('affiliates')
-    .select('id, code, status, total_earned_cents')
-    .eq('user_id', user.id)
-    .single();
 
   const { data: freeClaims } = await supabase
     .from('free_claims')
@@ -115,12 +107,6 @@ export default async function AccountPage() {
             </div>
           </section>
         )}
-
-        {/* ── Affiliate ── */}
-        <AffiliateSection
-          affiliate={affiliate}
-          locale={locale}
-        />
 
         {/* ── Purchases ── */}
         <section data-reveal>
