@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from '@/i18n/navigation';
 
@@ -12,7 +12,8 @@ interface HeartLikeProps {
 
 export function HeartLike({ productId, initialLikeCount, initialLiked = false }: HeartLikeProps) {
   const router = useRouter();
-  const supabase = createClient();
+  const supabaseRef = useRef(createClient());
+  const supabase = supabaseRef.current;
 
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialLikeCount);
@@ -23,26 +24,31 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   // Check auth status on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const user = session?.user ?? null;
-      setUserId(user?.id ?? null);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const user = session?.user ?? null;
+        setUserId(user?.id ?? null);
 
-      if (user) {
-        // Check if user already liked this product
-        const { data } = await supabase
-          .from('product_likes')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('product_id', productId)
-          .maybeSingle();
+        if (user) {
+          // Check if user already liked this product
+          const { data } = await supabase
+            .from('product_likes')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('product_id', productId)
+            .maybeSingle();
 
-        setLiked(!!data);
+          setLiked(!!data);
+        }
+      } catch {
+        // ignore — loading will be cleared in finally
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     checkAuth();
-  }, [productId, supabase]);
+  }, [productId]);
 
   const handleToggle = useCallback(async (e: React.MouseEvent) => {
     // Prevent card navigation
