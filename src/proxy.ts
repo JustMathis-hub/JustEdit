@@ -38,10 +38,6 @@ export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const locale = getLocaleFromPath(pathname);
 
-  // Always refresh session cookie to keep it alive
-  const { supabase: supabaseSession, response: sessionResponse } = createSupabaseMiddlewareClient(request);
-  await supabaseSession.auth.getUser();
-
   // Admin routes — verify user is authenticated AND has admin role
   if (adminPaths.some((p) => pathname.startsWith(p))) {
     const { supabase } = createSupabaseMiddlewareClient(request);

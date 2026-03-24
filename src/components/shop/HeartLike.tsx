@@ -23,8 +23,7 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   // Check auth status on mount
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const user = session?.user ?? null;
+      const { data: { user } } = await supabase.auth.getUser();
       setUserId(user?.id ?? null);
 
       if (user) {

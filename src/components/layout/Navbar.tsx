@@ -28,17 +28,16 @@ export function Navbar() {
   useEffect(() => {
     const getUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const user = session?.user ?? null;
-      setUser(user);
-      if (user) {
-        const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+      if (session?.user) {
+        setUser(session.user);
+        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
         setProfile(data);
       }
     };
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
         setUser(session?.user ?? null);
         if (session?.user) {
           const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
