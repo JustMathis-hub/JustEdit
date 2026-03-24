@@ -27,7 +27,8 @@ export function Navbar() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user ?? null;
       setUser(user);
       if (user) {
         const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
