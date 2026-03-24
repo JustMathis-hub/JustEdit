@@ -64,7 +64,6 @@ export async function POST(request: Request) {
               amount_paid_cents: session.amount_total ?? 0,
               currency: session.currency ?? 'eur',
               status: 'completed',
-              completed_at: new Date().toISOString(),
             },
             { onConflict: 'stripe_session_id' }
           )
