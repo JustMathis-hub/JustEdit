@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/Footer';
 import { CookieBanner } from '@/components/layout/CookieBanner';
 import { PromoBannerProvider, PromoBanner } from '@/components/layout/PromoBanner';
 import { ScrollRevealInit } from '@/components/layout/ScrollRevealInit';
+import { AffiliateTracker } from '@/components/layout/AffiliateTracker';
 import { Toaster } from '@/components/ui/sonner';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -69,6 +70,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <PromoBanner />
             <Navbar />
             <ScrollRevealInit />
+            <AffiliateTracker />
             <main className="min-h-screen">
               {children}
             </main>

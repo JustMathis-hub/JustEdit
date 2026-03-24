@@ -67,3 +67,56 @@ export interface ProductWithPurchase extends Product {
   purchased?: boolean;
   purchase_id?: string;
 }
+
+// ── Affiliate system ──
+
+export type AffiliateStatus = 'pending' | 'active' | 'paused' | 'rejected';
+export type CommissionStatus = 'pending' | 'approved' | 'paid' | 'rejected';
+
+export interface Affiliate {
+  id: string;
+  user_id: string;
+  code: string;
+  commission_rate: number;
+  status: AffiliateStatus;
+  payout_method: 'paypal' | 'bank_transfer' | null;
+  payout_details: string | null;
+  total_earned_cents: number;
+  total_paid_cents: number;
+  created_at: string;
+  updated_at: string;
+  profile?: Profile;
+}
+
+export interface ReferralClick {
+  id: string;
+  affiliate_id: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  landing_page: string | null;
+  created_at: string;
+}
+
+export interface AffiliateCommission {
+  id: string;
+  affiliate_id: string;
+  purchase_id: string;
+  product_id: string;
+  sale_amount_cents: number;
+  commission_cents: number;
+  commission_rate: number;
+  status: CommissionStatus;
+  created_at: string;
+  affiliate?: Affiliate;
+  product?: Product;
+}
+
+export interface AffiliatePayout {
+  id: string;
+  affiliate_id: string;
+  amount_cents: number;
+  payout_method: 'paypal' | 'bank_transfer';
+  reference: string | null;
+  notes: string | null;
+  created_at: string;
+}

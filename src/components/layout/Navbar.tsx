@@ -37,7 +37,7 @@ export function Navbar() {
     getUser();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+      if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
         setUser(session?.user ?? null);
         if (session?.user) {
           const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();

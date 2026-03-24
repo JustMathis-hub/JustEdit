@@ -2,13 +2,14 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, Package, ShoppingCart, Users, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, UserPlus, ArrowLeft } from 'lucide-react';
 
 const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/produits', label: 'Produits', icon: Package, exact: false },
   { href: '/admin/commandes', label: 'Commandes', icon: ShoppingCart, exact: false },
   { href: '/admin/utilisateurs', label: 'Utilisateurs', icon: Users, exact: false },
+  { href: '/admin/affilies', label: 'Affilies', icon: UserPlus, exact: false },
 ];
 
 export function AdminSidebar() {
