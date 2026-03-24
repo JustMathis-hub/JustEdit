@@ -12,6 +12,8 @@ import { AffiliateTracker } from '@/components/layout/AffiliateTracker';
 import { Toaster } from '@/components/ui/sonner';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { createClient } from '@/lib/supabase/server';
+import type { Profile } from '@/types';
 import '../globals.css';
 
 interface Props {
@@ -62,13 +64,23 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   const messages = await getMessages();
 
+  // Read session server-side so Navbar has the user on first render (no flash)
+  const supabase = await createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const initialUser = session?.user ?? null;
+  let initialProfile: Profile | null = null;
+  if (initialUser) {
+    const { data } = await supabase.from('profiles').select('*').eq('id', initialUser.id).single();
+    initialProfile = data;
+  }
+
   return (
     <html lang={locale} className="dark">
       <body>
         <NextIntlClientProvider messages={messages}>
           <PromoBannerProvider>
             <PromoBanner />
-            <Navbar />
+            <Navbar initialUser={initialUser} initialProfile={initialProfile} />
             <ScrollRevealInit />
             <AffiliateTracker />
             <main className="min-h-screen">

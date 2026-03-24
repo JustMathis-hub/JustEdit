@@ -13,29 +13,24 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { Profile } from '@/types';
 import Image from 'next/image';
 
-export function Navbar() {
+interface NavbarProps {
+  initialUser?: SupabaseUser | null;
+  initialProfile?: Profile | null;
+}
+
+export function Navbar({ initialUser = null, initialProfile = null }: NavbarProps) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   const router = useRouter();
   const { isBannerVisible } = usePromoBanner();
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(initialUser);
+  const [profile, setProfile] = useState<Profile | null>(initialProfile);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const supabase = createClient();
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setUser(session.user);
-        const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-        setProfile(data);
-      }
-    };
-    getUser();
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
         setUser(session?.user ?? null);
