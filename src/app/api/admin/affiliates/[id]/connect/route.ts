@@ -30,8 +30,8 @@ export async function POST(
 
   if (!affiliate) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  const affiliateProfile = affiliate.profile as Record<string, string> | null;
-  let accountId: string = affiliate.stripe_connect_account_id;
+  const affiliateProfile = (Array.isArray(affiliate.profile) ? affiliate.profile[0] : affiliate.profile) as { email?: string; full_name?: string } | null;
+  let accountId: string | null = affiliate.stripe_connect_account_id;
 
   try {
     if (!accountId) {
