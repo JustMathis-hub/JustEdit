@@ -86,14 +86,19 @@ export async function GET(
     return NextResponse.json({ error: 'No Stripe account' }, { status: 404 });
   }
 
-  const stripeAccount = await stripe.accounts.retrieve(affiliate.stripe_connect_account_id);
+  try {
+    const stripeAccount = await stripe.accounts.retrieve(affiliate.stripe_connect_account_id);
+    const loginLink = await stripe.accounts.createLoginLink(affiliate.stripe_connect_account_id);
 
-  const loginLink = await stripe.accounts.createLoginLink(affiliate.stripe_connect_account_id);
-
-  return NextResponse.json({
-    account_id: affiliate.stripe_connect_account_id,
-    charges_enabled: stripeAccount.charges_enabled,
-    payouts_enabled: stripeAccount.payouts_enabled,
-    dashboard_url: loginLink.url,
-  });
+    return NextResponse.json({
+      url: loginLink.url,
+      account_id: affiliate.stripe_connect_account_id,
+      charges_enabled: stripeAccount.charges_enabled,
+      payouts_enabled: stripeAccount.payouts_enabled,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Erreur Stripe';
+    console.error('[connect GET] Stripe error:', message);
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
 }
