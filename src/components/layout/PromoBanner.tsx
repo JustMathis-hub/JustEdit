@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { X } from 'lucide-react';
 
 // ─── Context ────────────────────────────────────────────────────────────────
 
@@ -78,7 +77,7 @@ function pad(n: number) {
 }
 
 export function PromoBanner() {
-  const { isBannerVisible, dismiss } = usePromoBanner();
+  const { isBannerVisible } = usePromoBanner();
   const t = useTranslations('promoBanner');
   const { days, hours, minutes, seconds, expired } = useCountdown(PROMO_END);
 
@@ -103,14 +102,6 @@ export function PromoBanner() {
         </span>
       </Link>
 
-      {/* Dismiss button */}
-      <button
-        onClick={(e) => { e.stopPropagation(); dismiss(); }}
-        aria-label={t('close')}
-        className="absolute right-3 p-1 text-white/60 hover:text-white transition-colors"
-      >
-        <X size={14} />
-      </button>
     </div>
   );
 }
