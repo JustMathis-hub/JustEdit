@@ -176,7 +176,7 @@ C:\Users\mathi\Desktop\App\Stripe\stripe.exe listen --forward-to http://localhos
 - Affilie actuel : **Valentin** (imbert.val13@gmail.com, UUID: `13aab415-ef0e-44fe-97c8-4a628c553b66`)
 - Code affilie : `VAL` — URL de tracking : `https://justedit.store/?ref=VAL`
 - Commission : **50% sur le montant NET** (apres frais Stripe estimes : 1.5% + 0,25€)
-- Gestion manuelle des virements (futur : Stripe Connect)
+- Virements via **Stripe Connect Express** (implementé) ou manuels en fallback
 
 #### Tracking URL (`src/lib/affiliateTracking.ts`)
 - `captureAffiliateCode()` : lit `?ref=` dans l'URL et stocke en `sessionStorage` (cle `je_ref`)
@@ -208,6 +208,19 @@ const commissionCents = Math.round(netAmount * affiliate.commission_rate / 100);
 - Liste des affilies : `/admin/affilies/` — stats globales + tableau affilies
 - Detail affilie : `/admin/affilies/[id]` — stats, actions (changer statut, taux, enregistrer virement), historique commissions + virements
 - Actions : `src/app/admin/affilies/[id]/AffiliateActions.tsx` (Client Component) — appelle les API routes admin
+
+#### Stripe Connect Express
+- **Routes API** :
+  - `POST /api/admin/affiliates/[id]/connect` — crée un compte Express Stripe si inexistant, stocke `stripe_connect_account_id` en DB, retourne l'URL d'onboarding
+  - `GET /api/admin/affiliates/[id]/connect` — retourne un lien de login dashboard Express (compte deja connecte)
+  - `POST /api/admin/affiliates/[id]/payout` — cree un `stripe.transfers.create()` si compte connecte + `payouts_enabled`, sinon enregistre en `payout_method: 'bank_transfer'`
+- **Fallback** : si pas de `stripe_connect_account_id`, le versement est enregistre manuellement sans Transfer Stripe
+- **IMPORTANT** : en test local (`sk_test_xxx`), `stripe.accounts.create()` peut echouer si Connect n'est pas active sur le compte principal. En prod avec les cles live, Connect fonctionne apres activation Marketplace sur Stripe Dashboard.
+- **Migrations Supabase prod requises** (a faire avant de tester en prod si pas encore fait) :
+  ```sql
+  ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS stripe_connect_account_id TEXT;
+  ALTER TABLE affiliate_payouts ADD COLUMN IF NOT EXISTS stripe_transfer_id TEXT;
+  ```
 
 #### IMPORTANT — Routes admin et middleware
 - Le middleware (`src/proxy.ts`) gere l'auth admin ET le routing next-intl
@@ -507,8 +520,9 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' '
 
 ## Taches en attente / TODO prochaine session
 
-- [ ] **Stripe Connect** — virements automatiques vers Val : onboarding Express, Transfers API, UI admin
-- [ ] **Deploy affiliation** — pousser les changements sur Vercel + tester en prod avec vrai achat
+- [ ] **Migrations Supabase prod** — executer les 2 ALTER TABLE pour Stripe Connect (voir section ci-dessus) si pas encore fait
+- [ ] **Tester affiliation en prod** — `justedit.store/?ref=VAL` → achat → commission enregistree → dashboard Val
+- [ ] **Onboarding Val** — envoyer le lien Stripe Express depuis `/admin/affilies/[id]` pour que Val connecte son compte bancaire
 - [ ] **Redesign boutique** (voir section "Plan boutique" ci-dessous) — non code.
 - [ ] **HeroSection background** — forme artistique SVG (voir section "Experimentations design") — non finalise.
 - [ ] **Ajouter CAPTCHA** (hCaptcha ou reCAPTCHA v3) sur inscription/login si risque de brute force
@@ -522,12 +536,15 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' '
 - [x] **Index SQL Supabase** : `idx_purchases_user_id`, `idx_purchases_stripe_session_id`, `idx_free_claims_user_id`, `idx_product_likes_user_id`, `idx_products_sort_order`
 - [x] **Vercel Analytics** : active sur le dashboard Vercel (gratuit, remplace Axiom qui necessite Pro)
 
-## Fait — Session mars 2026 (affiliation)
+## Fait — Session mars 2026 (affiliation + Stripe Connect)
 
 - [x] **Systeme d'affiliation complet** : tracking URL `?ref=VAL`, sessionStorage, commission 50% sur NET, webhook, dashboard Val `/compte/affiliate`, panel admin `/admin/affilies`
 - [x] **Fix webhook commission** : fallback pour recuperer purchase existant (admin re-test) + commission sur montant NET
 - [x] **Fix admin routing** : middleware `proxy.ts` retourne `NextResponse.next()` pour `/admin/` (evite boucle next-intl)
 - [x] **Fix admin CSS** : import `globals.css` dans `src/app/admin/layout.tsx`
+- [x] **Stripe Connect Express** : routes `/connect` + `/payout`, UI admin avec onboarding link, Transfer automatique si compte actif
+- [x] **Fix TypeScript connect route** : cast `affiliate.profile` (array Supabase join) via `Array.isArray()` + typage correct
+- [x] **Fix HeartLike bouton inactif au refresh** : `loading` initialisé a `false`, auth check silencieux en arrière-plan — le bouton est toujours cliquable
 
 ---
 
