@@ -29,6 +29,13 @@ export default async function AccountPage() {
     .eq('id', user.id)
     .single();
 
+  const { data: affiliate } = await supabase
+    .from('affiliates')
+    .select('id, code')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .maybeSingle();
+
   const { data: purchases } = await supabase
     .from('purchases')
     .select('*, product:products(*)')
@@ -76,6 +83,26 @@ export default async function AccountPage() {
             purchaseCount={purchaseCount}
           />
         </div>
+
+        {/* ── Affiliate dashboard ── */}
+        {affiliate && (
+          <div data-reveal>
+            <Link href="/compte/affiliate">
+              <div className="group flex items-center justify-between bg-[oklch(0.10_0_0)] border border-[rgba(139,26,26,0.3)] rounded-2xl p-5 hover:border-[rgba(139,26,26,0.6)] hover:bg-[oklch(0.12_0_0)] transition-all cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[rgba(139,26,26,0.15)] border border-[rgba(139,26,26,0.25)] flex items-center justify-center">
+                    <ArrowRight size={16} className="text-[#e07070]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">Programme Affiliation</p>
+                    <p className="text-xs text-[oklch(0.45_0.005_0)]">Code : {affiliate.code}</p>
+                  </div>
+                </div>
+                <ArrowRight size={16} className="text-[oklch(0.4_0_0)] group-hover:text-[#e07070] transition-colors" />
+              </div>
+            </Link>
+          </div>
+        )}
 
         {/* ── Free packs ── */}
         {freeClaims && freeClaims.length > 0 && (
