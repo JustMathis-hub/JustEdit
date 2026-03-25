@@ -24,11 +24,10 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const user = session?.user ?? null;
+        const { data: { user } } = await supabase.auth.getUser();
         setUserId(user?.id ?? null);
 
-        if (user) {
+        if (user?.id) {
           // Check if user already liked this product
           const { data } = await supabase
             .from('product_likes')
