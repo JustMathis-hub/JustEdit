@@ -53,7 +53,7 @@ export async function POST(
     const accountLink = await stripe.accountLinks.create({
       account: accountId,
       refresh_url: `${origin}/admin/affilies/${id}`,
-      return_url: `${origin}/admin/affilies/${id}?stripe_connected=1`,
+      return_url: `${origin}/fr/compte/affiliate?stripe_connected=1`,
       type: 'account_onboarding',
     });
 
