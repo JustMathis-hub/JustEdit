@@ -20,30 +20,26 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   const [animating, setAnimating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Check auth status on mount
+  // Sync auth state — onAuthStateChange fires INITIAL_SESSION immediately
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUserId(user?.id ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const uid = session?.user?.id ?? null;
+      setUserId(uid);
 
-        if (user?.id) {
-          // Check if user already liked this product
-          const { data } = await supabase
-            .from('product_likes')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('product_id', productId)
-            .maybeSingle();
-
-          setLiked(!!data);
-        }
-      } catch {
-        // ignore
+      if (uid) {
+        const { data } = await supabase
+          .from('product_likes')
+          .select('id')
+          .eq('user_id', uid)
+          .eq('product_id', productId)
+          .maybeSingle();
+        setLiked(!!data);
+      } else {
+        setLiked(initialLiked);
       }
-    };
+    });
 
-    checkAuth();
+    return () => subscription.unsubscribe();
   }, [productId]);
 
   const handleToggle = useCallback(async (e: React.MouseEvent) => {

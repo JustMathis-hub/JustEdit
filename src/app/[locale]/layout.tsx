@@ -66,8 +66,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   // Read session server-side so Navbar has the user on first render (no flash)
   const supabase = await createClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  const initialUser = session?.user ?? null;
+  const { data: { user: initialUser } } = await supabase.auth.getUser();
   let initialProfile: Profile | null = null;
   if (initialUser) {
     const { data } = await supabase.from('profiles').select('*').eq('id', initialUser.id).single();
