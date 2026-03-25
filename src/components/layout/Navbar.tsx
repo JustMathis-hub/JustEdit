@@ -68,6 +68,8 @@ export function Navbar({ initialUser = null, initialProfile = null }: NavbarProp
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setUser(null);
+    setProfile(null);
     setMenuOpen(false);
     router.push('/');
     router.refresh();
