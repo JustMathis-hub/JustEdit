@@ -68,6 +68,20 @@ export function AffiliateActions({
     setLoading('');
   };
 
+  const generateDashboardLink = async () => {
+    setLoading('dashboard');
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/affiliates/${affiliateId}/connect`, { method: 'GET' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Erreur');
+      setOnboardingUrl(data.url);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Erreur lors de la generation du lien');
+    }
+    setLoading('');
+  };
+
   const copyOnboardingUrl = async () => {
     await navigator.clipboard.writeText(onboardingUrl);
     setCopied(true);
@@ -169,13 +183,26 @@ export function AffiliateActions({
         {/* Stripe Connect */}
         <div className="bg-[oklch(0.11_0_0)] border border-[oklch(0.18_0_0)] rounded-xl p-5">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[oklch(0.45_0.005_0)] mb-3">Stripe Connect</h3>
-          {stripeConnectAccountId ? (
+          {stripeConnectAccountId && !onboardingUrl ? (
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-green-400 text-xs">
                 <CheckCircle2 size={14} />
                 <span>Compte connecte</span>
               </div>
               <p className="text-[oklch(0.4_0_0)] text-xs font-mono truncate">{stripeConnectAccountId}</p>
+              <button
+                onClick={generateDashboardLink}
+                disabled={!!loading}
+                className="w-full px-3 py-1.5 text-xs font-medium rounded-lg bg-[rgba(139,26,26,0.15)] text-[#e07070] border border-[rgba(139,26,26,0.3)] hover:bg-[rgba(139,26,26,0.25)] transition-colors disabled:opacity-50"
+              >
+                {loading === 'dashboard' ? (
+                  <span className="flex items-center justify-center gap-1.5">
+                    <Loader2 size={12} className="animate-spin" /> Generation...
+                  </span>
+                ) : (
+                  'Generer lien dashboard Val'
+                )}
+              </button>
             </div>
           ) : onboardingUrl ? (
             <div className="space-y-2">
