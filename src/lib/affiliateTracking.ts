@@ -1,37 +1,35 @@
-const COOKIE_NAME = 'je_ref';
-const COOKIE_DAYS = 30;
+const STORAGE_KEY = 'je_ref';
 
 /**
- * Read the affiliate code from the je_ref cookie (client-side).
- * Cookie format: CODE|TIMESTAMP
+ * Reads ?ref= from the current URL and stores it in sessionStorage.
+ * Called on every page mount by AffiliateTracker (layout).
+ */
+export function captureAffiliateCode(): void {
+  if (typeof window === 'undefined') return;
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('ref');
+  if (code && /^[A-Za-z0-9_-]{1,20}$/.test(code)) {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, code.toUpperCase());
+    } catch {}
+  }
+}
+
+/**
+ * Returns the affiliate code for the current session.
+ * Checks URL first (?ref=), then sessionStorage (set by AffiliateTracker
+ * when the user landed on any page with ?ref= earlier in the session).
  */
 export function getAffiliateCode(): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.split('; ').find((c) => c.startsWith(`${COOKIE_NAME}=`));
-  if (!match) return null;
-  const value = decodeURIComponent(match.split('=')[1] ?? '');
-  const [code, ts] = value.split('|');
-  if (!code || !ts) return null;
-  // Check 30-day expiry
-  const setAt = parseInt(ts, 10);
-  if (isNaN(setAt) || Date.now() - setAt > COOKIE_DAYS * 24 * 60 * 60 * 1000) return null;
-  return code;
-}
-
-/**
- * Set the affiliate code cookie (client-side). Last-click attribution.
- */
-export function setAffiliateCode(code: string): void {
-  if (typeof document === 'undefined') return;
-  const value = `${code}|${Date.now()}`;
-  const expires = new Date(Date.now() + COOKIE_DAYS * 24 * 60 * 60 * 1000).toUTCString();
-  document.cookie = `${COOKIE_NAME}=${encodeURIComponent(value)}; path=/; expires=${expires}; SameSite=Lax`;
-}
-
-/**
- * Clear the affiliate cookie (client-side).
- */
-export function clearAffiliateCode(): void {
-  if (typeof document === 'undefined') return;
-  document.cookie = `${COOKIE_NAME}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  const urlCode = params.get('ref');
+  if (urlCode && /^[A-Za-z0-9_-]{1,20}$/.test(urlCode)) {
+    return urlCode.toUpperCase();
+  }
+  try {
+    return sessionStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
 }

@@ -22,13 +22,15 @@ src/
 │   │   ├── compte/         # Espace personnel (page.tsx = Server Component)
 │   │   ├── auth/           # Connexion, inscription, mot-de-passe-oublie, reset-password, callback
 │   │   └── checkout/       # Succes / Annule
-│   ├── admin/              # Panel admin (produits, commandes, utilisateurs)
+│   ├── admin/              # Panel admin (produits, commandes, utilisateurs, affilies)
+│   │   ├── affilies/       # Liste affilies + detail [id] + toutes commissions
 │   ├── api/                # Routes API (Stripe webhook, contact, profile update, auth/confirm)
 │   └── layout.tsx          # Root layout
 ├── components/
-│   ├── layout/             # Navbar, Footer, PromoBanner, CookieBanner
+│   ├── layout/             # Navbar, Footer, PromoBanner, CookieBanner, AffiliateTracker
 │   ├── shop/               # ProductCard, LicensePurchase, ProductMediaGallery, etc.
 │   ├── compte/             # ProfileEditor (client), PurchasedProductCard, DownloadButton
+│   ├── affiliate/          # AffiliateDashboard (client component)
 │   ├── home/               # HeroSection, FeaturedProducts, HowItWorks, VideoIntro
 │   └── ui/                 # shadcn/ui + AnimateIn, ParticlesBg, BeforeAfterSlider
 ├── emails/                 # Templates React Email
@@ -36,6 +38,7 @@ src/
 ├── lib/
 │   ├── supabase/           # client.ts, server.ts, admin.ts
 │   ├── email.ts            # Service d'envoi d'emails via Resend
+│   ├── affiliateTracking.ts # captureAffiliateCode() + getAffiliateCode() via sessionStorage
 │   ├── avatarConfig.ts     # Liste des 6 avatars predefinis
 │   ├── productMediaConfig.ts # Videos/images/thumbnails/YouTube par produit (slug)
 │   ├── freePacksConfig.ts  # Config des packs gratuits (nom FR/EN, desc FR/EN, thumbnail, video)
@@ -44,6 +47,7 @@ src/
 │   ├── ratelimit.ts        # Rate limiting via Upstash Redis
 │   ├── stripe.ts           # Client Stripe
 │   └── env.ts              # Variables d'env typees
+├── proxy.ts                # Middleware Next.js (next-intl + Supabase auth + admin routes)
 ├── types/index.ts          # Types TS : Profile, Product, Purchase, Download, etc.
 └── i18n/                   # routing.ts, navigation.ts, request.ts
 ```
@@ -60,9 +64,19 @@ src/
 - **`product_likes`** — Likes sur les produits (user_id + product_id)
 - **`downloads`** — Historique telechargements
 
+### Tables affiliation
+- **`affiliates`** — `id, user_id (FK profiles), code (unique, ex: VAL), commission_rate (NUMERIC), status (active|inactive|suspended), total_earned_cents, total_paid_cents, stripe_connect_account_id (nullable), created_at`
+- **`affiliate_commissions`** — `id, affiliate_id (FK), purchase_id (FK), product_id (FK), sale_amount_cents, commission_cents, commission_rate, status (pending|approved|paid|rejected), created_at`
+- **`affiliate_payouts`** — `id, affiliate_id (FK), amount_cents, stripe_transfer_id (nullable), note, created_at`
+
+### RPCs Supabase (affiliation)
+- **`increment_affiliate_earnings(p_affiliate_id, p_amount)`** — ajoute `p_amount` a `affiliates.total_earned_cents`
+- **`increment_affiliate_paid(p_affiliate_id, p_amount)`** — ajoute `p_amount` a `affiliates.total_paid_cents`
+
 ### Migrations deja effectuees
 ```sql
 ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+-- Tables affiliation creees session mars 2026 (voir section Affiliation)
 ```
 
 ---
@@ -155,6 +169,51 @@ C:\Users\mathi\Desktop\App\Stripe\stripe.exe listen --forward-to http://localhos
 - La page produit (`LicensePurchase`) affiche "VOUS POSSEDEZ CE PRODUIT — ACHAT ADMIN POSSIBLE" + bouton Acheter
 - L'API checkout (`/api/stripe/checkout`) bypasse la verification "deja achete" pour les admins
 - Pour supprimer un achat test : Supabase → Table Editor → `purchases` → supprimer la ligne → Ctrl+Shift+R sur /compte
+
+### Systeme d'affiliation
+
+#### Vue d'ensemble
+- Affilie actuel : **Valentin** (imbert.val13@gmail.com, UUID: `13aab415-ef0e-44fe-97c8-4a628c553b66`)
+- Code affilie : `VAL` — URL de tracking : `https://justedit.store/?ref=VAL`
+- Commission : **50% sur le montant NET** (apres frais Stripe estimes : 1.5% + 0,25€)
+- Gestion manuelle des virements (futur : Stripe Connect)
+
+#### Tracking URL (`src/lib/affiliateTracking.ts`)
+- `captureAffiliateCode()` : lit `?ref=` dans l'URL et stocke en `sessionStorage` (cle `je_ref`)
+- `getAffiliateCode()` : lit d'abord l'URL, puis le sessionStorage — retourne le code en majuscules
+- Validation du code : regex `/^[A-Za-z0-9_-]{1,20}$/`
+- `AffiliateTracker` (client component monté dans `[locale]/layout.tsx`) : appelle `captureAffiliateCode()` à chaque page
+
+#### Flux d'achat avec affiliation
+1. Visiteur arrive sur `/?ref=VAL` → `captureAffiliateCode()` stocke `VAL` en sessionStorage
+2. Il achete → `LicensePurchase` appelle `/api/stripe/checkout` avec `affiliate_id` dans le body
+3. L'API checkout récupère l'affiliate depuis la DB (par `code`) et l'injecte dans `session.metadata.affiliate_id`
+4. Stripe webhook `checkout.session.completed` → calcule la commission et insere dans `affiliate_commissions`
+5. Appel RPC `increment_affiliate_earnings` pour mettre a jour `affiliates.total_earned_cents`
+
+#### Calcul commission
+```typescript
+const estimatedStripeFee = Math.round(saleAmount * 0.015) + 25; // 1.5% + 0,25€
+const netAmount = Math.max(0, saleAmount - estimatedStripeFee);
+const commissionCents = Math.round(netAmount * affiliate.commission_rate / 100);
+```
+
+#### Dashboard affilie (`/compte/affiliate`)
+- Page Server Component : verifie que l'utilisateur est affilié actif, sinon redirect `/compte`
+- Component client : `src/components/affiliate/AffiliateDashboard.tsx`
+- Affiche : lien d'affiliation avec bouton copier, stats (ventes, commissions gagnees/en attente/versees), tableau historique
+- Acces : Val se connecte sur justedit.store → va sur `/fr/compte/affiliate`
+
+#### Panel admin affiliation (`/admin/affilies`)
+- Liste des affilies : `/admin/affilies/` — stats globales + tableau affilies
+- Detail affilie : `/admin/affilies/[id]` — stats, actions (changer statut, taux, enregistrer virement), historique commissions + virements
+- Actions : `src/app/admin/affilies/[id]/AffiliateActions.tsx` (Client Component) — appelle les API routes admin
+
+#### IMPORTANT — Routes admin et middleware
+- Le middleware (`src/proxy.ts`) gere l'auth admin ET le routing next-intl
+- **Les routes `/admin/` ne passent PAS par `intlMiddleware`** : apres la verification admin, on retourne `NextResponse.next()` directement
+- Sans ca : boucle infinie (`/admin/` → next-intl ajoute `/fr/` → boucle)
+- Le layout admin (`src/app/admin/layout.tsx`) importe `globals.css` explicitement (necessaire car il a son propre `<html><body>`)
 
 ### i18n (next-intl)
 - Locales : `fr` (defaut) et `en`
@@ -440,11 +499,16 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' '
 12. **Stripe webhook secret** : en local, utiliser le `whsec_...` genere par Stripe CLI (`stripe listen`). En prod, utiliser celui configure dans le dashboard Stripe.
 13. **Port local** : `npm run dev` utilise souvent le port **3001** car le port 3000 est pris. Verifier dans le terminal.
 14. **Emails Supabase** : les templates HTML sont dans `src/emails/*.html` mais doivent etre copies manuellement dans Supabase Dashboard → Auth → Email Templates.
+15. **Middleware** : fichier `src/proxy.ts` (pas `middleware.ts` — nommage inhabituel mais fonctionne). Les routes `/admin/` retournent `NextResponse.next()` directement sans passer par `intlMiddleware` pour eviter la boucle de redirection locale.
+16. **Affiliation — webhook fallback** : si l'upsert purchase echoue (admin re-teste), le code commission est dans le bloc `if (purchaseId)` qui utilise un fallback pour recuperer l'ID existant. Ne pas deplacer la logique commission en dehors de ce bloc.
+17. **Port local** : serveur tourne sur le port **3001** (3000 est souvent pris). `NEXT_PUBLIC_SITE_URL=http://localhost:3001` dans `.env.local`.
 
 ---
 
 ## Taches en attente / TODO prochaine session
 
+- [ ] **Stripe Connect** — virements automatiques vers Val : onboarding Express, Transfers API, UI admin
+- [ ] **Deploy affiliation** — pousser les changements sur Vercel + tester en prod avec vrai achat
 - [ ] **Redesign boutique** (voir section "Plan boutique" ci-dessous) — non code.
 - [ ] **HeroSection background** — forme artistique SVG (voir section "Experimentations design") — non finalise.
 - [ ] **Ajouter CAPTCHA** (hCaptcha ou reCAPTCHA v3) sur inscription/login si risque de brute force
@@ -457,6 +521,13 @@ Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' '
 - [x] **Mode admin achats** : les admins peuvent re-acheter un produit deja possede pour tester le flux complet
 - [x] **Index SQL Supabase** : `idx_purchases_user_id`, `idx_purchases_stripe_session_id`, `idx_free_claims_user_id`, `idx_product_likes_user_id`, `idx_products_sort_order`
 - [x] **Vercel Analytics** : active sur le dashboard Vercel (gratuit, remplace Axiom qui necessite Pro)
+
+## Fait — Session mars 2026 (affiliation)
+
+- [x] **Systeme d'affiliation complet** : tracking URL `?ref=VAL`, sessionStorage, commission 50% sur NET, webhook, dashboard Val `/compte/affiliate`, panel admin `/admin/affilies`
+- [x] **Fix webhook commission** : fallback pour recuperer purchase existant (admin re-test) + commission sur montant NET
+- [x] **Fix admin routing** : middleware `proxy.ts` retourne `NextResponse.next()` pour `/admin/` (evite boucle next-intl)
+- [x] **Fix admin CSS** : import `globals.css` dans `src/app/admin/layout.tsx`
 
 ---
 

@@ -57,6 +57,9 @@ export default async function proxy(request: NextRequest) {
     if (profile?.role !== 'admin') {
       return NextResponse.redirect(new URL(`/${locale}`, request.url));
     }
+
+    // Admin routes are outside the i18n tree — skip intlMiddleware
+    return NextResponse.next();
   }
 
   // Routes protégées membres — verify actual auth token
