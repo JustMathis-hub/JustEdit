@@ -70,14 +70,31 @@ export async function POST(request: Request) {
           .select('id')
           .single();
 
+        // Fallback: if upsert failed (e.g. duplicate user_id+product_id), fetch existing purchase
+        let purchaseId = insertedPurchase?.id;
         if (error) {
           console.error('[webhook] Insert purchase error:', error);
+          const { data: existing } = await supabase
+            .from('purchases')
+            .select('id')
+            .eq('stripe_session_id', session.id)
+            .maybeSingle()
+            .then(async (r) => r.data ? r : supabase
+              .from('purchases')
+              .select('id')
+              .eq('user_id', user_id)
+              .eq('product_id', product_id)
+              .maybeSingle()
+            );
+          purchaseId = existing?.id;
         } else {
           console.log(`[webhook] Purchase recorded: user=${user_id} product=${product_id}`);
+        }
 
+        if (purchaseId) {
           // ── Affiliate commission tracking ──
           const affiliateId = session.metadata?.affiliate_id;
-          if (affiliateId && insertedPurchase?.id) {
+          if (affiliateId && purchaseId) {
             try {
               const { data: affiliate } = await supabase
                 .from('affiliates')
@@ -88,12 +105,15 @@ export async function POST(request: Request) {
 
               if (affiliate && affiliate.user_id !== user_id) {
                 const saleAmount = session.amount_total ?? 0;
-                const commissionCents = Math.round(saleAmount * affiliate.commission_rate / 100);
+                // Commission on NET amount (after estimated Stripe fee: 1.5% + €0.25 for EU cards)
+                const estimatedStripeFee = Math.round(saleAmount * 0.015) + 25;
+                const netAmount = Math.max(0, saleAmount - estimatedStripeFee);
+                const commissionCents = Math.round(netAmount * affiliate.commission_rate / 100);
 
                 await supabase.from('affiliate_commissions').upsert(
                   {
                     affiliate_id: affiliate.id,
-                    purchase_id: insertedPurchase.id,
+                    purchase_id: purchaseId,
                     product_id,
                     sale_amount_cents: saleAmount,
                     commission_cents: commissionCents,
@@ -134,11 +154,11 @@ export async function POST(request: Request) {
               thumbnailUrl: productData?.thumbnail_url ?? null,
               amountPaidCents: session.amount_total ?? 0,
               currency: session.currency ?? 'eur',
-              purchaseId: insertedPurchase?.id ?? session.id,
+              purchaseId: purchaseId ?? session.id,
               orderDate: new Date().toISOString(),
             }).catch((err) => console.error('[webhook] Email send error:', err));
           }
-        }
+        } // end if (purchaseId)
         break;
       }
 

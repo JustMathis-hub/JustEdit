@@ -83,6 +83,7 @@ export interface Affiliate {
   payout_details: string | null;
   total_earned_cents: number;
   total_paid_cents: number;
+  stripe_connect_account_id: string | null;
   created_at: string;
   updated_at: string;
   profile?: Profile;
@@ -115,8 +116,9 @@ export interface AffiliatePayout {
   id: string;
   affiliate_id: string;
   amount_cents: number;
-  payout_method: 'paypal' | 'bank_transfer';
+  payout_method: 'paypal' | 'bank_transfer' | 'stripe';
   reference: string | null;
   notes: string | null;
+  stripe_transfer_id: string | null;
   created_at: string;
 }

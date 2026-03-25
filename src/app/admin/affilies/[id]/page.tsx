@@ -98,6 +98,7 @@ export default async function AffiliateDetailPage({ params }: Props) {
         currentRate={affiliate.commission_rate}
         balance={balance}
         payoutMethod={affiliate.payout_method}
+        stripeConnectAccountId={affiliate.stripe_connect_account_id ?? null}
       />
 
       {/* Commissions table */}
@@ -168,8 +169,14 @@ export default async function AffiliateDetailPage({ params }: Props) {
                   <tr key={p.id} className={i < payouts.length - 1 ? 'border-b border-[oklch(0.15_0_0)]' : ''}>
                     <td className="px-5 py-3 text-[oklch(0.55_0.005_0)]">{new Date(p.created_at).toLocaleDateString('fr-FR')}</td>
                     <td className="px-5 py-3 text-right font-bold text-white">{(p.amount_cents / 100).toFixed(2)} &euro;</td>
-                    <td className="px-5 py-3 text-white">{p.payout_method === 'paypal' ? 'PayPal' : 'Virement'}</td>
-                    <td className="px-5 py-3 text-[oklch(0.55_0.005_0)]">{p.reference ?? '—'}</td>
+                    <td className="px-5 py-3 text-white">
+                      {p.payout_method === 'stripe' ? (
+                        <span className="flex items-center gap-1 text-green-400 text-xs font-medium">
+                          Stripe Connect
+                        </span>
+                      ) : p.payout_method === 'paypal' ? 'PayPal' : 'Virement'}
+                    </td>
+                    <td className="px-5 py-3 text-[oklch(0.55_0.005_0)] font-mono text-xs">{p.stripe_transfer_id ?? p.reference ?? '—'}</td>
                   </tr>
                 ))}
               </tbody>
