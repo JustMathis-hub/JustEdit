@@ -19,7 +19,6 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   const [count, setCount] = useState(initialLikeCount);
   const [animating, setAnimating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   // Check auth status on mount
   useEffect(() => {
@@ -41,9 +40,7 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
           setLiked(!!data);
         }
       } catch {
-        // ignore — loading will be cleared in finally
-      } finally {
-        setLoading(false);
+        // ignore
       }
     };
 
@@ -103,7 +100,6 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
       type="button"
       onClick={handleToggle}
       className={`je-heart-btn ${liked ? 'je-heart-liked' : ''} ${animating ? 'je-heart-pop' : ''}`}
-      style={loading ? { pointerEvents: 'none', opacity: 0.5 } : undefined}
       aria-label={liked ? 'Unlike' : 'Like'}
     >
       {/* Burst particles */}
