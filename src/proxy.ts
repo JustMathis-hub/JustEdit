@@ -70,8 +70,8 @@ export default async function proxy(request: NextRequest) {
 
   // Passer par intlMiddleware en préservant les cookies de session
   const intlResponse = intlMiddleware(request);
-  supabaseResponse.cookies.getAll().forEach((cookie) => {
-    intlResponse.cookies.set(cookie.name, cookie.value);
+  supabaseResponse.cookies.getAll().forEach(({ name, value, ...options }) => {
+    intlResponse.cookies.set(name, value, options);
   });
   return intlResponse;
 }
