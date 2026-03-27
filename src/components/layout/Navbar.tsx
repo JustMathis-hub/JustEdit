@@ -31,7 +31,21 @@ export function Navbar({ initialUser = null, initialProfile = null }: NavbarProp
   const supabase = createClient();
 
   useEffect(() => {
+    // Explicitly sync session on mount — onAuthStateChange's INITIAL_SESSION
+    // can fire with null before cookies are restored after a page refresh
+    supabase.auth.getUser().then(async ({ data: { user: currentUser } }) => {
+      if (currentUser) {
+        setUser(currentUser);
+        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+        if (data) setProfile(data);
+      } else {
+        setUser(null);
+        setProfile(null);
+      }
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION') return; // handled by getUser() above
       if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
         setUser(session?.user ?? null);
         if (session?.user) {

@@ -20,9 +20,25 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   const [animating, setAnimating] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Sync auth state — onAuthStateChange fires INITIAL_SESSION immediately
+  // Sync auth state — explicitly call getUser() on mount because
+  // onAuthStateChange's INITIAL_SESSION can fire with null session on refresh
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      const uid = user?.id ?? null;
+      setUserId(uid);
+      if (uid) {
+        const { data } = await supabase
+          .from('product_likes')
+          .select('id')
+          .eq('user_id', uid)
+          .eq('product_id', productId)
+          .maybeSingle();
+        setLiked(!!data);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION') return; // handled by getUser() above
       const uid = session?.user?.id ?? null;
       setUserId(uid);
 
