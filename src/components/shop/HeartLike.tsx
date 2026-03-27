@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/components/auth/AuthProvider';
 import { useRouter } from '@/i18n/navigation';
 
 interface HeartLikeProps {
@@ -14,49 +15,29 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
   const router = useRouter();
   const supabaseRef = useRef(createClient());
   const supabase = supabaseRef.current;
+  const { user } = useAuth();
 
   const [liked, setLiked] = useState(initialLiked);
   const [count, setCount] = useState(initialLikeCount);
   const [animating, setAnimating] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
 
-  // Sync auth state — explicitly call getUser() on mount because
-  // onAuthStateChange's INITIAL_SESSION can fire with null session on refresh
+  // Sync like state when user changes (login/logout/refresh)
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      const uid = user?.id ?? null;
-      setUserId(uid);
-      if (uid) {
-        const { data } = await supabase
-          .from('product_likes')
-          .select('id')
-          .eq('user_id', uid)
-          .eq('product_id', productId)
-          .maybeSingle();
+    if (!user) {
+      setLiked(initialLiked);
+      return;
+    }
+
+    supabase
+      .from('product_likes')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('product_id', productId)
+      .maybeSingle()
+      .then(({ data }) => {
         setLiked(!!data);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'INITIAL_SESSION') return; // handled by getUser() above
-      const uid = session?.user?.id ?? null;
-      setUserId(uid);
-
-      if (uid) {
-        const { data } = await supabase
-          .from('product_likes')
-          .select('id')
-          .eq('user_id', uid)
-          .eq('product_id', productId)
-          .maybeSingle();
-        setLiked(!!data);
-      } else {
-        setLiked(initialLiked);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [productId]);
+      });
+  }, [user?.id, productId]);
 
   const handleToggle = useCallback(async (e: React.MouseEvent) => {
     // Prevent card navigation
@@ -64,7 +45,7 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
     e.stopPropagation();
 
     // Redirect to login if not authenticated
-    if (!userId) {
+    if (!user) {
       router.push('/auth/connexion' as any);
       return;
     }
@@ -87,7 +68,7 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
         const { error } = await supabase
           .from('product_likes')
           .delete()
-          .eq('user_id', userId)
+          .eq('user_id', user.id)
           .eq('product_id', productId);
 
         if (error) throw error;
@@ -95,7 +76,7 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
         // Like
         const { error } = await supabase
           .from('product_likes')
-          .insert({ user_id: userId, product_id: productId });
+          .insert({ user_id: user.id, product_id: productId });
 
         if (error) throw error;
       }
@@ -104,7 +85,7 @@ export function HeartLike({ productId, initialLikeCount, initialLiked = false }:
       setLiked(wasLiked);
       setCount(prevCount);
     }
-  }, [liked, count, userId, productId, supabase, router]);
+  }, [liked, count, user, productId, supabase, router]);
 
   return (
     <button

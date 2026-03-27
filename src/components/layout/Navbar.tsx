@@ -3,76 +3,23 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-import { useRouter } from '@/i18n/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/components/auth/AuthProvider';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { usePromoBanner } from './PromoBanner';
 import { Button } from '@/components/ui/button';
-import { Menu, X, User, LogOut, Settings } from 'lucide-react';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
-import type { Profile } from '@/types';
+import { Menu, X, LogOut } from 'lucide-react';
 import Image from 'next/image';
 
-interface NavbarProps {
-  initialUser?: SupabaseUser | null;
-  initialProfile?: Profile | null;
-}
-
-export function Navbar({ initialUser = null, initialProfile = null }: NavbarProps) {
+export function Navbar() {
   const t = useTranslations('nav');
   const pathname = usePathname();
-  const router = useRouter();
   const { isBannerVisible } = usePromoBanner();
-  const [user, setUser] = useState<SupabaseUser | null>(initialUser);
-  const [profile, setProfile] = useState<Profile | null>(initialProfile);
+  const { user, profile } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const supabase = createClient();
-
-  useEffect(() => {
-    // Explicitly sync session on mount — onAuthStateChange's INITIAL_SESSION
-    // can fire with null before cookies are restored after a page refresh
-    supabase.auth.getUser().then(async ({ data: { user: currentUser } }) => {
-      if (currentUser) {
-        setUser(currentUser);
-        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-        if (data) setProfile(data);
-      } else {
-        setUser(null);
-        setProfile(null);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'INITIAL_SESSION') return; // handled by getUser() above
-      if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED') {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-          setProfile(data);
-        }
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        setProfile(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  // Re-fetch profile when user saves changes from ProfileEditor
-  useEffect(() => {
-    const handler = async () => {
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      if (currentUser) {
-        const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-        setProfile(data);
-      }
-    };
-    window.addEventListener('profile-updated', handler);
-    return () => window.removeEventListener('profile-updated', handler);
-  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);

@@ -9,6 +9,7 @@ import { CookieBanner } from '@/components/layout/CookieBanner';
 import { PromoBannerProvider, PromoBanner } from '@/components/layout/PromoBanner';
 import { ScrollRevealInit } from '@/components/layout/ScrollRevealInit';
 import { AffiliateTracker } from '@/components/layout/AffiliateTracker';
+import { AuthProvider } from '@/components/auth/AuthProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -77,9 +78,10 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale} className="dark">
       <body>
         <NextIntlClientProvider messages={messages}>
+          <AuthProvider initialUser={initialUser} initialProfile={initialProfile}>
           <PromoBannerProvider>
             <PromoBanner />
-            <Navbar initialUser={initialUser} initialProfile={initialProfile} />
+            <Navbar />
             <ScrollRevealInit />
             <AffiliateTracker />
             <main className="min-h-screen">
@@ -98,6 +100,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               }}
             />
           </PromoBannerProvider>
+          </AuthProvider>
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />
