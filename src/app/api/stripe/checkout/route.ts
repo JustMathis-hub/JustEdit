@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { checkoutRatelimit, getIp } from '@/lib/ratelimit';
 import { PROMO_PRICES } from '@/lib/promoConfig';
 
@@ -78,11 +79,12 @@ export async function POST(request: Request) {
       ? COMMERCIAL_PRICE_CENTS
       : (PROMO_PRICES[product.slug] ?? product.price_cents);
 
-    // Resolve affiliate (if referred)
+    // Resolve affiliate (if referred) — use admin client to bypass RLS on affiliates table
     let affiliateId = '';
     let resolvedAffiliateCode = '';
     if (affiliateCode && typeof affiliateCode === 'string') {
-      const { data: affiliate } = await supabase
+      const adminClient = createAdminClient();
+      const { data: affiliate } = await adminClient
         .from('affiliates')
         .select('id, code, user_id')
         .eq('code', affiliateCode)

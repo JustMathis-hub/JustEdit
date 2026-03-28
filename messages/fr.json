@@ -178,7 +178,7 @@
       "error": "Une erreur est survenue. Réessaie.",
       "passwordMismatch": "Les mots de passe ne correspondent pas.",
       "successTitle": "Compte créé !",
-      "successDesc": "Vérifie ton email pour confirmer ton compte.",
+      "successDesc": "Vérifie ton email (et aussi dans les spams...) pour confirmer ton compte.",
       "namePlaceholder": "Jean Dupont",
       "emailPlaceholder": "vous@exemple.com"
     }

@@ -146,17 +146,21 @@ export async function POST(request: Request) {
           }
 
           if (customerEmail) {
-            // Send purchase confirmation email (non-blocking — never delays webhook response)
-            sendPurchaseConfirmationEmail({
-              to: customerEmail,
-              customerName,
-              productName: productData?.name_fr ?? productData?.name_en ?? 'Produit JustEdit',
-              thumbnailUrl: productData?.thumbnail_url ?? null,
-              amountPaidCents: session.amount_total ?? 0,
-              currency: session.currency ?? 'eur',
-              purchaseId: purchaseId ?? session.id,
-              orderDate: new Date().toISOString(),
-            }).catch((err) => console.error('[webhook] Email send error:', err));
+            // Send purchase confirmation email — must await in serverless to avoid early termination
+            try {
+              await sendPurchaseConfirmationEmail({
+                to: customerEmail,
+                customerName,
+                productName: productData?.name_fr ?? productData?.name_en ?? 'Produit JustEdit',
+                thumbnailUrl: productData?.thumbnail_url ?? null,
+                amountPaidCents: session.amount_total ?? 0,
+                currency: session.currency ?? 'eur',
+                purchaseId: purchaseId ?? session.id,
+                orderDate: new Date().toISOString(),
+              });
+            } catch (err) {
+              console.error('[webhook] Email send error:', err);
+            }
           }
         } // end if (purchaseId)
         break;
