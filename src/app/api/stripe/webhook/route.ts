@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendPurchaseConfirmationEmail } from '@/lib/email';
+import { PRODUCT_THUMBNAILS } from '@/lib/productMediaConfig';
 import type Stripe from 'stripe';
 
 export const runtime = 'nodejs';
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
         // Fetch product name for the confirmation email
         const { data: productData } = await supabase
           .from('products')
-          .select('name_fr, name_en, thumbnail_url')
+          .select('name_fr, name_en, thumbnail_url, slug')
           .eq('id', product_id)
           .single();
 
@@ -152,7 +153,10 @@ export async function POST(request: Request) {
                 to: customerEmail,
                 customerName,
                 productName: productData?.name_fr ?? productData?.name_en ?? 'Produit JustEdit',
-                thumbnailUrl: productData?.thumbnail_url ?? null,
+                thumbnailUrl: productData?.thumbnail_url
+                  ?? (productData?.slug && PRODUCT_THUMBNAILS[productData.slug]?.[0]
+                    ? `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://justedit.store'}${PRODUCT_THUMBNAILS[productData.slug][0]}`
+                    : null),
                 amountPaidCents: session.amount_total ?? 0,
                 currency: session.currency ?? 'eur',
                 purchaseId: purchaseId ?? session.id,
