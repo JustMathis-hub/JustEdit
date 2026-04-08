@@ -94,6 +94,7 @@ export default async function AffiliateDetailPage({ params }: Props) {
       {/* Actions (client component) */}
       <AffiliateActions
         affiliateId={affiliate.id}
+        affiliateName={profile?.full_name ?? profile?.email ?? 'Affilie'}
         currentStatus={affiliate.status}
         currentRate={affiliate.commission_rate}
         balance={balance}

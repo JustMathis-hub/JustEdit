@@ -67,7 +67,7 @@ export async function POST(
 
 // GET — Return Express dashboard link (for already-connected accounts)
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const admin = await verifyAdmin();
@@ -88,13 +88,29 @@ export async function GET(
 
   try {
     const stripeAccount = await stripe.accounts.retrieve(affiliate.stripe_connect_account_id);
-    const loginLink = await stripe.accounts.createLoginLink(affiliate.stripe_connect_account_id);
 
+    if (!stripeAccount.details_submitted) {
+      const origin = request.headers.get('origin') ?? process.env.NEXT_PUBLIC_SITE_URL ?? '';
+      const accountLink = await stripe.accountLinks.create({
+        account: affiliate.stripe_connect_account_id,
+        refresh_url: `${origin}/fr/compte/affiliate?stripe_refresh=1`,
+        return_url: `${origin}/fr/compte/affiliate?stripe_connected=1`,
+        type: 'account_onboarding',
+      });
+      return NextResponse.json({
+        url: accountLink.url,
+        account_id: affiliate.stripe_connect_account_id,
+        type: 'onboarding',
+      });
+    }
+
+    const loginLink = await stripe.accounts.createLoginLink(affiliate.stripe_connect_account_id);
     return NextResponse.json({
       url: loginLink.url,
       account_id: affiliate.stripe_connect_account_id,
       charges_enabled: stripeAccount.charges_enabled,
       payouts_enabled: stripeAccount.payouts_enabled,
+      type: 'dashboard',
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Erreur Stripe';

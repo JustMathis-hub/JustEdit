@@ -7,6 +7,7 @@ import { Loader2, ExternalLink, CheckCircle2, AlertCircle, Copy } from 'lucide-r
 
 interface Props {
   affiliateId: string;
+  affiliateName: string;
   currentStatus: string;
   currentRate: number;
   balance: number;
@@ -16,6 +17,7 @@ interface Props {
 
 export function AffiliateActions({
   affiliateId,
+  affiliateName,
   currentStatus,
   currentRate,
   balance,
@@ -200,13 +202,13 @@ export function AffiliateActions({
                     <Loader2 size={12} className="animate-spin" /> Generation...
                   </span>
                 ) : (
-                  'Generer lien dashboard Val'
+                  `Generer lien dashboard ${affiliateName}`
                 )}
               </button>
             </div>
           ) : onboardingUrl ? (
             <div className="space-y-2">
-              <p className="text-xs text-[oklch(0.55_0.005_0)]">Lien genere — envoie-le a Val :</p>
+              <p className="text-xs text-[oklch(0.55_0.005_0)]">Lien genere — envoie-le a {affiliateName} :</p>
               <div className="flex gap-2">
                 <input
                   readOnly
