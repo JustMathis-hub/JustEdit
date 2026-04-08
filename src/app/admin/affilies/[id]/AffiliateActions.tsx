@@ -63,7 +63,8 @@ export function AffiliateActions({
       const res = await fetch(`/api/admin/affiliates/${affiliateId}/connect`, { method: 'POST' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Erreur');
-      setOnboardingUrl(data.url);
+      // Lien permanent qui génère un nouveau lien Stripe frais à chaque clic
+      setOnboardingUrl(`${window.location.origin}/api/affiliate/onboarding/${affiliateId}`);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Erreur lors de la creation du compte Stripe');
     }
@@ -77,7 +78,13 @@ export function AffiliateActions({
       const res = await fetch(`/api/admin/affiliates/${affiliateId}/connect`, { method: 'GET' });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? 'Erreur');
-      setOnboardingUrl(data.url);
+      if (data.type === 'onboarding') {
+        // Onboarding pas terminé — lien permanent
+        setOnboardingUrl(`${window.location.origin}/api/affiliate/onboarding/${affiliateId}`);
+      } else {
+        // Dashboard — lien Stripe direct (usage admin immédiat)
+        setOnboardingUrl(data.url);
+      }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Erreur lors de la generation du lien');
     }
