@@ -27,6 +27,7 @@ src/
 │   ├── api/                # Routes API (Stripe webhook, contact, profile update, auth/confirm)
 │   └── layout.tsx          # Root layout
 ├── components/
+│   ├── auth/               # AuthProvider (contexte global auth via useAuth())
 │   ├── layout/             # Navbar, Footer, PromoBanner, CookieBanner, AffiliateTracker
 │   ├── shop/               # ProductCard, LicensePurchase, ProductMediaGallery, etc.
 │   ├── compte/             # ProfileEditor (client), PurchasedProductCard, DownloadButton
@@ -85,6 +86,12 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
 ### Authentification
 - Supabase Auth (email/password)
+- **AuthProvider** (`src/components/auth/AuthProvider.tsx`) — contexte React global qui gere l'etat d'auth pour toute l'app :
+  - Wrape le layout dans `[locale]/layout.tsx`, recoit `initialUser`/`initialProfile` du serveur (SSR, pas de flash)
+  - Utilise `getSession()` (PAS `getUser()`) au montage cote client pour restaurer la session — `getSession()` gere le refresh automatique des tokens expires, contrairement a `getUser()` qui echoue silencieusement
+  - Ecoute `onAuthStateChange` pour les events `SIGNED_IN`, `SIGNED_OUT`, `TOKEN_REFRESHED`, `USER_UPDATED`
+  - Expose `useAuth()` → `{ user, profile, refreshProfile }` — utilise par Navbar, HeartLike, et tout composant qui a besoin de l'etat auth
+  - **IMPORTANT** : ne jamais revenir a des `onAuthStateChange` locaux dans les composants — toujours utiliser `useAuth()` du provider
 - Reset password — **deux mecanismes complementaires** :
   1. **Route API `/api/auth/confirm`** (principale) : le template email Supabase utilise `href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=recovery"`. La route verifie le token via `supabase.auth.verifyOtp({ token_hash, type })`, cree la session cote serveur, et redirige vers `/${locale}/auth/reset-password`.
   2. **Fallback client-side** : la page `reset-password` gere aussi `?code=xxx` (PKCE) via `exchangeCodeForSession` cote client (`useSearchParams` + `Suspense`), et detecte une session existante via `getSession()`.
@@ -173,10 +180,24 @@ C:\Users\mathi\Desktop\App\Stripe\stripe.exe listen --forward-to http://localhos
 ### Systeme d'affiliation
 
 #### Vue d'ensemble
-- Affilie actuel : **Valentin** (imbert.val13@gmail.com, UUID: `13aab415-ef0e-44fe-97c8-4a628c553b66`)
-- Code affilie : `VAL` — URL de tracking : `https://justedit.store/?ref=VAL`
+- Affilies actifs :
+  - **Valentin** (imbert.val13@gmail.com, UUID: `13aab415-ef0e-44fe-97c8-4a628c553b66`) — code `VAL`
+  - **Antoine Bernardi** (bernardi.antoine24@gmail.com, UUID: `1868c6e5-f894-4842-8284-4b3236f05231`) — code `ANTOINE`
 - Commission : **50% sur le montant NET** (apres frais Stripe estimes : 1.5% + 0,25€)
 - Virements via **Stripe Connect Express** (implementé) ou manuels en fallback
+
+#### Ajouter un nouvel affilie
+1. L'affilié doit avoir un compte sur justedit.store
+2. Récupérer son UUID dans Supabase → Table `profiles`
+3. Insérer en DB :
+   ```sql
+   INSERT INTO affiliates (user_id, code, commission_rate, status)
+   VALUES ('<UUID>', 'CODE', 50, 'active');
+   ```
+4. Dans le panel admin `/admin/affilies/[id]`, cliquer **"Générer lien d'onboarding"**
+5. Envoyer le lien **permanent** affiché (`justedit.store/api/affiliate/onboarding/[id]`) à l'affilié
+6. L'affilié clique le lien → redirigé vers Stripe Connect Express pour configurer son IBAN — le lien génère un lien Stripe frais à chaque clic (pas d'expiration)
+- **IMPORTANT** : ne jamais envoyer le lien `connect.stripe.com/...` directement (il expire en ~5 min) — toujours envoyer le lien permanent `/api/affiliate/onboarding/[id]`
 
 #### Tracking URL (`src/lib/affiliateTracking.ts`)
 - `captureAffiliateCode()` : lit `?ref=` dans l'URL et stocke en `sessionStorage` (cle `je_ref`)
@@ -202,7 +223,7 @@ const commissionCents = Math.round(netAmount * affiliate.commission_rate / 100);
 - Page Server Component : verifie que l'utilisateur est affilié actif, sinon redirect `/compte`
 - Component client : `src/components/affiliate/AffiliateDashboard.tsx`
 - Affiche : lien d'affiliation avec bouton copier, stats (ventes, commissions gagnees/en attente/versees), tableau historique
-- Acces : Val se connecte sur justedit.store → va sur `/fr/compte/affiliate`
+- Acces : l'affilié se connecte sur justedit.store → va sur `/fr/compte/affiliate`
 
 #### Panel admin affiliation (`/admin/affilies`)
 - Liste des affilies : `/admin/affilies/` — stats globales + tableau affilies
@@ -211,11 +232,12 @@ const commissionCents = Math.round(netAmount * affiliate.commission_rate / 100);
 
 #### Stripe Connect Express
 - **Routes API** :
-  - `POST /api/admin/affiliates/[id]/connect` — crée un compte Express Stripe si inexistant, stocke `stripe_connect_account_id` en DB, retourne l'URL d'onboarding
-  - `GET /api/admin/affiliates/[id]/connect` — retourne un lien de login dashboard Express (compte deja connecte)
+  - `POST /api/admin/affiliates/[id]/connect` — crée un compte Express Stripe si inexistant, stocke `stripe_connect_account_id` en DB
+  - `GET /api/admin/affiliates/[id]/connect` — si `details_submitted=false` retourne lien onboarding, sinon retourne lien login dashboard Express
+  - `GET /api/affiliate/onboarding/[affiliateId]` — **lien permanent** : génère un lien Stripe frais à chaque clic et redirige → c'est ce lien qu'on envoie aux affiliés (jamais le lien Stripe direct)
   - `POST /api/admin/affiliates/[id]/payout` — cree un `stripe.transfers.create()` si compte connecte + `payouts_enabled`, sinon enregistre en `payout_method: 'bank_transfer'`
 - **Fallback** : si pas de `stripe_connect_account_id`, le versement est enregistre manuellement sans Transfer Stripe
-- **IMPORTANT** : en test local (`sk_test_xxx`), `stripe.accounts.create()` peut echouer si Connect n'est pas active sur le compte principal. En prod avec les cles live, Connect fonctionne apres activation Marketplace sur Stripe Dashboard.
+- **IMPORTANT** : ne jamais tester le flux Stripe Connect depuis le dev local (clés test vs compte live → erreur). Toujours initier l'onboarding depuis la prod (`justedit.store`).
 - **Migrations Supabase prod requises** (a faire avant de tester en prod si pas encore fait) :
   ```sql
   ALTER TABLE affiliates ADD COLUMN IF NOT EXISTS stripe_connect_account_id TEXT;

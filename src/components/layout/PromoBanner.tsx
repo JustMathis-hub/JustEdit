@@ -23,7 +23,7 @@ export function usePromoBanner() {
 // ─── Provider ────────────────────────────────────────────────────────────────
 
 const STORAGE_KEY = 'promo-banner-dismissed';
-const PROMO_END = new Date('2026-04-14T23:59:59');
+const PROMO_END = new Date('2026-05-17T23:59:59');
 
 export function PromoBannerProvider({ children }: { children: React.ReactNode }) {
   const [isBannerVisible, setIsBannerVisible] = useState(false);
