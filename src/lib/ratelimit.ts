@@ -39,3 +39,16 @@ export function getIp(request: Request): string {
   const real = request.headers.get('x-real-ip');
   return forwarded?.split(',')[0]?.trim() ?? real ?? '127.0.0.1';
 }
+
+// Fail-open wrapper: if Redis is unreachable, allow the request through
+export async function safeLimit(
+  limiter: ReturnType<typeof createRatelimiter>,
+  ip: string,
+): Promise<{ success: boolean }> {
+  if (!limiter) return { success: true };
+  try {
+    return await limiter.limit(ip);
+  } catch {
+    return { success: true };
+  }
+}

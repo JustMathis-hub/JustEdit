@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { contactRatelimit, getIp } from '@/lib/ratelimit';
+import { contactRatelimit, getIp, safeLimit } from '@/lib/ratelimit';
 
 function escapeHtml(str: string): string {
   return str
@@ -19,12 +19,10 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export async function POST(request: Request) {
   try {
     // Rate limiting
-    if (contactRatelimit) {
-      const ip = getIp(request);
-      const { success } = await contactRatelimit.limit(ip);
-      if (!success) {
-        return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
-      }
+    const ip = getIp(request);
+    const { success: rlOk } = await safeLimit(contactRatelimit, ip);
+    if (!rlOk) {
+      return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
     }
 
     const { name, email, subject, message } = await request.json();

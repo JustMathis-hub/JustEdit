@@ -1,16 +1,14 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { affiliateClickRatelimit, getIp } from '@/lib/ratelimit';
+import { affiliateClickRatelimit, getIp, safeLimit } from '@/lib/ratelimit';
 
 export async function POST(request: Request) {
   try {
     // Rate limiting
-    if (affiliateClickRatelimit) {
-      const ip = getIp(request);
-      const { success } = await affiliateClickRatelimit.limit(ip);
-      if (!success) {
-        return NextResponse.json({ ok: true }); // silent — don't reveal rate limit to bots
-      }
+    const ip = getIp(request);
+    const { success: rlOk } = await safeLimit(affiliateClickRatelimit, ip);
+    if (!rlOk) {
+      return NextResponse.json({ ok: true }); // silent — don't reveal rate limit to bots
     }
 
     const { code, landingPage } = await request.json();

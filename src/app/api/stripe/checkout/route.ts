@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { checkoutRatelimit, getIp } from '@/lib/ratelimit';
+import { checkoutRatelimit, getIp, safeLimit } from '@/lib/ratelimit';
 import { PROMO_PRICES } from '@/lib/promoConfig';
 
 const COMMERCIAL_PRICE_CENTS = 5000; // 50 €
@@ -10,12 +10,10 @@ const COMMERCIAL_PRICE_CENTS = 5000; // 50 €
 export async function POST(request: Request) {
   try {
     // Rate limiting
-    if (checkoutRatelimit) {
-      const ip = getIp(request);
-      const { success } = await checkoutRatelimit.limit(ip);
-      if (!success) {
-        return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
-      }
+    const ip = getIp(request);
+    const { success: rlOk } = await safeLimit(checkoutRatelimit, ip);
+    if (!rlOk) {
+      return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 });
     }
 
     const { productId, licenseType, locale: reqLocale, affiliateCode } = await request.json();

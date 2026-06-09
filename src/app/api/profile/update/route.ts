@@ -1,18 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { profileRatelimit, getIp } from '@/lib/ratelimit';
+import { profileRatelimit, getIp, safeLimit } from '@/lib/ratelimit';
 
 const MAX_NAME = 100;
 
 export async function POST(req: NextRequest) {
   try {
     // Rate limiting
-    if (profileRatelimit) {
-      const ip = getIp(req);
-      const { success } = await profileRatelimit.limit(ip);
-      if (!success) {
-        return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
-      }
+    const ip = getIp(req);
+    const { success: rlOk } = await safeLimit(profileRatelimit, ip);
+    if (!rlOk) {
+      return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
     }
 
     const { full_name, avatar_url } = await req.json();
