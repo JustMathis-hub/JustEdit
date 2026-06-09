@@ -259,8 +259,7 @@ export function HeroSection() {
                         <p className="text-[11px] text-[oklch(0.42_0.005_0)] mt-0.5">{t('cardTagline')}</p>
                       </div>
                       <div className="flex flex-col items-end">
-                        <span className="text-lg font-black text-[#e07070]">16€</span>
-                        <span className="text-xs text-[oklch(0.42_0.005_0)] line-through leading-none">25€</span>
+                        <span className="text-lg font-black text-white">15 €</span>
                       </div>
                     </div>
                     <div className="flex gap-1.5 mb-3">
